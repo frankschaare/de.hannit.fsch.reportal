@@ -86,7 +86,7 @@
 					<p:ajax event="tabChange" update=":navForm:tabs"/>
 						<p:tab title="Incidents">
 							<p:dataTable id="tblIncidents" var="vorgang" value="#{edb.jahresstatistik.incidents}">
-								<p:column sortBy="#{vorgang.vorgangsNummer}" headerText="Vorgangsnummer">
+								<p:column sortBy="#{vorgang.vorgangsNummer}" headerText="Vorgangsnummer" id="wurst">
 									<h:outputText value="#{vorgang.vorgangsNummer}" />
 								</p:column>
 								<p:column sortBy="#{vorgang.erstellDatum}" headerText="Erstelldatum">

@@ -2,34 +2,26 @@ package de.hannit.fsch.reportal.db;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
-import sun.nio.ch.SelChImpl;
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
-import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
 @ManagedBean(name = "edb", eager=true)
 @ApplicationScoped
@@ -45,10 +37,7 @@ private boolean connected = false;
 
 private String aktuellesJahr = null;
 private String selectedYear = null;
-private String selectedQuarter = null;
-private String selectedMonth = null;
 private String berichtsZeitraum = null;
-private ArrayList<Vorgang> vorgaenge = null;
 private JahresStatistik aktuelleJahresstatistik = null;
 private HashMap<String, JahresStatistik> dbCache = new HashMap<String, JahresStatistik>();
 private int anzahlDatenGesamt = 0;

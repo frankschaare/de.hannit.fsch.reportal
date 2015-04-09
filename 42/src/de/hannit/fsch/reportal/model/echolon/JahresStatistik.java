@@ -1,18 +1,20 @@
 package de.hannit.fsch.reportal.model.echolon;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.primefaces.model.chart.BarChartModel;
+
 import de.hannit.fsch.reportal.model.DatumsConstants;
+import de.hannit.fsch.reportal.model.EcholonChartModel;
 
 public class JahresStatistik 
 {
 private int anzahlVorgaengeGesamt = 0;
 private int anzahlIncidents = 0;
-private int durchschnittlicheDauerMinutenIncidents = 0;
-private int durchschnittlicheDauerMinutenServiceAbrufe = 0;
-
 private int anzahlServiceabrufe = 0;
 
 private ArrayList<Vorgang> vorgaengeGesamt = null;
@@ -21,18 +23,24 @@ private ArrayList<Vorgang> incidents = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> serviceAbrufe = new ArrayList<Vorgang>();
 private Stream<Vorgang> si = null;
 
+private LocalDate berichtsZeitraum = null;
 private String berichtsJahr = null;
 private String quartal = null;
-private int berichtsMonat = 0;
+private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Integer, MonatsStatistik>();
 
-	public JahresStatistik(ArrayList<Vorgang> vorgaenge, String berichtsJahr) 
+public JahresStatistik(ArrayList<Vorgang> vorgaenge, String berichtsJahr) 
 	{
-	this.vorgaengeGesamt = vorgaenge;
+	filterDistinc(vorgaenge);
 	setBerichtsJahr(berichtsJahr);
 	setAnzahlVorgaengeGesamt(vorgaengeGesamt.size());
 	split(vorgaengeGesamt);
 	}
-	
+
+	public BarChartModel getChartModel() 
+	{
+	return new EcholonChartModel(monatsStatistiken).getBarModel();
+	}
+
 	/*
 	 * Für den Fall, das bereits Quartals- oder Monatsdaten gefiltert wurden,
 	 * kann hier auf das Gesamtjahr zurückgesetzt werden
@@ -42,6 +50,10 @@ private int berichtsMonat = 0;
 	setVorgaenge(vorgaengeGesamt);	
 	}
 	
+	/*
+	 * Hier werden die gesamten Vorgänge nach Incidents und Serviceabrufen gesplittet.
+	 * Sobald eine Information verfügbar ist, wird das ChartModel initiiert
+	 */
 	private void split(ArrayList<Vorgang> vorgaenge) 
 	{
 	incidents.clear();
@@ -61,6 +73,21 @@ private int berichtsMonat = 0;
 			
 			default:
 			break;
+			}
+		
+		/*
+		 * Aufteilung der gesamten Vorgänge nach Monaten	
+		 */
+		int berichtsMonat = v.getBerichtsMonat();
+			if (monatsStatistiken.containsKey(berichtsMonat)) 
+			{
+			monatsStatistiken.get(berichtsMonat).addVorgang(v);	
+			} 
+			else 
+			{
+			MonatsStatistik m = new MonatsStatistik(LocalDate.of(berichtsZeitraum.getYear(), berichtsMonat, 1));
+			m.addVorgang(v);
+			monatsStatistiken.put(berichtsMonat, m);
 			}
 		}
 	setAnzahlIncidents(incidents.size());
@@ -97,8 +124,33 @@ private int berichtsMonat = 0;
 	public ArrayList<Vorgang> getIncidents() {return incidents;}
 	public ArrayList<Vorgang> getServiceabrufe() {return serviceAbrufe;}
 	public String getBerichtsJahr() {return berichtsJahr;}
-	public void setBerichtsJahr(String berichtsJahr) {this.berichtsJahr = berichtsJahr;}
+	
+	public void setBerichtsJahr(String berichtsJahr) 
+	{
+	this.berichtsJahr = berichtsJahr;
+	this.berichtsZeitraum = LocalDate.of(Integer.parseInt(berichtsJahr), 1, 1);
+	}
 
+	/*
+	 * Die Datenbanksicht gibt für jeden Vorgang ZWEI Datensätze aus.
+	 * Anhand der ID wird daher hier recht umständlich sortiert.
+	 * Dazu wird eine HasMap mit den eindeutigen ID's erstellt
+	 */
+	public void filterDistinc(ArrayList<Vorgang> incoming) 
+	{
+	HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();	
+	vorgaengeGesamt = new ArrayList<Vorgang>();
+	
+		for (Vorgang vorgang : incoming) 
+		{
+			if (!distinctCases.containsKey(vorgang.getId())) 
+			{
+			distinctCases.put(vorgang.getId(), vorgang);
+			vorgaengeGesamt.add(vorgang);
+			} 
+		}
+	}
+	
 	public void setVorgaenge(ArrayList<Vorgang> filtered) 
 	{
 	this.vorgaenge = filtered;
@@ -108,7 +160,6 @@ private int berichtsMonat = 0;
 
 	public void setBerichtsMonat(int berichtsMonat) 
 	{
-	this.berichtsMonat = berichtsMonat;
 	si = vorgaengeGesamt.stream();
 	ArrayList<Vorgang> filtered = null;
 	filtered = si.filter(v -> v.getBerichtsMonat() == berichtsMonat).collect(Collectors.toCollection(ArrayList::new ));	

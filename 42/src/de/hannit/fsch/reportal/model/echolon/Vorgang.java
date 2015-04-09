@@ -7,6 +7,7 @@ import java.util.Locale;
 
 public class Vorgang 
 {
+private String id = null;	
 private LocalDate erstellDatum = null;
 private int berichtsJahr = 0;
 private int berichtsMonat = 0;
@@ -27,6 +28,10 @@ private int loesungszeitMinuten = 0;
 	{
 	
 	}
+	
+	public String getId() {return id;}
+
+	public void setId(String id) {this.id = id;}
 
 	public LocalDate getErstellDatum() {
 		return erstellDatum;

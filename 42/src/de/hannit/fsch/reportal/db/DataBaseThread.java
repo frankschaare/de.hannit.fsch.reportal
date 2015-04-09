@@ -70,6 +70,7 @@ private String selection = null;
 			while (rs.next()) 
 			{
 			v = new Vorgang();
+			v.setId(rs.getString("IncidentId"));
 			v.setErstellDatum(rs.getString("AnfrageDatum"));
 			v.setErstellZeit(rs.getString("AnfrageZeit"));
 			v.setVorgangsNummer(rs.getString("Vorgangsnummer"));
@@ -90,7 +91,10 @@ private String selection = null;
 		}		
 	Instant abfrageEnde = Instant.now();
 	Instant abfrageZeit = abfrageEnde.minusMillis(abfrageStart.toEpochMilli());
-			
+	
+	/*
+	 * Die Vorgänge werden in der Jahresstatistik gespeichert und es wird das Chartmodel generiert.
+	 */
 	JahresStatistik js = new JahresStatistik(vorgaenge, selection);
 	log.log(Level.INFO, vorgaenge.size() + " Datensätze aus der Datenbank geladen. Abfagezeit: " + abfrageZeit.toEpochMilli() + " Milisekunden.");
 	return js;
