@@ -6,6 +6,11 @@ body {
     background-color: #ffffff;
 }
 
+select 
+{
+	background: transparent;
+}
+
 h1 {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 24px;
@@ -20,19 +25,19 @@ h2 {
 a:link 
 {
 	text-decoration: none;
-	color: black;
+	color: #003c72;
 }
 
 /* visited link */
 a:visited {
 	font-weight: bold;
-    color: black;
+    color: #003c72;
 }
 
 /* mouse over link */
 a:hover {
 	font-weight: bold;
-    color: #003C72;
+    color: black;
 }
 
 /* selected link */
@@ -51,12 +56,22 @@ hr {
 
 td.navZelle
 {
+	color: #003c72;
+	background-color: white;
+	padding-left: 25px;	
+	padding-right: 25px;
+	font-weight: bold;
+}
+
+td.navZelleActive
+{
 	color: white;
 	background-color: #003c72;
 	padding-left: 25px;	
 	padding-right: 25px;
 	font-weight: bold;
 }
+
 .hit-panelgrid-footer
 {
 	padding-right: 1% !important;;
@@ -66,6 +81,13 @@ td.navZelle
 .hit-layout-unit-content
 {
 min-height: 800px !important;
+}
+
+.echolonChart
+{
+width: 100%;
+height: 500px;
+margin-top: 3%;	
 }
 
 #logo

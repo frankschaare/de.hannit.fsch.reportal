@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html 	xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:t="http://myfaces.apache.org/tomahawk"
+		xmlns:p="http://primefaces.org/ui"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core">
+
+	<h:head>
+		<title>HannIT Reportal</title>
+		<h:outputStylesheet library="css" name="default.css" target="head"/>
+		
+		<script>
+ 		function ext() 
+ 		{
+		this.cfg.seriesColors = ['#00b0f0', '#003C72', '#f2f2f2'];
+		// number of pixels between adjacent bars in the same group
+		this.cfg.seriesDefaults.rendererOptions.barPadding = 0;
+	      // number of pixels between adjacent groups of bars.
+		this.cfg.seriesDefaults.rendererOptions.barMargin = 10;
+		// this.cfg.axes.yaxis.max = #{echolonChart.maxValue};
+	    this.cfg.axes.yaxis.tickInterval = 1000;
+		}
+		</script>		
+	</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+		
+	</div>
+	<div id="title">Echolon Chart</div>
+	<div id="themen">
+		<table>
+			<tr>
+				<td class="navZelle"><h:link value="Echolon Daten" outcome="index"/></td>
+				<td class="navZelleActive">Echolon Chart</td>
+				<td class="navZelle">Callcenter</td>
+				<td class="navZelle">
+					<h:form>
+						<h:outputText value="Auswertungsoptionen: "/>
+                  		<h:selectOneMenu value="#{echolonChart.selectedZeitraum}">
+            				<f:selectItem itemValue="4" itemLabel="vergangene vier Quartale nach Monaten" />
+            				<f:selectItem itemValue="12" itemLabel="vergangene zwölf Monate nach Monaten" />
+            				<f:selectItem itemValue="52" itemLabel="vergangene zwölf Monate nach Kalenderwochen" />
+       					</h:selectOneMenu>	
+         				<h:commandButton value="Aktualisieren" action="EcholonChart" />
+      				</h:form> 
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+		<p:chart 	type="bar" model="#{echolonChart.barModel}" styleClass="echolonChart"/>	
+</body>
+</html>

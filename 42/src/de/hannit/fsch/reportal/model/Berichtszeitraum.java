@@ -9,6 +9,9 @@ package de.hannit.fsch.reportal.model;
  */
 public interface Berichtszeitraum 
 {
+public static final int BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE = 4;
+public static final int BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE = 12;
+
 public static final String BERICHTSZEITRAUM_JAHR = "Jahr";
 public static final String BERICHTSZEITRAUM_Quartal = "Quartal";
 public static final String BERICHTSZEITRAUM_MONAT = "Monat";

@@ -1,6 +1,8 @@
 package de.hannit.fsch.reportal.model.echolon;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -9,6 +11,7 @@ public class Vorgang
 {
 private String id = null;	
 private LocalDate erstellDatum = null;
+private LocalDateTime erstellDatumZeit = null;
 private int berichtsJahr = 0;
 private int berichtsMonat = 0;
 private int berichtsQuartal = 0;
@@ -55,6 +58,32 @@ private int loesungszeitMinuten = 0;
 		case 8: this.berichtsQuartal = 3; break;
 		case 9: this.berichtsQuartal = 3; break;		
 
+		default: this.berichtsQuartal = 4; break;
+		}
+	}
+	
+	public LocalDateTime getErstellDatumZeit() 
+	{
+	return erstellDatumZeit;
+	}
+
+	public void setErstellDatumZeit(Timestamp dbValue) 
+	{
+	this.erstellDatumZeit = dbValue.toLocalDateTime();
+	this.berichtsJahr = erstellDatumZeit.getYear();
+	this.berichtsMonat = erstellDatumZeit.getMonthValue();
+		switch (this.berichtsMonat) 
+		{
+		case 1: this.berichtsQuartal = 1; break;
+		case 2: this.berichtsQuartal = 1; break;
+		case 3: this.berichtsQuartal = 1; break;
+		case 4: this.berichtsQuartal = 2; break;
+		case 5: this.berichtsQuartal = 2; break;
+		case 6: this.berichtsQuartal = 2; break;
+		case 7: this.berichtsQuartal = 3; break;
+		case 8: this.berichtsQuartal = 3; break;
+		case 9: this.berichtsQuartal = 3; break;		
+	
 		default: this.berichtsQuartal = 4; break;
 		}
 	}

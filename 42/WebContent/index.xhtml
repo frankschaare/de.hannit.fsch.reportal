@@ -10,19 +10,19 @@
 
 	<h:head>
 		<title>HannIT Reportal</title>
-		<h:outputStylesheet name="css/default.css"/>
+		<h:outputStylesheet library="css" name="default.css" target="head"/>
 	</h:head>
 <body>
 	<div id="logo">
-		<t:graphicImage url="images/WordBildlogoHannIT.jpg" alt="HannIT Logo" styleClass="logo"/>
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo"/>
 	</div>
 	<div id="title">Reportal</div>
 	<div id="themen">
 		<table>
 			<tr>
-				<td class="navZelle">Echolon</td>
+				<td class="navZelleActive">Echolon Daten</td>
+				<td class="navZelle"><h:link value="Echolon Chart" outcome="EcholonChart"/></td>
 				<td class="navZelle">Callcenter</td>
-				<td class="navZelle">Dienst-KFZ</td>
 				<td class="breadCrumb"></td>
 			</tr>
 		</table>

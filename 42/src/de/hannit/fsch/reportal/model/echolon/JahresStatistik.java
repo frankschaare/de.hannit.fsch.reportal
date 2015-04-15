@@ -10,6 +10,7 @@ import org.primefaces.model.chart.BarChartModel;
 
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.EcholonChartModel;
+import de.hannit.fsch.reportal.model.Zeitraum;
 
 public class JahresStatistik 
 {
@@ -28,18 +29,23 @@ private String berichtsJahr = null;
 private String quartal = null;
 private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Integer, MonatsStatistik>();
 
-public JahresStatistik(ArrayList<Vorgang> vorgaenge, String berichtsJahr) 
+private Zeitraum abfrageZeitraum = null;
+
+	public JahresStatistik(ArrayList<Vorgang> vorgaenge, String berichtsJahr) 
 	{
 	filterDistinc(vorgaenge);
 	setBerichtsJahr(berichtsJahr);
 	setAnzahlVorgaengeGesamt(vorgaengeGesamt.size());
 	split(vorgaengeGesamt);
 	}
-
-	public BarChartModel getChartModel() 
+	
+	public JahresStatistik(ArrayList<Vorgang> vorgaenge, Zeitraum berichtsZeitraum) 
 	{
-	return new EcholonChartModel(monatsStatistiken).getBarModel();
-	}
+	this.abfrageZeitraum = berichtsZeitraum;	
+	filterDistinc(vorgaenge);
+	setAnzahlVorgaengeGesamt(vorgaengeGesamt.size());
+	split(vorgaengeGesamt);
+	}	
 
 	/*
 	 * Für den Fall, das bereits Quartals- oder Monatsdaten gefiltert wurden,
