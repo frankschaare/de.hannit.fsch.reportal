@@ -30,7 +30,7 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  * @author fsch
  *
  */
-@ManagedBean(eager=true)
+@ManagedBean
 @SessionScoped
 public class EcholonChart 
 {

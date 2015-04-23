@@ -6,10 +6,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.primefaces.model.chart.BarChartModel;
-
 import de.hannit.fsch.reportal.model.DatumsConstants;
-import de.hannit.fsch.reportal.model.EcholonChartModel;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 public class JahresStatistik 

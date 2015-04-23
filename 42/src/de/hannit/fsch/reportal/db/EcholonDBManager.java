@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.NodeExpandEvent;
@@ -23,8 +23,8 @@ import org.primefaces.model.TreeNode;
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
 
-@ManagedBean(name = "edb", eager=true)
-@ApplicationScoped
+@ManagedBean(name = "edb")
+@SessionScoped
 public class EcholonDBManager 
 {
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());
