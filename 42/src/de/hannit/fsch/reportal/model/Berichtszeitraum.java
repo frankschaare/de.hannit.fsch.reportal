@@ -9,6 +9,9 @@ package de.hannit.fsch.reportal.model;
  */
 public interface Berichtszeitraum 
 {
+public static final int BERICHTSZEITRAUM_TAG = 24;
+public static final int BERICHTSZEITRAUM_Stunde = 60;
+public static final int BERICHTSZEITRAUM_KW = 7;
 public static final int BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE = 4;
 public static final int BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE = 12;
 

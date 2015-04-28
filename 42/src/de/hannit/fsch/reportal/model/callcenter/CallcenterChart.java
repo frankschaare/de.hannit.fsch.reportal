@@ -4,7 +4,6 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -17,11 +16,8 @@ import java.util.concurrent.Future;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.primefaces.model.chart.Axis;
-import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
@@ -47,10 +43,12 @@ private String ticks = null;
 private String seriesEingehendeAnrufe = null;
 private String seriesAnsagetext = null;
 private String seriesErfolglos = null;
+private String seriesWartezeit = null;
 private String chartTitle = null;
 
 private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
 private TreeMap<String, CallcenterStatistik> kwStatisiken;
+private CallcenterAuswertung auswertung = null;
 
 	/**
 	 * Managed Bean für die Darstellung der Echolon-Daten im Chart 
@@ -60,6 +58,8 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 	// Standardmässig werden die Echolon Daten der vergangenen vier Quartale abgefragt.
 	callcenterAbfrage = new CallcenterDBThread();
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
+	auswertung = new CallcenterAuswertung(statisiken);
+	
 	setKWStatistiken();
 	createLineModel();
 	}
@@ -71,6 +71,7 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 	{
 	TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
 	int wochenNummer = 0;
+	String strWochenNummer = null;
 	String key = null;
 	
 	kwStatisiken = new TreeMap<String, CallcenterStatistik>();
@@ -89,18 +90,20 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 			switch (wochenNummer) 
 			{
 			case 1:
-				if (cs.getStartZeit().getMonthValue() == 1) 
-				{
-				key = (String.valueOf(cs.getStartZeit().getYear() + String.valueOf(wochenNummer)));
-				}
-				else
-				{
-				key = (String.valueOf(cs.getStartZeit().plusYears(1).getYear() + "0" + String.valueOf(wochenNummer)));	
-				}
+				strWochenNummer = wochenNummer < 10 ? "0" + String.valueOf(wochenNummer) : String.valueOf(wochenNummer);
+					if (cs.getStartZeit().getMonthValue() == 1) 
+					{
+					key = (String.valueOf(cs.getStartZeit().getYear() + strWochenNummer));
+					}
+					else
+					{
+					key = (String.valueOf(cs.getStartZeit().plusYears(1).getYear() + strWochenNummer));	
+					}
 			break;
 
 			default:
-			key = (String.valueOf(cs.getStartZeit().getYear() + String.valueOf(wochenNummer)));
+			strWochenNummer = wochenNummer < 10 ? "0" + String.valueOf(wochenNummer) : String.valueOf(wochenNummer);	
+			key = (String.valueOf(cs.getStartZeit().getYear() + strWochenNummer));
 			break;
 			}
 			
@@ -124,6 +127,10 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 			vorhanden.setInWarteschlangeAufgelegt((vorhanden.getInWarteschlangeAufgelegt() + cs.getInWarteschlangeAufgelegt()));
 			}
 		}
+		for (String s : kwStatisiken.keySet()) 
+		{
+		System.out.println(s);	
+		}
 	}
 
     public LineChartModel getLineModel() {return lineModel;}
@@ -140,7 +147,6 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
     	
     	for (CallcenterStatistik cs : kwStatisiken.values()) 
     	{
-    	String test = cs.getChartZeit();	
     	eingehendeAnrufe.set(cs.getChartZeit(), cs.getEingehendeAnrufe());	
 		}
     
@@ -220,9 +226,9 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 	public String getTicks() 
 	{
 	ticks = "[";	
-    	for (CallcenterStatistik cs : kwStatisiken.values()) 
+    	for (CallcenterKWStatistik kw : auswertung.getStatistikenKW().values()) 
     	{
-    	ticks = ticks + (cs.getWochenNummer() < 10 ? "0" + cs.getWochenNummer() : cs.getWochenNummer()) + ",";	
+    	ticks = ticks + (kw.getWochenNummer() < 10 ? "0" + kw.getWochenNummer() : kw.getWochenNummer()) + ",";	
 		}
     ticks = ticks + "]";
     
@@ -232,9 +238,9 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 	public String getSeriesEingehendeAnrufe() 
 	{
 	seriesEingehendeAnrufe = "[";	
-    	for (CallcenterStatistik cs : kwStatisiken.values()) 
-    	{
-    	seriesEingehendeAnrufe = seriesEingehendeAnrufe + cs.getEingehendeAnrufe() + ",";	
+		for (CallcenterKWStatistik kw : auswertung.getStatistikenKW().values()) 
+		{
+    	seriesEingehendeAnrufe = seriesEingehendeAnrufe + kw.getEingehendeAnrufe() + ",";	
 		}
     seriesEingehendeAnrufe = seriesEingehendeAnrufe + "]";
 	
@@ -244,9 +250,9 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 	public String getSeriesAnsagetext() 
 	{
 	seriesAnsagetext = "[";	
-    	for (CallcenterStatistik cs : kwStatisiken.values()) 
-    	{
-    	seriesAnsagetext = seriesAnsagetext + cs.getAnrufeInWarteschlange() + ",";	
+		for (CallcenterKWStatistik kw : auswertung.getStatistikenKW().values()) 
+		{
+    	seriesAnsagetext = seriesAnsagetext + kw.getAnrufeInWarteschlange() + ",";	
 		}
     seriesAnsagetext = seriesAnsagetext + "]";
     
@@ -256,13 +262,25 @@ private TreeMap<String, CallcenterStatistik> kwStatisiken;
 	public String getSeriesErfolglos() 
 	{
 	seriesErfolglos = "[";	
-    	for (CallcenterStatistik cs : kwStatisiken.values()) 
-    	{
-    	seriesErfolglos = seriesErfolglos + cs.getInWarteschlangeAufgelegt() + ",";	
+		for (CallcenterKWStatistik kw : auswertung.getStatistikenKW().values()) 
+		{
+    	seriesErfolglos = seriesErfolglos + kw.getInWarteschlangeAufgelegt() + ",";	
 		}
     seriesErfolglos = seriesErfolglos + "]";	
 	
 	return seriesErfolglos;
+	}
+
+	public String getSeriesWartezeit() 
+	{
+	seriesWartezeit = "[";	
+    	for (CallcenterKWStatistik kw : auswertung.getStatistikenKW().values()) 
+    	{
+    	seriesWartezeit = seriesWartezeit + kw.getAvgWarteZeitSekunden() + ",";	
+		}
+    seriesWartezeit = seriesWartezeit + "]";	
+		
+	return seriesWartezeit;
 	}
 
 	public long getMaxValue() {return maxValue;}

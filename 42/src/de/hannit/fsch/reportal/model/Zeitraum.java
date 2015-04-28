@@ -5,6 +5,7 @@ package de.hannit.fsch.reportal.model;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
@@ -18,9 +19,25 @@ public class Zeitraum implements Berichtszeitraum
 private LocalDate heute = LocalDate.now();	
 private LocalDate startDatum = null;
 private LocalDate endDatum = null;
+private LocalDateTime startDatumUhrzeit = null;
+private LocalDateTime endDatumUhrzeit = null;
 private String datumsFormat = "dd.MM.yyyy";
 private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 
+private KalenderWoche kw = null;
+private LocalDate auswertungsTag = null;
+
+
+	/**
+	 * Der Konstruktor empfängt Start- und Endzeitpunkt als LocalDate
+	 * Konstanten für mögliche Berichtszeiträume
+	 */
+	public Zeitraum(LocalDate startZeit, LocalDate endZeit) 
+	{
+	this.startDatum = startZeit;	
+	this.endDatum = endZeit;
+	}
+	
 	/**
 	 * Der Konstruktor empfängt einen der im Interface Berichtszeitraum vordefinierten
 	 * Konstanten für mögliche Berichtszeiträume
@@ -200,6 +217,33 @@ private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 	public void setBerichtsMonat(String berichtsMonat) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public LocalDateTime getStartDatumUhrzeit() {
+		return startDatumUhrzeit;
+	}
+
+	public void setStartDatumUhrzeit(LocalDateTime startDatumUhrzeit) 
+	{
+	this.startDatumUhrzeit = startDatumUhrzeit;
+	this.kw = new KalenderWoche(startDatumUhrzeit);
+	this.auswertungsTag = LocalDate.of(startDatumUhrzeit.getYear(), startDatumUhrzeit.getMonthValue(), startDatumUhrzeit.getDayOfMonth());
+	}
+	
+	public LocalDate getAuswertungsTag() {
+		return auswertungsTag;
+	}
+
+	public KalenderWoche getKw() {
+		return kw;
+	}
+
+	public LocalDateTime getEndDatumUhrzeit() {
+		return endDatumUhrzeit;
+	}
+
+	public void setEndDatumUhrzeit(LocalDateTime endDatumUhrzeit) {
+		this.endDatumUhrzeit = endDatumUhrzeit;
 	}
 
 }

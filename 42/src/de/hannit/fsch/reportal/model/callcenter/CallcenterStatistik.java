@@ -5,23 +5,26 @@ package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDateTime;
 
+import de.hannit.fsch.reportal.model.KalenderWoche;
+
 /**
  * @author fsch
  *
  */
 public class CallcenterStatistik 
 {
-private String id = null;
-private LocalDateTime startZeit = null;
-private LocalDateTime endZeit = null;
-private int eingehendeAnrufe = 0;
-private int wochenNummer = 0;
-private int zugeordneteAnrufe = 0;
-private int angenommeneAnrufe = 0;
-private int anrufeInWarteschlange = 0;
-private int trotzZuordnungAufgelegt = 0;
-private int InWarteschlangeAufgelegt = 0;
-private int avgWarteZeitSekunden = 0;
+protected String id = null;
+protected LocalDateTime startZeit = null;
+protected LocalDateTime endZeit = null;
+protected KalenderWoche kw = null;
+protected int eingehendeAnrufe = 0;
+protected int wochenNummer = 0;
+protected int zugeordneteAnrufe = 0;
+protected int angenommeneAnrufe = 0;
+protected int anrufeInWarteschlange = 0;
+protected int trotzZuordnungAufgelegt = 0;
+protected int InWarteschlangeAufgelegt = 0;
+protected int avgWarteZeitSekunden = 0;
 
 
 
@@ -33,13 +36,9 @@ private int avgWarteZeitSekunden = 0;
 		
 	}
 
-
-
 	public String getId() {
 		return id;
 	}
-
-
 
 	public void setId(String id) {
 		this.id = id;
@@ -61,8 +60,10 @@ private int avgWarteZeitSekunden = 0;
 	return jahr + "-" + monat + "-" + tag + " 00:" + String.valueOf(getWochenNummer() + "AM");
 	}
 
-	public void setStartZeit(LocalDateTime startZeit) {
-		this.startZeit = startZeit;
+	public void setStartZeit(LocalDateTime startZeit) 
+	{
+	this.startZeit = startZeit;
+	this.kw = new KalenderWoche(startZeit);
 	}
 
 	public LocalDateTime getEndZeit() {
@@ -70,6 +71,9 @@ private int avgWarteZeitSekunden = 0;
 	}
 
 
+	public KalenderWoche getKw() {
+		return kw;
+	}
 
 	public void setEndZeit(LocalDateTime endZeit) {
 		this.endZeit = endZeit;

@@ -60,6 +60,7 @@ private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
 	public void setAbfrageZeitraum(Zeitraum abfrageZeitraum) 
 	{
 	this.abfrageZeitraum = abfrageZeitraum;
+	//this.abfrageZeitraum = new Zeitraum(LocalDate.of(2014, 4, 1), LocalDate.of(2014, 4, 1));	
 	}
 	
 	public Zeitraum getAbfrageZeitraum() {return abfrageZeitraum;}
