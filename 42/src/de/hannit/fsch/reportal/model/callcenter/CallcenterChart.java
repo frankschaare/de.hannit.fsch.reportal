@@ -40,6 +40,11 @@ private int selectedZeitraum = 0;
 private LineChartModel lineModel;	
 private long maxValue = 0;
 private String ticks = null;
+private String ticksStuendlich = null;
+private String seriesEingehendeAnrufeStuendlich = null;
+private String seriesAnsagetextStuendlich = null;
+private String seriesErfolglosStuendlich = null;
+private String seriesWartezeitStuendlich = null;
 private String seriesEingehendeAnrufe = null;
 private String seriesAnsagetext = null;
 private String seriesErfolglos = null;
@@ -234,6 +239,18 @@ private CallcenterAuswertung auswertung = null;
     
     return ticks;
 	}
+	
+	public String getTicksStuendlich() 
+	{
+	ticksStuendlich = "[";	
+    	for (String t : auswertung.getStatistikenStuendlich().keySet()) 
+    	{
+    	ticksStuendlich = ticksStuendlich + "'" + t + "',";	
+		}
+    ticksStuendlich = ticksStuendlich + "]";
+    
+	return ticksStuendlich;
+	}
 
 	public String getSeriesEingehendeAnrufe() 
 	{
@@ -247,6 +264,54 @@ private CallcenterAuswertung auswertung = null;
 	return seriesEingehendeAnrufe;
 	}
 	
+	public String getSeriesEingehendeAnrufeStuendlich() 
+	{
+	seriesEingehendeAnrufeStuendlich = "[";	
+		for (CallcenterStundenStatistik ch : auswertung.getStatistikenStuendlich().values()) 
+		{
+		seriesEingehendeAnrufeStuendlich = seriesEingehendeAnrufeStuendlich + ch.getEingehendeAnrufe() + ",";	
+		}
+	seriesEingehendeAnrufeStuendlich = seriesEingehendeAnrufeStuendlich + "]";
+	
+	return seriesEingehendeAnrufeStuendlich;
+	}	
+	
+	public String getSeriesAnsagetextStuendlich() 
+	{
+	seriesAnsagetextStuendlich = "[";	
+		for (CallcenterStundenStatistik ch : auswertung.getStatistikenStuendlich().values()) 
+		{
+		seriesAnsagetextStuendlich = seriesAnsagetextStuendlich + ch.getAnrufeInWarteschlange() + ",";	
+		}
+	seriesAnsagetextStuendlich = seriesAnsagetextStuendlich + "]";		
+	
+	return seriesAnsagetextStuendlich;
+	}
+
+	public String getSeriesErfolglosStuendlich() 
+	{
+	seriesErfolglosStuendlich = "[";	
+		for (CallcenterStundenStatistik ch : auswertung.getStatistikenStuendlich().values()) 
+		{
+		seriesErfolglosStuendlich = seriesErfolglosStuendlich + ch.getInWarteschlangeAufgelegt() + ",";	
+		}
+	seriesErfolglosStuendlich = seriesErfolglosStuendlich + "]";			
+		
+	return seriesErfolglosStuendlich;
+	}
+
+	public String getSeriesWartezeitStuendlich() 
+	{
+	seriesWartezeitStuendlich = "[";	
+		for (CallcenterStundenStatistik ch : auswertung.getStatistikenStuendlich().values()) 
+		{
+		seriesWartezeitStuendlich = seriesWartezeitStuendlich + ch.getAvgWarteZeitSekunden() + ",";	
+		}
+	seriesWartezeitStuendlich = seriesWartezeitStuendlich + "]";			
+		
+	return seriesWartezeitStuendlich;
+	}
+
 	public String getSeriesAnsagetext() 
 	{
 	seriesAnsagetext = "[";	

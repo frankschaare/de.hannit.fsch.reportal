@@ -5,6 +5,7 @@ package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,8 @@ private Zeitraum auswertungsZeitraum = null;
 private TreeMap<LocalDateTime, CallcenterStatistik> statistikenGesamt = null;
 private TreeMap<String, CallcenterKWStatistik> statistikenKW = null;
 private TreeMap<LocalDate, CallcenterTagesStatistik> statistikenTag = null;
+private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null;
+
 	/**
 	 * Lädt CallCenter-Daten aus der DB und bereitet diese für das Webinterface vor 
 	 */
@@ -41,8 +44,51 @@ private TreeMap<LocalDate, CallcenterTagesStatistik> statistikenTag = null;
 	
 	// Dann werden die Tagesstatistiken nach Kalenderwochen ausgewertet
 	setStatistikenKW();
+	
+	// Sortierung nach Tageszeit
+	setStundenStatistiken(statistikenGesamt);
 	}
 	
+	/*
+	 * Sortiert die Datensätze nach Uhrzeit
+	 */
+	private void setStundenStatistiken(TreeMap<LocalDateTime, CallcenterStatistik> incoming) 
+	{
+	statistikenStuendlich = new TreeMap<String, CallcenterStundenStatistik>();
+	CallcenterStundenStatistik vorhanden = null;
+	CallcenterStundenStatistik neu = null;
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+	String key = null;
+		
+			for (CallcenterStatistik cs : statistikenGesamt.values()) 
+			{
+			key = cs.getStartZeit().format(formatter) + "-" + cs.getEndZeit().format(formatter);	
+				if (statistikenStuendlich.containsKey(key)) 
+				{
+				vorhanden = statistikenStuendlich.get(key);
+				vorhanden.addStundenStatistik(cs);
+				} 
+				else 
+				{
+				neu = new CallcenterStundenStatistik();	
+				neu.addStundenStatistik(cs);
+				statistikenStuendlich.put(key, neu);
+				}
+			}
+	log.log(Level.INFO, "Es wurden " + statistikenStuendlich.size() + " stündliche Auswertungen erstellt. Beginne mit dem Summieren der Werte.");
+	
+		for (CallcenterStundenStatistik ch : statistikenStuendlich.values()) 
+		{
+		ch.setSummenWerte();
+		}
+		
+	}
+	
+	public TreeMap<String, CallcenterStundenStatistik> getStatistikenStuendlich() 
+	{
+	return statistikenStuendlich;
+	}
+
 	/*
 	 * Sortiert die Tagesstatistiken nach Kalenderwoche
 	 */

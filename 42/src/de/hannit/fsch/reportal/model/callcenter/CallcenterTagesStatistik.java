@@ -3,12 +3,9 @@
  */
 package de.hannit.fsch.reportal.model.callcenter;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.IntSummaryStatistics;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
