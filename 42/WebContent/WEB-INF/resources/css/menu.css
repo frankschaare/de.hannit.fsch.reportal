@@ -1,83 +1,74 @@
-body 
-{
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 12px;
-    font-weight: normal;
-    color: #000000;
-    background-color: #ffffff;
-}
-
-ul 
-{
-    padding:0;
-    margin:0;
-    list-style: none;
-    color: #003C72;
-    background: white;
-    height:36px;
-	// text-shadow:6px 4px 9px #9C9A9B;
+body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-weight: bold;     
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #ffffff;
 }
 
-ul li 
-{
-     float:left;
-     position:relative;
+ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	color: #003C72;
+	background: white;
+	height: 36px; //
+	text-shadow: 6px 4px 9px #9C9A9B;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	z-index:1;
 }
 
-a:link, a:visited 
-{
-     text-decoration: none;
-     color: #003C72;
+ul li {
+	float: left;
+	position: relative;
 }
 
-ul li a, ul li a:visited 
-{
-     display:block;
-     color:#003C72;
-     width:230px;
-     height:auto;
-     line-height:20px;
-     padding:10px;
-     text-align:center;
+a:link, a:visited {
+	text-decoration: none;
+	color: #003C72;
 }
 
-ul li a:hover 
-{
-     display:block;
-     color: white;
-     background:#003C72;
-     line-height:20px;
-     padding:10px;
-     cursor: pointer;
+ul li a, ul li a:visited {
+	display: block;
+	color: #003C72;
+	width: 230px;
+	height: auto;
+	line-height: 20px;
+	padding: 10px;
+	text-align: center;
 }
 
-ul li ul, ul li:hover ul li ul 
-{
-     display: none;
+ul li a:hover {
+	display: block;
+	color: white;
+	background: #003C72;
+	line-height: 20px;
+	padding: 10px;
+	cursor: pointer;
 }
 
-ul li:hover ul 
-{
-     display:block;
-     position:absolute; 
-     top:36px;
-     left:0;
-     height:auto;
+ul li ul, ul li:hover ul li ul {
+	display: none;
 }
 
-ul li:hover ul li a 
-{
-     display:block;
-     text-align:left; 
-     border-bottom:1px solid #FFF;
+ul li:hover ul {
+	display: block;
+	position: absolute;
+	top: 36px;
+	left: 0;
+	height: auto;
 }
 
-ul li:hover ul li:hover ul 
-{
-     display:block;
-     position:absolute;
-     left:124px;
-     top:0;
+ul li:hover ul li a {
+	display: block;
+	text-align: left;
+	border-bottom: 1px solid #FFF;
+}
+
+ul li:hover ul li:hover ul {
+	display: block;
+	position: absolute;
+	left: 124px;
+	top: 0;
 }

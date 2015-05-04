@@ -132,10 +132,6 @@ private CallcenterAuswertung auswertung = null;
 			vorhanden.setInWarteschlangeAufgelegt((vorhanden.getInWarteschlangeAufgelegt() + cs.getInWarteschlangeAufgelegt()));
 			}
 		}
-		for (String s : kwStatisiken.keySet()) 
-		{
-		System.out.println(s);	
-		}
 	}
 
     public LineChartModel getLineModel() {return lineModel;}

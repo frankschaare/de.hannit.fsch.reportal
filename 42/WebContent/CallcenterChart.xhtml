@@ -1,26 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html 	xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:t="http://myfaces.apache.org/tomahawk"
-		xmlns:p="http://primefaces.org/ui"
-		xmlns:ui="http://java.sun.com/jsf/facelets"
-		xmlns:h="http://java.sun.com/jsf/html"
-		xmlns:f="http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
 
-	<h:head>
-		<title>HannIT Reportal</title>
-		<h:outputStylesheet library="css" name="default.css" target="head"/>
-		<h:outputStylesheet library="css" name="jquery.jqplot.css" target="head"/>
-		
-		<h:outputScript library="js" name="jquery.min.js" target="head"/>
-		<h:outputScript library="js" name="jquery.jqplot.min.js" target="head"/>
-		<h:outputScript library="js" name="jqplot.categoryAxisRenderer.min.js" target="head"/>
-		<h:outputScript library="js" name="jqplot.highlighter.min.js" target="head"/>
-		<h:outputScript library="js" name="jqplot.enhancedLegendRenderer.js" target="head"/>
-		
-		
-		<script>
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+	<h:outputStylesheet library="css" name="jquery.jqplot.css"
+		target="head" />
+
+	<h:outputScript library="js" name="jquery.min.js" target="head" />
+	<h:outputScript library="js" name="jquery.jqplot.min.js" target="head" />
+	<h:outputScript library="js" name="jqplot.categoryAxisRenderer.min.js"
+		target="head" />
+	<h:outputScript library="js" name="jqplot.highlighter.min.js"
+		target="head" />
+	<h:outputScript library="js" name="jqplot.enhancedLegendRenderer.js"
+		target="head" />
+
+
+	<script>
 		$(document).ready(function()
 		{
 		var line1 = #{callcenterChart.seriesEingehendeAnrufe};
@@ -92,26 +96,29 @@
 		// display series_label, x-axis_tick, y-axis value
 		return "KW " + plot.options.axes.xaxis.ticks[pointIndex] + ": " + plot.data[seriesIndex][pointIndex] + " " + plot.series[seriesIndex]["label"];
 		}
-		</script>		
-	</h:head>
+		</script>
+</h:head>
 <body>
 	<div id="logo">
-		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
-		
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
+			styleClass="logo" />
+
 	</div>
 	<div id="title">Callcenter Chart</div>
 	<div id="themen">
 		<table>
 			<tr>
-				<td class="navZelle"><h:link value="Echolon Daten" outcome="index"/></td>
-				<td class="navZelle"><h:link value="Echolon Chart" outcome="EcholonChart"/></td>
+				<td class="navZelle"><h:link value="Echolon Daten"
+						outcome="index" /></td>
+				<td class="navZelle"><h:link value="Echolon Chart"
+						outcome="EcholonChart" /></td>
 				<td class="navZelleActive">Callcenter Chart</td>
 				<td class="navZelle"></td>
 			</tr>
 		</table>
 	</div>
-	
-	<div id="chart1" style="height:500px;width:100%; "></div> 
-		
+
+	<div id="chart1" style="height: 500px; width: 100%;"></div>
+
 </body>
 </html>

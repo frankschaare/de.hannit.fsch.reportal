@@ -1,20 +1,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html 	xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:t="http://myfaces.apache.org/tomahawk"
-		xmlns:p="http://primefaces.org/ui"
-		xmlns:ui="http://java.sun.com/jsf/facelets"
-		xmlns:h="http://java.sun.com/jsf/html"
-		xmlns:f="http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
 
-	<h:head>
-		<title>HannIT Reportal</title>
-		<h:outputStylesheet name="css/default.css"/>
-	</h:head>
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet name="css/default.css" />
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the piechart package.
+      google. load('visualization', '1.0', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([
+          ['Mushrooms', 3],
+          ['Onions', 1],
+          ['Olives', 1],
+          ['Zucchini', 1],
+          ['Pepperoni', 2]
+        ]);
+
+        // Set chart options
+        var options = {'title':'How Much Pizza I Ate Last Night',
+                       'width':1000,
+                       'height':500};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+
+</h:head>
 <body>
 	<div id="logo">
-		<t:graphicImage url="images/WordBildlogoHannIT.jpg" alt="HannIT Logo" styleClass="logo"/>
+		<t:graphicImage url="images/WordBildlogoHannIT.jpg" alt="HannIT Logo"
+			styleClass="logo" />
 	</div>
 	<div id="title">Reportal</div>
 	<div id="themen">
@@ -23,165 +62,14 @@
 				<td class="navZelle">Echolon</td>
 				<td class="navZelle">Callcenter</td>
 				<td class="navZelle">Dienst-KFZ</td>
-				<td class="breadCrumb"><h:outputText value="#{edb.connectionInfo}" /></td>
+				<td class="breadCrumb"><h:outputText
+						value="#{edb.connectionInfo}" /></td>
 			</tr>
 		</table>
 	</div>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div" style="border: 1px solid black; height: 100%; width:100%;"></div>
 	
-	<div id="content">	
-		<div id="navigation">
-			<h:form>
-			    <p:tree value="#{baumModel.root}" var="node" dynamic="true" selectionMode="single" selection="#{edb.selectedNode}">
-			    	<p:ajax event="expand" listener="#{edb.onNodeExpand}" />
-			    	<p:ajax event="select" listener="#{edb.onNodeSelect}" />
-				        <p:treeNode>
-				            <h:outputText value="#{node}" />
-				        </p:treeNode>
-			    </p:tree>
-		    </h:form>	
-		</div>
 	
-		<p:fragment autoUpdate="true">
-			<table>
-				<thead>
-                	<tr>
-                    	<th colspan="4">
-                    	Berichtszeitraum: <t:outputText value="#{edb.berichtsZeitraum}"/> (<t:outputText value="#{edb.jahresstatistik.anzahlVorgaengeGesamt}"/> Vorgänge)
-                    	</th>
-                	</tr>
-        		</thead>
-        		<tbody>
-        		    <tr>
-                    	<th colspan="2">
-                    	Incidents
-                    	</th>
-                    	<th colspan="2">
-                    	Serviceabrufe
-                    	</th>
-                    	
-                	</tr>
-					<tr>
-						<td>Anzahl Incidents:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.anzahlIncidents}"/></td>
-						<td>Anzahl Serviceabrufe:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.anzahlServiceabrufe}"/></td>						
-					</tr>
-					<tr>
-						<td>Anzahl Incidents Servicezeit eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.anzahlIncidentsServicezeitEingehalten}"/></td>
-						<td>Anzahl Serviceabrufe Servicezeit eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.anzahlServiceAbrufeServicezeitEingehalten}"/></td>						
-					</tr>
-					<tr>
-						<td>Prozentanteil Incidents Servicezeit eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.prozentanteilIncidentsServicezeitEingehalten}"/>%</td>
-						<td>Prozentanteil Serviceabrufe Servicezeit eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.prozentanteilServiceAbrufeServicezeitEingehalten}"/>%</td>						
-					</tr>		
-					<tr>
-						<td>Anzahl Incidents Servicezeit nicht eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.anzahlIncidentsServicezeitNichtEingehalten}"/></td>
-						<td>Anzahl Serviceabrufe Servicezeit nicht eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.anzahlServiceAbrufeServicezeitNichtEingehalten}"/></td>						
-					</tr>
-					<tr>
-						<td>Prozentanteil Incidents Servicezeit nicht eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.prozentanteilIncidentsServicezeitNichtEingehalten}"/>%</td>
-						<td>Prozentanteil Serviceabrufe Servicezeit nicht eingehalten:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.prozentanteilServiceAbrufeServicezeitNichtEingehalten}"/>%</td>						
-					</tr>
-					<tr>
-						<td>Durchschnittliche Lösungszeit Incident:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.durchschnittlicheDauerMinutenIncidents} Minuten"/></td>
-						<td>Durchschnittliche Lösungszeit Serviceabrufe:</td>
-						<td class="ergebnis"><t:outputText value="#{edb.jahresstatistik.durchschnittlicheDauerMinutenServiceAbrufe} Minuten"/></td>						
-					</tr>					
-				</tbody>				
-			</table>
-		</p:fragment>
-		
-			<p:tabView effect="fade" effectDuration="fast">
-				<p:tab title="Incidents">
-					<p:dataTable id="tblIncidents" var="vorgang" value="#{edb.jahresstatistik.incidents}">
-						<p:column sortBy="#{vorgang.vorgangsNummer}" headerText="Vorgangsnummer">
-							<h:outputText value="#{vorgang.vorgangsNummer}" />
-						</p:column>
-						<p:column sortBy="#{vorgang.erstellDatum}" headerText="Erstelldatum">
-							<h:outputText value="#{vorgang.erstellDatum}" />
-						</p:column>
-						<p:column sortBy="#{vorgang.erstellZeit}" headerText="Erstellzeit">
-							<h:outputText value="#{vorgang.erstellZeit}" />
-						</p:column>				
-						<p:column sortBy="#{vorgang.typ}" headerText="Typ">
-							<h:outputText value="#{vorgang.typ}" />
-						</p:column>
-						<p:column sortBy="#{vorgang.status}" headerText="Status">
-							<h:outputText value="#{vorgang.status}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Priorität" />
-							</f:facet>
-							<h:outputText value="#{vorgang.prioritaet}" />
-						</p:column>				
-						<p:column sortBy="#{vorgang.loesungszeitMinuten}" headerText="Lösungszeit">	
-							<h:outputText value="#{vorgang.loesungszeitMinuten}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Reaktionszeit eingehalten" />
-							</f:facet>
-							<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
-						</p:column>					
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Servicezeit eingehalten" />
-							</f:facet>
-							<h:outputText value="#{vorgang.zielzeitEingehalten}" />
-						</p:column>																		
-					</p:dataTable>			
-				</p:tab>
-				<p:tab title="Serviceabrufe">
-					<p:dataTable var="vorgang" value="#{edb.jahresstatistik.serviceabrufe}">
-						<p:column sortBy="#{vorgang.vorgangsNummer}" headerText="Vorgangsnummer">
-							<h:outputText value="#{vorgang.vorgangsNummer}" />
-						</p:column>
-						<p:column sortBy="#{vorgang.erstellDatum}" headerText="Erstelldatum">
-							<h:outputText value="#{vorgang.erstellDatum}" />
-						</p:column>
-						<p:column sortBy="#{vorgang.erstellZeit}" headerText="Erstellzeit">
-							<h:outputText value="#{vorgang.erstellZeit}" />
-						</p:column>				
-						<p:column sortBy="#{vorgang.typ}" headerText="Typ">
-							<h:outputText value="#{vorgang.typ}" />
-						</p:column>
-						<p:column sortBy="#{vorgang.status}" headerText="Status">
-							<h:outputText value="#{vorgang.status}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Priorität" />
-							</f:facet>
-							<h:outputText value="#{vorgang.prioritaet}" />
-						</p:column>				
-						<p:column sortBy="#{vorgang.loesungszeitMinuten}" headerText="Lösungszeit">	
-							<h:outputText value="#{vorgang.loesungszeitMinuten}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Reaktionszeit eingehalten" />
-							</f:facet>
-							<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
-						</p:column>					
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Servicezeit eingehalten" />
-							</f:facet>
-							<h:outputText value="#{vorgang.zielzeitEingehalten}" />
-						</p:column>																		
-					</p:dataTable>
-				</p:tab>
-			</p:tabView>
-	</div>
 </body>
 </html>

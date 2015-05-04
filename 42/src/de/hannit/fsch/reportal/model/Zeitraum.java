@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.TreeMap;
 
 /**
  * @author fsch
@@ -26,6 +27,7 @@ private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 
 private KalenderWoche kw = null;
 private LocalDate auswertungsTag = null;
+private TreeMap<Integer, Quartal> quartale = null;
 
 
 	/**
@@ -105,7 +107,10 @@ private LocalDate auswertungsTag = null;
 			default:
 			break;
 			}
-			
+		
+		// Da hier die letzten vier Quartale abgefragt werden, werden diese auch automatisch berechnet:
+		setQuartale();
+		
 		break;
 		
 		// Berechnung der letzten zwölf Monate
@@ -121,6 +126,40 @@ private LocalDate auswertungsTag = null;
 	
 	}
 	
+	/*
+	 * Berechnet die enthaltenen Quartale und liegt diese in der TreeMap ab.
+	 * 
+	 * ACHTUNG ! 
+	 * Der Index ist die Reihenfolge der Quartale im Abfragezeitraum,
+	 * NICHT die Quartalsnummer ! 
+	 * ACHTUNG ! 
+	 *  
+	 */
+	private void setQuartale() 
+	{
+	int index = 1;	
+	LocalDate tmp = startDatum;
+	Quartal q = null;
+	quartale = new TreeMap<Integer, Quartal>();
+	
+		while (tmp.isBefore(endDatum)) 
+		{
+		q = new Quartal(tmp.getMonthValue(), tmp.getYear());
+			if (!quartale.containsKey(index)) 
+			{
+			q.setIndex(index);	
+			quartale.put(index, q);	
+			}
+		index +=1;	
+		tmp = tmp.plusMonths(3);	
+		}
+	}
+	
+	public TreeMap<Integer, Quartal> getQuartale() 
+	{
+	return quartale;
+	}
+
 	public LocalDate getStartDatum() {return startDatum;}
 	public Date getSQLStartDatum() {return Date.valueOf(startDatum);}
 	public LocalDate getEndDatum() {return endDatum;}
