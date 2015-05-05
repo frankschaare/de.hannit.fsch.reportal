@@ -11,19 +11,63 @@
 <h:head>
 	<title>HannIT Reportal</title>
 	<h:outputStylesheet library="css" name="default.css" target="head" />
+	<h:outputStylesheet library="css" name="menu.css" target="head" />
+	<h:outputScript library="js" name="jquery.min.js" target="head" />
+	<h:outputScript library="js" name="highcharts.js" target="head" />
+	<h:outputScript library="js" name="exporting.js" target="head" />	
 
-	<script>
- 		function ext() 
- 		{
-		this.cfg.seriesColors = ['#00b0f0', '#003C72', '#f2f2f2'];
-		// number of pixels between adjacent bars in the same group
-		this.cfg.seriesDefaults.rendererOptions.barPadding = 0;
-	      // number of pixels between adjacent groups of bars.
-		this.cfg.seriesDefaults.rendererOptions.barMargin = 10;
-		// this.cfg.axes.yaxis.max = #{echolonChart.maxValue};
-	    this.cfg.axes.yaxis.tickInterval = 1000;
-		}
-		</script>
+	<script type="text/javascript">
+	$(function () {
+	    $('#chart').highcharts({
+	        chart: {
+	            type: 'column'
+	        },
+	        title: {
+	            text: 'Gesamtaufträge'
+	        },
+	        subtitle: {
+	            text: #{echolonMonatsChart.subtitle}
+	        },
+	        xAxis: {
+	            categories: #{echolonMonatsChart.ticks},
+	            crosshair: true
+	        },
+	        yAxis: {
+	            min: 0,
+	            title: {
+	                text: 'Anzahl Vorgänge'
+	            }
+	        },
+	        tooltip: {
+	            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+	            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+	                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+	            footerFormat: '</table>',
+	            shared: true,
+	            useHTML: true
+	        },
+	        plotOptions: {
+	            column: {
+	                pointPadding: 0.2,
+	                borderWidth: 0
+	            }
+	        },
+	        series: [{
+	            name: 'Anzahl Vorgänge Gesamt',
+	            data: #{echolonMonatsChart.seriesGesamt}
+
+	        }, {
+	            name: 'Anzahl Incidents',
+	            data: #{echolonMonatsChart.seriesIncidents}
+
+	        }, {
+	            name: '&#216; Dauer Incident (Minuten)',
+	            data: #{echolonMonatsChart.seriesAVGWartezeit}
+
+	        }]
+	    });
+	});
+	</script>
 </h:head>
 <body>
 	<div id="logo">
@@ -32,30 +76,10 @@
 
 	</div>
 	<div id="title">Echolon Chart</div>
-	<div id="themen">
-		<table>
-			<tr>
-				<td class="navZelle"><h:link value="Echolon Daten"
-						outcome="index" /></td>
-				<td class="navZelleActive">Echolon Chart</td>
-				<td class="navZelle">Callcenter</td>
-				<td class="navZelle"><h:form>
-						<h:outputText value="Auswertungsoptionen: " />
-						<h:selectOneMenu value="#{echolonChart.selectedZeitraum}">
-							<f:selectItem itemValue="4"
-								itemLabel="vergangene vier Quartale nach Monaten" />
-							<f:selectItem itemValue="12"
-								itemLabel="vergangene zwölf Monate nach Monaten" />
-							<f:selectItem itemValue="52"
-								itemLabel="vergangene zwölf Monate nach Kalenderwochen" />
-						</h:selectOneMenu>
-						<h:commandButton value="Aktualisieren" action="EcholonChart" />
-					</h:form></td>
-			</tr>
-		</table>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
 	</div>
 
-	<p:chart type="bar" model="#{echolonChart.barModel}"
-		styleClass="echolonChart" />
+	<div id="chart"></div>
 </body>
 </html>

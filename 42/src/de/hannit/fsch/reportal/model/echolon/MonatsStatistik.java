@@ -128,6 +128,10 @@ private Stream<Vorgang> si = null;
 
 	public String getBezeichnungLang() {
 	return bezeichnungLang;
+	}
+
+	public LocalDate getBerichtsZeitraum() {
+		return berichtsZeitraum;
 	}	
 	
 
