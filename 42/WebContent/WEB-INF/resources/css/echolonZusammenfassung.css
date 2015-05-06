@@ -43,6 +43,8 @@ tr.serviceAbrufe
 td 	{
 	text-align: right;
 	padding-right: 1.5%;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	width: 5%;
 }
 

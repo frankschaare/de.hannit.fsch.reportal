@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+	<h:outputStylesheet library="css" name="menu.css" target="head" />
+	<h:outputScript library="js" name="jquery.min.js" target="head" />
+	<h:outputScript library="js" name="highcharts.js" target="head" />
+
+	<script type="text/javascript">
+		$(function () {
+		    $('#container').highcharts({
+		        title: {
+		            text: 'Anrufe je Monat',
+		            x: -20 //center
+		        },
+		        subtitle: {
+		            text: #{callcenterChart.chartSubTitle},
+		            x: -20
+		        },
+		        xAxis: {
+		            categories: #{callcenterChart.ticksMonatlich}
+		        },
+		        
+		        yAxis: 	[
+		                {
+		        		min: 0,
+		            	title: 
+		            		{
+		                	text: 'Anzahl Anrufe',
+		            		},
+		            	plotLines: [{
+		                value: 0,
+		                width: 1,
+		                color: '#808080'
+		            	}]
+		        		},
+		        		{ // Secondary yAxis
+		                title: 
+		                	{
+		                    text: 'Wartezeit',
+		                    style: 
+		                    	{
+		                        color: Highcharts.getOptions().colors[0]
+		                        }
+		                    },
+		                labels: {
+		                        format: '{value} sec',
+		                        style: {
+		                        color: Highcharts.getOptions().colors[0]
+		                        }
+		                    },
+		                opposite: true
+		                }
+		                ],
+		        plotOptions: {
+		            series: {
+		                marker: {
+		                    enabled: false
+		                }
+		            }
+		        },
+		        tooltip: 
+		        {
+
+	                shared: true,
+	                crosshairs: true
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'right',
+		            verticalAlign: 'middle',
+		            borderWidth: 0
+		        },
+		        series: [
+		                {
+		            	name: 'Anrufe',
+		            	data: #{callcenterChart.seriesEingehendeAnrufeMonatlich},
+		            	type: 'line',
+		            	color: '#00b050',
+		            	zIndex: 1 
+		        		}, 
+		        		{
+		            	name: 'Ansagetext',
+		            	data: #{callcenterChart.seriesAnsagetextMonatlich},
+		            	type: 'line',
+		            	color: '#ffff00',
+		            	zIndex: 2
+		        		}, 
+		        		{
+		            	name: 'Erfolglos',
+		            	data: #{callcenterChart.seriesErfolglosMonatlich},
+		            	type: 'line',
+		            	color: '#ff0000',
+		            	zIndex: 3
+		        		},
+		        		{
+		                name: 'Wartezeit',
+		                type: 'column',
+		                yAxis: 1,
+		                data: #{callcenterChart.seriesWartezeitMonatlich},
+		                tooltip: 	
+		                	{
+		                    valueSuffix: ' Sekunden'
+		                    },
+		                color: '#e0e0e0',    
+		                zIndex: 0
+		        		}
+		        		]
+		    });
+		});
+		</script>
+
+</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
+			styleClass="logo" />
+
+	</div>
+	<div id="title">Callcenter Chart</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
+	</div>
+
+	<div id="container"
+		style="min-width: 310px; width: 100%; height: 500px; margin: 0 auto;"></div>
+
+</body>
+</html>

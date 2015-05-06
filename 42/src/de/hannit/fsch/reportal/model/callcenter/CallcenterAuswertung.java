@@ -28,6 +28,7 @@ public class CallcenterAuswertung
 private final static Logger log = Logger.getLogger(CallcenterAuswertung.class.getSimpleName());		
 private Zeitraum auswertungsZeitraum = null;
 private TreeMap<LocalDateTime, CallcenterStatistik> statistikenGesamt = null;
+private TreeMap<LocalDate, CallcenterMonatsStatistik> statistikenMonatlich = null;
 private TreeMap<String, CallcenterKWStatistik> statistikenKW = null;
 private TreeMap<LocalDate, CallcenterTagesStatistik> statistikenTag = null;
 private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null;
@@ -47,8 +48,45 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 	
 	// Sortierung nach Tageszeit
 	setStundenStatistiken(statistikenGesamt);
-	}
 	
+	// Sortierung nach Monaten
+	setMonatsStatistiken();
+	}
+
+	/*
+	 * Sortiert die Datensätze nach Monaten
+	 */
+	private void setMonatsStatistiken() 
+	{
+	statistikenMonatlich = new TreeMap<LocalDate, CallcenterMonatsStatistik>();
+	LocalDate key = null;
+	CallcenterMonatsStatistik vorhanden = null;
+	CallcenterMonatsStatistik neu = null;
+	
+		for (CallcenterTagesStatistik ct : statistikenTag.values()) 
+		{
+		key = LocalDate.of(ct.getStartZeit().getYear(), ct.getStartZeit().getMonthValue(), 1);
+		
+			if (statistikenMonatlich.containsKey(key)) 
+			{
+			vorhanden = statistikenMonatlich.get(key);
+			vorhanden.addTagesStatistik(ct);
+			} 
+			else 
+			{
+			neu = new CallcenterMonatsStatistik();	
+			neu.addTagesStatistik(ct);
+			statistikenMonatlich.put(key, neu);
+			}
+		}
+		
+		for (CallcenterMonatsStatistik cm : statistikenMonatlich.values()) 
+		{
+		cm.setMonatsSummen();	
+		}
+		
+	}
+
 	/*
 	 * Sortiert die Datensätze nach Uhrzeit
 	 */
@@ -87,6 +125,11 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 	public TreeMap<String, CallcenterStundenStatistik> getStatistikenStuendlich() 
 	{
 	return statistikenStuendlich;
+	}
+
+	public TreeMap<LocalDate, CallcenterMonatsStatistik> getStatistikenMonatlich() 
+	{
+	return statistikenMonatlich;
 	}
 
 	/*

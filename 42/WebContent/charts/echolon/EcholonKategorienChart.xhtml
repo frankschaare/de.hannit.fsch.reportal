@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+	<h:outputStylesheet library="css" name="menu.css" target="head" />
+	<h:outputScript library="js" name="jquery.min.js" target="head" />
+	<h:outputScript library="js" name="highcharts.js" target="head" />
+	<h:outputScript library="js" name="exporting.js" target="head" />	
+
+	<script type="text/javascript">
+	$(function () {
+	    $('#chart').highcharts({
+	        chart: {
+	            type: 'column'
+	        },
+	        title: {
+	            text: 'Gesamtaufträge nach Kategorien'
+	        },
+	        subtitle: {
+	            text: #{echolonMonatsChart.subtitle}
+	        },
+	        xAxis: {
+	            categories: #{echolonMonatsChart.ticks}
+	        },
+	        yAxis: {
+	            min: 0,
+	            title: {
+	                text: 'Anzahl Vorgänge'
+	            },
+	            stackLabels: {
+	                enabled: true,
+	                style: {
+	                    fontWeight: 'bold',
+	                    color: 'gray'
+	                }
+	            }
+	        },
+	        legend: {
+	            align: 'center',
+
+	            verticalAlign: 'top',
+	            y: 55,
+	            floating: true,
+	            backgroundColor: 'white',
+	            borderColor: '#CCC',
+	            borderWidth: 0,
+	            shadow: false
+	        },
+	        tooltip: {
+	            formatter: function () {
+	                return '<b>' + this.x + '</b><br/>' +
+	                    this.series.name + ': ' + this.y + '<br/>' +
+	                    'Total: ' + this.point.stackTotal;
+	            }
+	        },
+	        plotOptions: {
+	            column: {
+	                stacking: 'normal',
+	                dataLabels: {
+	                    enabled: true,
+	                    color: 'white',
+	                    style: {
+	                        textShadow: '0 0 3px black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [
+			        {
+					name: 'Customer Requests',
+					color: '#32cd32',
+					data: #{echolonMonatsChart.seriesCustomerRequests}
+					},	                 
+		            {
+			        name: 'Work Orders',
+			        color: '#698b22',
+			        data: #{echolonMonatsChart.seriesWorkOrders}
+			        },	
+		            {
+			        name: 'Short Calls',
+			        color: '#00cd66',
+			        data: #{echolonMonatsChart.seriesShortCalls}
+			        },	
+		            {
+			        name: 'Serviceinfos',
+			        color: 'DarkCyan',
+			        data: #{echolonMonatsChart.seriesServiceInfos}
+			        },	                 
+	            	{
+	            	name: 'Serviceanfragen',
+	            	color: 'blue',
+	            	data: #{echolonMonatsChart.seriesServiceAnfragen}
+	        		},
+	        		{
+	            	name: 'Serviceabrufe',
+	            	color: 'DarkBlue',
+	            	data: #{echolonMonatsChart.seriesServiceabrufe}
+	        		},
+	            	{
+	            	name: 'Incidents',
+	            	color: '#ee7600',
+	            	data: #{echolonMonatsChart.seriesIncidents}
+	        		},
+	        		{
+	            	name: 'Beschwerden',
+	            	color: 'red',
+	            	data: #{echolonMonatsChart.seriesBeschwerden}
+	        		}]
+	    });
+	});
+	</script>
+</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
+			styleClass="logo" />
+
+	</div>
+	<div id="title">Echolon Kategorien</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
+	</div>
+
+	<div id="chart"></div>
+</body>
+</html>

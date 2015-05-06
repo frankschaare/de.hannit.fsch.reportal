@@ -3,7 +3,9 @@
  */
 package de.hannit.fsch.reportal.model.callcenter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -15,11 +17,6 @@ import java.util.concurrent.Future;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-
-import org.primefaces.model.chart.BarChartModel;
-import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.LineChartModel;
-import org.primefaces.model.chart.LineChartSeries;
 
 import de.hannit.fsch.reportal.db.CallcenterDBThread;
 import de.hannit.fsch.reportal.model.Zeitraum;
@@ -37,10 +34,15 @@ private Future<TreeMap<LocalDateTime, CallcenterStatistik>> result = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
 private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
 private int selectedZeitraum = 0;
-private LineChartModel lineModel;	
 private long maxValue = 0;
 private String ticks = null;
+private String tickTyp = null;
 private String ticksStuendlich = null;
+private String ticksMonatlich = null;
+private String seriesEingehendeAnrufeMonatlich = null;
+private String seriesAnsagetextMonatlich = null;
+private String seriesErfolglosMonatlich = null;
+private String seriesWartezeitMonatlich = null;
 private String seriesEingehendeAnrufeStuendlich = null;
 private String seriesAnsagetextStuendlich = null;
 private String seriesErfolglosStuendlich = null;
@@ -49,7 +51,8 @@ private String seriesEingehendeAnrufe = null;
 private String seriesAnsagetext = null;
 private String seriesErfolglos = null;
 private String seriesWartezeit = null;
-private String chartTitle = null;
+private String chartTitle = "'Anrufe je Kalenderwoche'";
+private String chartSubTitle = null;
 
 private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
 private TreeMap<String, CallcenterStatistik> kwStatisiken;
@@ -60,13 +63,13 @@ private CallcenterAuswertung auswertung = null;
 	 */
 	public CallcenterChart() 
 	{
-	// Standardmässig werden die Echolon Daten der vergangenen vier Quartale abgefragt.
+	// Standardmässig werden die Callcenter Daten der vergangenen vier Quartale abgefragt.
 	callcenterAbfrage = new CallcenterDBThread();
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
 	auswertung = new CallcenterAuswertung(statisiken);
 	
 	setKWStatistiken();
-	createLineModel();
+
 	}
 	
 	/*
@@ -134,61 +137,6 @@ private CallcenterAuswertung auswertung = null;
 		}
 	}
 
-    public LineChartModel getLineModel() {return lineModel;}
-	
-	private void createLineModel() 
-    {
-	lineModel = new LineChartModel();
-    lineModel.setTitle("Linear Chart");
-    lineModel.setLegendPosition("ne");
-    
-    LineChartSeries eingehendeAnrufe = new LineChartSeries();
-    eingehendeAnrufe.setLabel("Anrufe");
-    
-    	
-    	for (CallcenterStatistik cs : kwStatisiken.values()) 
-    	{
-    	eingehendeAnrufe.set(cs.getChartZeit(), cs.getEingehendeAnrufe());	
-		}
-    
-    lineModel.addSeries(eingehendeAnrufe);
-    // DateAxis axis = new DateAxis();
-    // lineModel.getAxes().put(AxisType.X, axis);
-    
-    lineModel.setExtender("ext");	
-    }
-    
-    private void createBarModel() 
-    {    
-    // barModel.setTitle("Auswertungszeitraum: " + echolonAbfrage.getAbfrageZeitraum().getBerichtszeitraumStart() + " bis " + echolonAbfrage.getAbfrageZeitraum().getBerichtszeitraumEnde());
-
-    // yAxis.setMax(maxValue + ((maxValue / 100) * 10));
-    }
-    
-    private BarChartModel initBarModel() 
-    {
-    BarChartModel model = new BarChartModel();
- 
-    ChartSeries anzahlVorgaenge = new ChartSeries();
-    anzahlVorgaenge.setLabel("Anzahl Vorgänge Gesamt");
-    
-    ChartSeries anzahlIncidents = new ChartSeries();
-    anzahlIncidents.setLabel("Anzahl Incidents");
-    
-    ChartSeries durchschnittlicheWartezeit = new ChartSeries();
-    durchschnittlicheWartezeit.setLabel("durchschnittliche Dauer Incident (Minuten)");
-    
-
-
-	model.addSeries(anzahlVorgaenge);
-	model.addSeries(anzahlIncidents);
-	model.addSeries(durchschnittlicheWartezeit);
-        
-    model.setExtender("ext");
-    
-    return model;
-    }  	
-    
 	public int getSelectedZeitraum() {return selectedZeitraum;}
 
 	public void setSelectedZeitraum(int selectedZeitraum) 
@@ -214,7 +162,7 @@ private CallcenterAuswertung auswertung = null;
 		try 
 		{
 		statisiken = result.get();
-		this.chartTitle = "'Auswertungszeitraum:  " + selected.getBerichtszeitraumStart() + " bis " + selected.getBerichtszeitraumEnde() + "'";
+		this.chartSubTitle = "'Auswertungszeitraum:  " + selected.getBerichtszeitraumStart() + " bis " + selected.getBerichtszeitraumEnde() + "'";
 		} 
 		catch (InterruptedException | ExecutionException e) 
 		{
@@ -223,6 +171,7 @@ private CallcenterAuswertung auswertung = null;
 	}
 	
 	public String getChartTitle() {return chartTitle;}
+	public String getChartSubTitle() {return chartSubTitle;}
 
 	public String getTicks() 
 	{
@@ -247,6 +196,20 @@ private CallcenterAuswertung auswertung = null;
     
 	return ticksStuendlich;
 	}
+	
+	public String getTicksMonatlich() 
+	{
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM yy");
+	
+	ticksMonatlich = "[";	
+    	for (LocalDate monat : auswertung.getStatistikenMonatlich().keySet()) 
+    	{
+    	ticksMonatlich = ticksMonatlich + "'" + df.format(monat) + "',";	
+		}
+    ticksMonatlich = ticksMonatlich + "]";
+    
+	return ticksMonatlich;
+	}	
 
 	public String getSeriesEingehendeAnrufe() 
 	{
@@ -271,6 +234,19 @@ private CallcenterAuswertung auswertung = null;
 	
 	return seriesEingehendeAnrufeStuendlich;
 	}	
+
+	public String getSeriesEingehendeAnrufeMonatlich() 
+	{
+	seriesEingehendeAnrufeMonatlich = "[";	
+		for (CallcenterMonatsStatistik cm : auswertung.getStatistikenMonatlich().values()) 
+		{
+		seriesEingehendeAnrufeMonatlich = seriesEingehendeAnrufeMonatlich + cm.getEingehendeAnrufe() + ",";	
+		}
+		seriesEingehendeAnrufeMonatlich = seriesEingehendeAnrufeMonatlich + "]";
+	
+	return seriesEingehendeAnrufeMonatlich;
+	}	
+	
 	
 	public String getSeriesAnsagetextStuendlich() 
 	{
@@ -283,6 +259,18 @@ private CallcenterAuswertung auswertung = null;
 	
 	return seriesAnsagetextStuendlich;
 	}
+	
+	public String getSeriesAnsagetextMonatlich() 
+	{
+	seriesAnsagetextMonatlich = "[";	
+		for (CallcenterMonatsStatistik cm : auswertung.getStatistikenMonatlich().values()) 
+		{
+		seriesAnsagetextMonatlich = seriesAnsagetextMonatlich + cm.getAnrufeInWarteschlange() + ",";	
+		}
+	seriesAnsagetextMonatlich = seriesAnsagetextMonatlich + "]";
+	
+	return seriesAnsagetextMonatlich;
+	}	
 
 	public String getSeriesErfolglosStuendlich() 
 	{
@@ -295,6 +283,18 @@ private CallcenterAuswertung auswertung = null;
 		
 	return seriesErfolglosStuendlich;
 	}
+	
+	public String getSeriesErfolglosMonatlich() 
+	{
+	seriesErfolglosMonatlich = "[";	
+		for (CallcenterMonatsStatistik cm : auswertung.getStatistikenMonatlich().values()) 
+		{
+		seriesErfolglosMonatlich = seriesErfolglosMonatlich + cm.getInWarteschlangeAufgelegt() + ",";	
+		}
+	seriesErfolglosMonatlich = seriesErfolglosMonatlich + "]";
+	
+	return seriesErfolglosMonatlich;
+	}		
 
 	public String getSeriesWartezeitStuendlich() 
 	{
@@ -308,6 +308,18 @@ private CallcenterAuswertung auswertung = null;
 	return seriesWartezeitStuendlich;
 	}
 
+	public String getSeriesWartezeitMonatlich() 
+	{
+	seriesWartezeitMonatlich = "[";	
+		for (CallcenterMonatsStatistik cm : auswertung.getStatistikenMonatlich().values()) 
+		{
+		seriesWartezeitMonatlich = seriesWartezeitMonatlich + cm.getAvgWarteZeitSekunden() + ",";	
+		}
+	seriesWartezeitMonatlich = seriesWartezeitMonatlich + "]";
+	
+	return seriesWartezeitMonatlich;
+	}
+	
 	public String getSeriesAnsagetext() 
 	{
 	seriesAnsagetext = "[";	
@@ -351,4 +363,10 @@ private CallcenterAuswertung auswertung = null;
 	return statisiken.size();	
 	}
 
+	public String setTickTyp(String aufloesung)
+	{
+	this.tickTyp = aufloesung;	
+	this.chartTitle = "'Anrufe je Monat'";	
+	return "/charts/callcenter/ccm";	
+	}
 }

@@ -3,25 +3,29 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets">
-		<ul id="nav">
-		     <li><a href="">Home</a></li>
-		     <li><a href="">Echolon Daten</a>
-			     <ul>
-			     	<li><h:link value="Zusammenfassung"	outcome="echolonZusammenfassung" /></li>
-			        <li><h:link value="Echolon Daten"	outcome="echolonDaten" /></li>
-			     </ul>		     
-		     </li>
-		     <li><a href="">Echolon Charts</a>
-			     <ul>
-			     	<li><h:link value="letzte 4 Quartale nach Monaten" outcome="EcholonChart" /></li>
-			     </ul>
-		     </li>
-		     <li><a href="">Callcenter Daten</a></li>
-		     <li><a href="">Callcenter Charts</a>
-			 	<ul>
-		        	<li><h:link value="letzte 4 Quartale nach KW" outcome="cckw" /></li>
-		          	<li><h:link value="letzte 4 Quartale nach Uhrzeit" outcome="cch" /></li>
-		     	</ul>
-		     </li>
-		</ul>
+		<h:form id="menuForm">
+			<ul id="nav">
+				 <li><a href="">Home</a></li>
+			     <li><a href="">Echolon Daten</a>
+				     <ul>
+				     	<li><h:link value="Zusammenfassung"	outcome="/daten/echolon/echolonZusammenfassung" /></li>
+				        <li><h:link value="Echolon Daten"	outcome="/echolonDaten" /></li>
+				     </ul>		     
+			     </li>
+			     <li><a href="">Echolon Charts</a>
+				     <ul>
+				     	<li><h:link value="letzte 4 Quartale nach Monaten" outcome="/charts/echolon/EcholonChart" /></li>
+				     	<li><h:link value="letzte 4 Quartale nach Kategorien" outcome="/charts/echolon/EcholonKategorienChart" /></li>
+				     </ul>
+			     </li>
+			     <li><a href="">Callcenter Daten</a></li>
+			     <li><a href="">Callcenter Charts</a>
+				 	<ul>
+						<li><h:link value="letzte 4 Quartale nach Monaten" outcome="/charts/callcenter/ccm" /></li>
+			        	<li><h:link value="letzte 4 Quartale nach KW" outcome="/charts/callcenter/cckw" /></li>
+			          	<li><h:link value="letzte 4 Quartale nach Uhrzeit" outcome="/charts/callcenter/cch" /></li>
+			     	</ul>
+			     </li>
+			</ul>
+		</h:form>
 </ui:composition>

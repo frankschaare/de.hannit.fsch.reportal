@@ -45,6 +45,13 @@ private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 private String ticks = null;
 private String seriesGesamt = null;
 private String seriesIncidents  = null;
+private String seriesServiceAbruf  = null;
+private String seriesServiceAnfragen  = null;
+private String seriesServiceInfo  = null;
+private String seriesBeschwerden  = null;
+private String seriesCustomerRequest  = null;
+private String seriesShortCall  = null;
+private String seriesWorkOrder  = null;
 private String seriesAVGWartezeit = null;
 
 	/**
@@ -155,6 +162,18 @@ private String seriesAVGWartezeit = null;
 	
 	return seriesGesamt;
 	}	
+
+	public String getSeriesBeschwerden() 
+	{
+	seriesBeschwerden = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesBeschwerden = seriesBeschwerden + m.getAnzahlBeschwerden() + ",";	
+		}
+	seriesBeschwerden = seriesBeschwerden + "]";	
+	
+	return seriesBeschwerden;
+	}	
 	
 	public String getSeriesIncidents() 
 	{
@@ -166,6 +185,78 @@ private String seriesAVGWartezeit = null;
 	seriesIncidents = seriesIncidents + "]";	
 	
 	return seriesIncidents;
+	}	
+	
+	public String getSeriesServiceabrufe() 
+	{
+	seriesServiceAbruf = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesServiceAbruf = seriesServiceAbruf + m.getAnzahlserviceAbrufe() + ",";	
+		}
+	seriesServiceAbruf = seriesServiceAbruf + "]";	
+	
+	return seriesServiceAbruf;
+	}
+	
+	public String getSeriesServiceAnfragen() 
+	{
+	seriesServiceAnfragen = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesServiceAnfragen = seriesServiceAnfragen + m.getAnzahlServiceAnfragen() + ",";	
+		}
+	seriesServiceAnfragen = seriesServiceAnfragen + "]";	
+	
+	return seriesServiceAnfragen;
+	}		
+
+	public String getSeriesServiceInfos() 
+	{
+	seriesServiceInfo = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesServiceInfo = seriesServiceInfo + m.getAnzahlServiceInfo() + ",";	
+		}
+	seriesServiceInfo = seriesServiceInfo + "]";	
+	
+	return seriesServiceInfo;
+	}
+	
+	public String getSeriesShortCalls() 
+	{
+	seriesShortCall = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesShortCall = seriesShortCall + m.getAnzahlShortCalls() + ",";	
+		}
+	seriesShortCall = seriesShortCall + "]";	
+	
+	return seriesShortCall;
+	}
+	
+	public String getSeriesWorkOrders() 
+	{
+	seriesWorkOrder = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesWorkOrder = seriesWorkOrder + m.getAnzahlWorkOrders() + ",";	
+		}
+	seriesWorkOrder = seriesWorkOrder + "]";	
+	
+	return seriesWorkOrder;
+	}
+	
+	public String getSeriesCustomerRequests() 
+	{
+	seriesCustomerRequest = "[";	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		seriesCustomerRequest = seriesCustomerRequest + m.getAnzahlCustomerRequests() + ",";	
+		}
+	seriesCustomerRequest = seriesCustomerRequest + "]";	
+	
+	return seriesCustomerRequest;
 	}	
 	
 	public String getseriesAVGWartezeit() 

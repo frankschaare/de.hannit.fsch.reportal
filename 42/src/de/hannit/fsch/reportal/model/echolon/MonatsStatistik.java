@@ -98,6 +98,48 @@ private Stream<Vorgang> si = null;
 	return anzahlIncidents;
 	}
 	
+	public long getAnzahlBeschwerden() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_BESCHWERDE)).count();
+	}
+
+	public long getCustomerRequests() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_CUSTOMERREQUEST)).count();
+	}
+	
+	public long getAnzahlServiceAnfragen() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_SERVICEANFRAGE)).count();
+	}
+	
+	public long getAnzahlServiceInfo() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_SERVICEINFO)).count();
+	}
+	
+	public long getAnzahlShortCalls() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_SHORTCALL)).count();
+	}
+	
+	public long getAnzahlWorkOrders() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_WORKORDER)).count();
+	}
+	
+	public long getAnzahlCustomerRequests() 
+	{
+	si = vorgaengeGesamt.stream();		
+	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_CUSTOMERREQUEST)).count();
+	}
+	
 	public long getAnzahlIncidentsServicezeitNichtEingehalten() {return anzahlIncidentsServicezeitNichtEingehalten;}
 	
 	public float getProzentanteilIncidentsServicezeitNichtEingehalten() {return prozentanteilIncidentsServicezeitNichtEingehalten;}

@@ -41,28 +41,34 @@
 	        tooltip: {
 	            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
 	            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-	                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+	                '<td style="padding:0"><b>{point.y} </b></td></tr>',
 	            footerFormat: '</table>',
 	            shared: true,
 	            useHTML: true
 	        },
 	        plotOptions: {
 	            column: {
-	                pointPadding: 0.2,
+	                pointPadding: 0,
 	                borderWidth: 0
 	            }
 	        },
 	        series: [{
 	            name: 'Anzahl Vorgänge Gesamt',
-	            data: #{echolonMonatsChart.seriesGesamt}
+	            color: '#00b0f0',
+	            data: #{echolonMonatsChart.seriesGesamt},
+	            valueSuffix: ' Vorgänge'
 
 	        }, {
 	            name: 'Anzahl Incidents',
-	            data: #{echolonMonatsChart.seriesIncidents}
+	            color: '#1f497d',
+	            data: #{echolonMonatsChart.seriesIncidents},
+	            valueSuffix: ' Incidents'
 
 	        }, {
 	            name: '&#216; Dauer Incident (Minuten)',
-	            data: #{echolonMonatsChart.seriesAVGWartezeit}
+	            color: '#bebebe',
+	            data: #{echolonMonatsChart.seriesAVGWartezeit},
+	            valueSuffix: ' Minuten'
 
 	        }]
 	    });
