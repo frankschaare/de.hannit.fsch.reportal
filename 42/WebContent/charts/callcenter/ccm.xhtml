@@ -17,7 +17,7 @@
 
 	<script type="text/javascript">
 		$(function () {
-		    $('#container').highcharts({
+		    $('#chart').highcharts({
 		        title: {
 		            text: 'Anrufe je Monat',
 		            x: -20 //center
@@ -131,8 +131,7 @@
 		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
 	</div>
 
-	<div id="container"
-		style="min-width: 310px; width: 100%; height: 500px; margin: 0 auto;"></div>
+	<div id="chart" class="chartContainer"></div>
 
 </body>
 </html>

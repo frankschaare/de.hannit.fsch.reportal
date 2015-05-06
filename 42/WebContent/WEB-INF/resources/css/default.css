@@ -8,7 +8,11 @@ body {
 	padding: 0px;
 }
 
-div {
+div.chartContainer {
+	min-width: 310px;
+	width: 98%;
+	height: 500px; 
+	margin: 0 auto;
 	border: 1px solid white;
 }
 
