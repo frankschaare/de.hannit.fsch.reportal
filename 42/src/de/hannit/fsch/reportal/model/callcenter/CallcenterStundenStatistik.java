@@ -1,21 +1,29 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 public class CallcenterStundenStatistik extends CallcenterStatistik 
 {
 private TreeMap<String, CallcenterStatistik> stundenStatistiken = new TreeMap<String, CallcenterStatistik>();
-private Zeitraum auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_TAG);
 private Stream<CallcenterStatistik> stundenStatistikenStream = null;
+private	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH");
 
-public CallcenterStundenStatistik() 
+	public CallcenterStundenStatistik() 
 	{
-
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH);	
+	}
+	
+	public CallcenterStundenStatistik(LocalDateTime startZeit, LocalDateTime endZeit) 
+	{
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH);	
+	auswertungsZeitraum.setStartDatumUhrzeit(startZeit);
+	auswertungsZeitraum.setEndDatumUhrzeit(endZeit);
 	}
 	
 	/*
@@ -65,6 +73,29 @@ public CallcenterStundenStatistik()
 		
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.avgWarteZeitSekunden = stundenStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / stundenStatistiken.size();	
-	}	
+	
+	this.nodeName = df.format(auswertungsZeitraum.getStartDatumUhrzeit()) + "-" + df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";
+	}
+
+	@Override
+	public LocalDateTime getStartZeit() 
+	{
+	return auswertungsZeitraum.getStartDatumUhrzeit();
+	}
+
+	@Override
+	public LocalDateTime getEndZeit() 
+	{
+	return auswertungsZeitraum.getEndDatumUhrzeit();
+	}
+
+	@Override
+	public String getNodeName() 
+	{
+	return this.nodeName != null ? this.nodeName : df.format(auswertungsZeitraum.getStartDatumUhrzeit()) + "-" + df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";
+	}
+	
+	
+	
 
 }

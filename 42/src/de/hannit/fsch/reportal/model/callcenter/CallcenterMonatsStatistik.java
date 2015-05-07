@@ -4,9 +4,12 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
+import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -16,7 +19,7 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 public class CallcenterMonatsStatistik extends CallcenterStatistik 
 {
 private TreeMap<LocalDate, CallcenterTagesStatistik> tagesStatistiken = new TreeMap<LocalDate, CallcenterTagesStatistik>();	
-private Zeitraum auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_MONATLICH);
+private TreeMap<String, CallcenterKWStatistik> statistikenKW = null;
 private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 
 	/**
@@ -24,7 +27,7 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	 */
 	public CallcenterMonatsStatistik() 
 	{
-		// TODO Auto-generated constructor stub
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONATLICH);
 	}
 
 	public void addTagesStatistik(CallcenterTagesStatistik ct) 
@@ -68,6 +71,56 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	
 	tagesStatistikenStream = tagesStatistiken.values().stream();
 	this.avgWarteZeitSekunden = tagesStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / tagesStatistiken.size();
+	
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM");
+	this.nodeName = df.format(auswertungsZeitraum.getStartDatum());
+	
+	setStatistikenKW();
 	}	
+	
+	/*
+	 * Sortiert die Tagesstatistiken nach Kalenderwoche
+	 */
+	private void setStatistikenKW() 
+	{
+	statistikenKW = new TreeMap<String, CallcenterKWStatistik>();
+	CallcenterKWStatistik vorhanden = null;
+	CallcenterKWStatistik neu = null;
+	String key = null;
+	
+		for (CallcenterTagesStatistik tag : tagesStatistiken.values()) 
+		{
+		key = tag.getAuswertungsZeitraum().getKw().getIndex();	
+			if (statistikenKW.containsKey(key)) 
+			{
+			vorhanden = statistikenKW.get(key);
+			vorhanden.addTagesStatistik(tag);
+			} 
+			else 
+			{
+			neu = new CallcenterKWStatistik();
+			neu.addTagesStatistik(tag);
+			
+			statistikenKW.put(key, neu);
+			}
+		}
+		for (CallcenterKWStatistik cw : statistikenKW.values()) 
+		{
+		cw.setSummen();	
+		}
+	}
+	
+	public TreeMap<String, CallcenterKWStatistik> getStatistikenKW() {
+		return statistikenKW;
+	}
 
+	public Zeitraum getAuswertungsZeitraum() 
+	{
+	return auswertungsZeitraum;
+	}
+
+	public LocalDate getAuswertungsMonat()
+	{
+	return auswertungsZeitraum.getStartDatum();	
+	}
 }

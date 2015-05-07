@@ -143,7 +143,12 @@ td.navZelleActive {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	width: 100% !important;
+	height: 500px !important; 
 	border: none !important;
+}
+ul.ui-tree-container {
+	width: 100% !important;
+	height: 500px !important;
 }
 
 .summe {

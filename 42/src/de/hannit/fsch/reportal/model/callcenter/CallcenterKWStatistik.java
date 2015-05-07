@@ -10,7 +10,6 @@ public class CallcenterKWStatistik extends CallcenterStatistik
 {
 private TreeMap<LocalDate, CallcenterTagesStatistik> statistikenTag = null;	
 private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
-private Zeitraum auswertungsZeitraum = null;
 
 	public CallcenterKWStatistik() 
 	{
@@ -105,6 +104,28 @@ private Zeitraum auswertungsZeitraum = null;
 	{
 	tagesStatistikenStream = statistikenTag.values().stream();
 	return tagesStatistikenStream.mapToInt(ts -> ts.getAvgWarteZeitSekunden()).sum() / statistikenTag.size();
+	}
+
+	public void setSummen() 
+	{
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.eingehendeAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
+		
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.anrufeInWarteschlange = tagesStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
+		
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.InWarteschlangeAufgelegt = tagesStatistikenStream.mapToInt(cs -> cs.getInWarteschlangeAufgelegt()).sum();
+		
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.avgWarteZeitSekunden = tagesStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / statistikenTag.size();
+		
+	this.nodeName = getWochenNummer() < 10  ? "KW 0" + String.valueOf(getWochenNummer()) : "KW " + String.valueOf(getWochenNummer());
+		
+	}
+
+	public TreeMap<LocalDate, CallcenterTagesStatistik> getStatistikenTag() {
+		return statistikenTag;
 	}
 
 }

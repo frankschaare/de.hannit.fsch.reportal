@@ -120,6 +120,12 @@ private TreeMap<Integer, Quartal> quartale = null;
 		this.endDatum = monatsErster.minusDays(1);
 		break;
 
+		// Berechnung Gesamtzeitraum. Daten liegen erst ab dem 01.01.2013 vor
+		case BERICHTSZEITRAUM_GESAMT:
+		this.startDatum = LocalDate.of(2013, 1, 1);
+		this.endDatum = heute;
+		break;
+		
 		default:
 		break;
 		}
@@ -135,7 +141,7 @@ private TreeMap<Integer, Quartal> quartale = null;
 	 * ACHTUNG ! 
 	 *  
 	 */
-	private void setQuartale() 
+	public void setQuartale() 
 	{
 	int index = 1;	
 	LocalDate tmp = startDatum;
@@ -160,9 +166,34 @@ private TreeMap<Integer, Quartal> quartale = null;
 	return quartale;
 	}
 
-	public LocalDate getStartDatum() {return startDatum;}
+	public LocalDate getStartDatum() 
+	{
+		if (startDatum == null) 
+		{
+		startDatum = startDatumUhrzeit != null ? LocalDate.of(startDatumUhrzeit.getYear(), startDatumUhrzeit.getMonthValue(), startDatumUhrzeit.getDayOfMonth()) : null;	
+		}
+	return startDatum;
+	}
+	
+	public void setStartDatum(LocalDate startDatum) 
+	{
+	this.startDatum = startDatum;
+	}
+
+	public void setEndDatum(LocalDate endDatum) 
+	{
+	this.endDatum = endDatum;
+	}
+
 	public Date getSQLStartDatum() {return Date.valueOf(startDatum);}
-	public LocalDate getEndDatum() {return endDatum;}
+	public LocalDate getEndDatum() 
+	{
+		if (endDatum == null) 
+		{
+		endDatum = endDatumUhrzeit != null ? LocalDate.of(endDatumUhrzeit.getYear(), endDatumUhrzeit.getMonthValue(), endDatumUhrzeit.getDayOfMonth()) : null;	
+		}
+	return endDatum;
+	}
 	
 	/*
 	 * ACHTUNG: Um Fallstricke bei der Datumskonvertierung der Datenbank zu vermeiden,

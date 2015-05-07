@@ -14,6 +14,7 @@ import java.time.Period;
 public class Quartal 
 {
 private int quartalsNummer = 0;
+private String bezeichnung = "unbekannt";
 private String bezeichnungLang = "unbekannt";
 private int index = 0;	
 private LocalDate startDatum = null;
@@ -70,7 +71,7 @@ private Period quartalsPeriode = null;
 			this.startDatumUhrzeit = LocalDateTime.of(jahr, 1, 1, 0, 0, 0);
 			this.endDatum = LocalDate.of(jahr, 3, 31);
 			this.endDatumUhrzeit = LocalDateTime.of(jahr, 3, 31, 23, 59, 59);
-			
+			this.bezeichnung = "Quartal I";
 			this.bezeichnungLang = "1. Quartal " + String.valueOf(jahr);
 		break;
 		case 2:
@@ -78,7 +79,7 @@ private Period quartalsPeriode = null;
 			this.startDatumUhrzeit = LocalDateTime.of(jahr, 4, 1, 0, 0, 0);
 			this.endDatum = LocalDate.of(jahr, 6, 30);
 			this.endDatumUhrzeit = LocalDateTime.of(jahr, 6, 30, 23, 59, 59);
-			
+			this.bezeichnung = "Quartal II";
 			this.bezeichnungLang = "2. Quartal " + String.valueOf(jahr);
 		break;
 		case 3:
@@ -86,7 +87,7 @@ private Period quartalsPeriode = null;
 			this.startDatumUhrzeit = LocalDateTime.of(jahr, 7, 1, 0, 0, 0);
 			this.endDatum = LocalDate.of(jahr, 9, 30);
 			this.endDatumUhrzeit = LocalDateTime.of(jahr, 9, 30, 23, 59, 59);
-			
+			this.bezeichnung = "Quartal III";
 			this.bezeichnungLang = "3. Quartal " + String.valueOf(jahr);
 		break;		
 		default:
@@ -94,7 +95,7 @@ private Period quartalsPeriode = null;
 			this.startDatumUhrzeit = LocalDateTime.of(jahr, 10, 1, 0, 0, 0);
 			this.endDatum = LocalDate.of(jahr, 12, 31);
 			this.endDatumUhrzeit = LocalDateTime.of(jahr, 12, 31, 23, 59, 59);
-			
+			this.bezeichnung = "Quartal IV";
 			this.bezeichnungLang = "4. Quartal " + String.valueOf(jahr);
 		break;
 		}
@@ -103,6 +104,10 @@ private Period quartalsPeriode = null;
 	
 	public String getBezeichnungLang() {
 		return bezeichnungLang;
+	}
+	
+	public String getBezeichnung() {
+		return bezeichnung;
 	}
 
 	public int getIndex() {

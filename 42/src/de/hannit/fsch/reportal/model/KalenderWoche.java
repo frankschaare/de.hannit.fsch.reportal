@@ -4,7 +4,6 @@
 package de.hannit.fsch.reportal.model;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;

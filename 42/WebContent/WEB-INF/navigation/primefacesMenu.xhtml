@@ -1,0 +1,42 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+		<h:form>  
+	    <p:growl id="messages"/>
+	 
+	    <p:menubar>
+	        <p:submenu label="Echolon Daten" icon="fa fa-database">
+	            <p:menuitem value="Zusammenfassung" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
+	            <p:menuitem value="Echolon Daten" url="#" icon="fa fa-database" />
+	        </p:submenu>
+	 
+	        <p:submenu label="Echolon Charts" icon="fa fa-signal">
+	            <p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
+	                <p:menuitem value="Gesamtaufträge" action="/charts/echolon/EcholonChart" icon="fa fa-bar-chart"/>
+	                <p:menuitem value="Kategorien" action="/charts/echolon/EcholonKategorienChart" icon="fa fa-bar-chart-o"/>
+	            </p:submenu>
+	        </p:submenu>
+	 
+	        <p:submenu label="Callcenter Daten" icon="fa fa-phone">
+				<p:menuitem value="Callcenter Daten" action="/daten/callcenter/callcenterDaten" icon="fa fa-database" />
+	        </p:submenu>
+
+	        <p:submenu label="Callcenter Charts" icon="fa fa-signal">
+	            <p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
+	                <p:menuitem value="nach Monaten" action="/charts/callcenter/ccm" icon="fa fa-line-chart"/>
+	                <p:menuitem value="nach KW" action="/charts/callcenter/cckw" icon="fa fa-line-chart"/>
+	                <p:menuitem value="nach Uhrzeit" action="/charts/callcenter/cch" icon="fa fa-line-chart"/>
+	            </p:submenu>
+	        </p:submenu>
+	 
+	 
+	        <f:facet name="options">
+	            <p:inputText style="margin-right:10px" placeholder="Search"/>
+	            <p:commandButton type="button" value="Home" icon="fa fa-home" />
+	        </f:facet>
+	    </p:menubar>
+	</h:form>
+</ui:composition>

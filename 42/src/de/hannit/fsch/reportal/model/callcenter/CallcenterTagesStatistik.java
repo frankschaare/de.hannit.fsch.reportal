@@ -5,10 +5,12 @@ package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -17,11 +19,9 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  */
 public class CallcenterTagesStatistik extends CallcenterStatistik 
 {
-private TreeMap<LocalDateTime, CallcenterStatistik> stundenStatistiken = new TreeMap<LocalDateTime, CallcenterStatistik>();
-private Zeitraum auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_TAG);
-private Stream<CallcenterStatistik> stundenStatistikenStream = null;
+private TreeMap<LocalDateTime, CallcenterStundenStatistik> stundenStatistiken = new TreeMap<LocalDateTime, CallcenterStundenStatistik>();
+private Stream<CallcenterStundenStatistik> stundenStatistikenStream = null;
 
-private final static Logger log = Logger.getLogger(CallcenterTagesStatistik.class.getSimpleName());
 
 	/**
 	 * Entspricht einem Tag.
@@ -29,13 +29,13 @@ private final static Logger log = Logger.getLogger(CallcenterTagesStatistik.clas
 	 */
 	public CallcenterTagesStatistik() 
 	{
-	
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_TAG);
 	}
 	
 	/*
 	 * Fügt dem Auswertungstag eine neue Stundenstatistik hinzu
 	 */
-	public void addStundenStatistik(CallcenterStatistik incoming) 
+	public void addStundenStatistik(CallcenterStundenStatistik incoming) 
 	{
 	stundenStatistiken.put(incoming.getStartZeit(), incoming);	
 		
@@ -72,7 +72,7 @@ private final static Logger log = Logger.getLogger(CallcenterTagesStatistik.clas
 		}
 	}
 	
-	private void setTagessummen() 
+	public void setTagessummen() 
 	{
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.eingehendeAnrufe = stundenStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
@@ -85,6 +85,9 @@ private final static Logger log = Logger.getLogger(CallcenterTagesStatistik.clas
 	
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.avgWarteZeitSekunden = stundenStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / stundenStatistiken.size();
+	
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+	this.nodeName = df.format(auswertungsZeitraum.getAuswertungsTag());
 	}
 
 	@Override
@@ -158,4 +161,9 @@ private final static Logger log = Logger.getLogger(CallcenterTagesStatistik.clas
 	{
 	return auswertungsZeitraum.getAuswertungsTag();
 	}
+
+	public TreeMap<LocalDateTime, CallcenterStundenStatistik> getStundenStatistiken() {
+		return stundenStatistiken;
+	}
+	
 }

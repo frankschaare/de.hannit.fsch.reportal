@@ -6,9 +6,6 @@ package de.hannit.fsch.reportal.model.callcenter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -55,7 +52,6 @@ private String chartTitle = "'Anrufe je Kalenderwoche'";
 private String chartSubTitle = null;
 
 private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
-private TreeMap<String, CallcenterStatistik> kwStatisiken;
 private CallcenterAuswertung auswertung = null;
 
 	/**
@@ -67,76 +63,8 @@ private CallcenterAuswertung auswertung = null;
 	callcenterAbfrage = new CallcenterDBThread();
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
 	auswertung = new CallcenterAuswertung(statisiken);
-	
-	setKWStatistiken();
-
 	}
 	
-	/*
-	 * Erstellt eine Statistik der Callcenter-Auswertungen nach Kalenderwochen
-	 */
-	private void setKWStatistiken() 
-	{
-	TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
-	int wochenNummer = 0;
-	String strWochenNummer = null;
-	String key = null;
-	
-	kwStatisiken = new TreeMap<String, CallcenterStatistik>();
-	CallcenterStatistik vorhanden = null;
-		for (CallcenterStatistik cs : statisiken.values()) 
-		{
-		wochenNummer = cs.getStartZeit().get(woy);
-		cs.setWochenNummer(wochenNummer);
-		/*
-		 * Die KW 1 bereitet Kummer.
-		 * Sie kann sowohl am Anfang, als auch am Ende der Serie liegen.
-		 * 
-		 * Handelt es sich also um einen Januarwert, wird das aktuelle Jahr zum Index hinzugefügt.
-		 * Falls nicht, wird das Folgejahr zum Index hinzugefügt.
-		 */
-			switch (wochenNummer) 
-			{
-			case 1:
-				strWochenNummer = wochenNummer < 10 ? "0" + String.valueOf(wochenNummer) : String.valueOf(wochenNummer);
-					if (cs.getStartZeit().getMonthValue() == 1) 
-					{
-					key = (String.valueOf(cs.getStartZeit().getYear() + strWochenNummer));
-					}
-					else
-					{
-					key = (String.valueOf(cs.getStartZeit().plusYears(1).getYear() + strWochenNummer));	
-					}
-			break;
-
-			default:
-			strWochenNummer = wochenNummer < 10 ? "0" + String.valueOf(wochenNummer) : String.valueOf(wochenNummer);	
-			key = (String.valueOf(cs.getStartZeit().getYear() + strWochenNummer));
-			break;
-			}
-			
-			if (! kwStatisiken.containsKey(key)) 
-			{
-			kwStatisiken.put(key, cs);	
-			} 
-			else 
-			{
-			vorhanden = kwStatisiken.get(key);
-				if (cs.getStartZeit().isBefore(vorhanden.getStartZeit())) 
-				{
-				vorhanden.setStartZeit(cs.getStartZeit());	
-				}
-				if (cs.getEndZeit().isAfter(vorhanden.getEndZeit())) 
-				{
-				vorhanden.setEndZeit(cs.getEndZeit());	
-				}
-			vorhanden.setEingehendeAnrufe((vorhanden.getEingehendeAnrufe() + cs.getEingehendeAnrufe()));
-			vorhanden.setAnrufeInWarteschlange((vorhanden.getAnrufeInWarteschlange() + cs.getAnrufeInWarteschlange()));
-			vorhanden.setInWarteschlangeAufgelegt((vorhanden.getInWarteschlangeAufgelegt() + cs.getInWarteschlangeAufgelegt()));
-			}
-		}
-	}
-
 	public int getSelectedZeitraum() {return selectedZeitraum;}
 
 	public void setSelectedZeitraum(int selectedZeitraum) 

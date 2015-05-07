@@ -6,6 +6,7 @@ package de.hannit.fsch.reportal.model.callcenter;
 import java.time.LocalDateTime;
 
 import de.hannit.fsch.reportal.model.KalenderWoche;
+import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
  * @author fsch
@@ -25,7 +26,8 @@ protected int anrufeInWarteschlange = 0;
 protected int trotzZuordnungAufgelegt = 0;
 protected int InWarteschlangeAufgelegt = 0;
 protected int avgWarteZeitSekunden = 0;
-
+protected String nodeName = null;
+protected Zeitraum auswertungsZeitraum = null;
 
 
 	/**
@@ -33,7 +35,7 @@ protected int avgWarteZeitSekunden = 0;
 	 */
 	public CallcenterStatistik() 
 	{
-		
+	auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_STUENDLICH);	
 	}
 
 	public String getId() {
@@ -171,6 +173,18 @@ protected int avgWarteZeitSekunden = 0;
 
 	public void setAvgWarteZeitSekunden(int avgWarteZeitSekunden) {
 		this.avgWarteZeitSekunden = avgWarteZeitSekunden;
+	}
+
+	public String getNodeName() {
+		return nodeName;
+	}
+
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+
+	public Zeitraum getAuswertungsZeitraum() {
+		return auswertungsZeitraum;
 	}
 	
 	

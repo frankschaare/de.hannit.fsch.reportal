@@ -28,6 +28,7 @@ public class CallcenterAuswertung
 private final static Logger log = Logger.getLogger(CallcenterAuswertung.class.getSimpleName());		
 private Zeitraum auswertungsZeitraum = null;
 private TreeMap<LocalDateTime, CallcenterStatistik> statistikenGesamt = null;
+private TreeMap<Integer, CallcenterJahresStatistik> statistikenJaehrlich = null;
 private TreeMap<LocalDate, CallcenterMonatsStatistik> statistikenMonatlich = null;
 private TreeMap<String, CallcenterKWStatistik> statistikenKW = null;
 private TreeMap<LocalDate, CallcenterTagesStatistik> statistikenTag = null;
@@ -51,6 +52,43 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 	
 	// Sortierung nach Monaten
 	setMonatsStatistiken();
+	
+	// Sind mehr als 12 Monatsstatistiken geladen, werden auch die Jahresstatistiken generiert:
+		if (statistikenMonatlich.size() > 12) 
+		{
+		setJahresStatistiken();			
+		}
+	}
+
+	private void setJahresStatistiken() 
+	{
+	statistikenJaehrlich = new TreeMap<Integer, CallcenterJahresStatistik>();
+	CallcenterJahresStatistik vorhanden = null;
+	CallcenterJahresStatistik neu = null;
+	int key = 0;
+		
+		for (CallcenterMonatsStatistik cm : statistikenMonatlich.values()) 
+		{
+		key = cm.getAuswertungsMonat().getYear();
+			if (statistikenJaehrlich.containsKey(key)) 
+			{
+			vorhanden = statistikenJaehrlich.get(key);
+			vorhanden.addMonatsStatistik(cm);
+			} 
+			else 
+			{
+			neu = new CallcenterJahresStatistik();
+			neu.addMonatsStatistik(cm);
+			statistikenJaehrlich.put(key, neu);
+			}
+		}
+		
+		for (CallcenterJahresStatistik cj : statistikenJaehrlich.values()) 
+		{
+		cj.getAuswertungsZeitraum().setQuartale();
+		cj.setQuartalsStatistiken();
+		cj.setJahresSummen();	
+		}
 	}
 
 	/*
@@ -131,6 +169,11 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 	{
 	return statistikenMonatlich;
 	}
+	
+	public TreeMap<Integer, CallcenterJahresStatistik> getStatistikenJaehrlich() 
+	{
+	return statistikenJaehrlich;
+	}
 
 	/*
 	 * Sortiert die Tagesstatistiken nach Kalenderwoche
@@ -167,24 +210,38 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 	statistikenTag = new TreeMap<LocalDate, CallcenterTagesStatistik>();
 	CallcenterTagesStatistik vorhanden = null;
 	CallcenterTagesStatistik neu = null;
+	CallcenterStundenStatistik ch = null;
 	LocalDate auswertungTag = null;
 	
 		for (CallcenterStatistik cs : gesamt.values()) 
 		{
 		auswertungTag = LocalDate.of(cs.getStartZeit().getYear(), cs.getStartZeit().getMonthValue(), cs.getStartZeit().getDayOfMonth());
+		ch = new CallcenterStundenStatistik(cs.getStartZeit(), cs.getEndZeit());
+		ch.setId(cs.getId());
+		ch.setAngenommeneAnrufe(cs.getAngenommeneAnrufe());
+		ch.setAnrufeInWarteschlange(cs.getAnrufeInWarteschlange());
+		ch.setAvgWarteZeitSekunden(cs.getAvgWarteZeitSekunden());
+		ch.setEingehendeAnrufe(cs.getEingehendeAnrufe());
+		ch.setInWarteschlangeAufgelegt(cs.getInWarteschlangeAufgelegt());
+		ch.setTrotzZuordnungAufgelegt(cs.getTrotzZuordnungAufgelegt());
+		ch.setZugeordneteAnrufe(cs.getZugeordneteAnrufe());
 			
 			if (statistikenTag.containsKey(auswertungTag)) 
 			{
 			vorhanden = statistikenTag.get(auswertungTag);
-			vorhanden.addStundenStatistik(cs);
+			vorhanden.addStundenStatistik(ch);
 			} 
 			else 
 			{
 			neu = new CallcenterTagesStatistik();
-			neu.addStundenStatistik(cs);
+			neu.addStundenStatistik(ch);
 			statistikenTag.put(auswertungTag, neu);
 			}
 			
+		}
+		for (CallcenterTagesStatistik ct : statistikenTag.values()) 
+		{
+		ct.setTagessummen();	
 		}
 	log.log(Level.INFO, "Es wurden Callcenter-Tagesstatistiken für " + statistikenTag.size() + " Tage erstellt.");
 
