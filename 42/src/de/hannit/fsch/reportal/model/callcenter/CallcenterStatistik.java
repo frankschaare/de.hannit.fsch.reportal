@@ -4,7 +4,9 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
+import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.KalenderWoche;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
@@ -27,7 +29,9 @@ protected int trotzZuordnungAufgelegt = 0;
 protected int InWarteschlangeAufgelegt = 0;
 protected int avgWarteZeitSekunden = 0;
 protected String nodeName = null;
+protected String berichtsZeitraum = "Berichtszeitraum: ";
 protected Zeitraum auswertungsZeitraum = null;
+protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatistik>();
 
 
 	/**
@@ -36,6 +40,23 @@ protected Zeitraum auswertungsZeitraum = null;
 	public CallcenterStatistik() 
 	{
 	auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_STUENDLICH);	
+	}
+
+	public String getBerichtsZeitraum() 
+	{
+		if (auswertungsZeitraum != null) 
+		{
+			switch (auswertungsZeitraum.getTyp())
+			{
+			case Berichtszeitraum.BERICHTSZEITRAUM_JAEHRLICH:
+			berichtsZeitraum = "Berichtszeitraum: Gesamtjahr " + auswertungsZeitraum.getBerichtsJahr() + " (" + auswertungsZeitraum.getBerichtszeitraum() + ")";
+			break;
+
+			default:
+			break;
+			}
+		}
+	return berichtsZeitraum;
 	}
 
 	public String getId() {
@@ -186,7 +207,17 @@ protected Zeitraum auswertungsZeitraum = null;
 	public Zeitraum getAuswertungsZeitraum() {
 		return auswertungsZeitraum;
 	}
-	
-	
 
+	public ArrayList<CallcenterStatistik> getDaten() {
+	return daten == null ? new ArrayList<CallcenterStatistik>() : daten;
+	}
+	
+	public int getAnzahlDaten() {
+	return daten == null ? 0 : daten.size();
+	}
+	
+	public void setDaten(ArrayList<CallcenterStatistik> daten) 
+	{
+		this.daten = daten;
+	}
 }

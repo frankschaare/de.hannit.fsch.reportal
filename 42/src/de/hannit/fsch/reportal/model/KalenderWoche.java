@@ -20,6 +20,7 @@ private int jahr = 0;
 private int kw = 0;
 private int monat = 0;
 private String index = null;
+private String bezeichnungLang = "Kalenderwoche dd yyyy";
 	/**
 	 * @param startZeit 
 	 * 
@@ -67,6 +68,12 @@ private String index = null;
 	{
 	this.index = String.valueOf(jahr) + (kw < 10 ? "0" + String.valueOf(kw) : String.valueOf(kw)); 	
 	return index;
+	}
+
+	public String getBezeichnungLang() 
+	{
+	bezeichnungLang = "Kalenderwoche " + (kw < 10 ? "0" + String.valueOf(kw) : String.valueOf(kw)) + " " + String.valueOf(jahr); 	
+	return bezeichnungLang;
 	}
 	
 	

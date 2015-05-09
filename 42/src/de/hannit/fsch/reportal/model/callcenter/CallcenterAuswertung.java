@@ -156,6 +156,7 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 		for (CallcenterStundenStatistik ch : statistikenStuendlich.values()) 
 		{
 		ch.setSummenWerte();
+		ch.setNodeName();
 		}
 		
 	}

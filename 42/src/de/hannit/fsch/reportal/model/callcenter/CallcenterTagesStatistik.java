@@ -6,6 +6,8 @@ package de.hannit.fsch.reportal.model.callcenter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -78,16 +80,25 @@ private Stream<CallcenterStundenStatistik> stundenStatistikenStream = null;
 	this.eingehendeAnrufe = stundenStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
 	
 	stundenStatistikenStream = stundenStatistiken.values().stream();
+	this.angenommeneAnrufe = stundenStatistikenStream.mapToInt(cs -> cs.getAngenommeneAnrufe()).sum();
+	
+	stundenStatistikenStream = stundenStatistiken.values().stream();
+	this.zugeordneteAnrufe = stundenStatistikenStream.mapToInt(cs -> cs.getZugeordneteAnrufe()).sum();
+	
+	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.anrufeInWarteschlange = stundenStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
 	
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.InWarteschlangeAufgelegt = stundenStatistikenStream.mapToInt(cs -> cs.getInWarteschlangeAufgelegt()).sum();
 	
 	stundenStatistikenStream = stundenStatistiken.values().stream();
+	this.trotzZuordnungAufgelegt = stundenStatistikenStream.mapToInt(cs -> cs.getTrotzZuordnungAufgelegt()).sum();
+	
+	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.avgWarteZeitSekunden = stundenStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / stundenStatistiken.size();
 	
 	DateTimeFormatter df = DateTimeFormatter.ofPattern("dd.MM.YYYY");
-	this.nodeName = df.format(auswertungsZeitraum.getAuswertungsTag());
+	setNodeName(df.format(auswertungsZeitraum.getAuswertungsTag()));
 	}
 
 	@Override
@@ -166,4 +177,15 @@ private Stream<CallcenterStundenStatistik> stundenStatistikenStream = null;
 		return stundenStatistiken;
 	}
 	
+	@Override
+	public ArrayList<CallcenterStatistik> getDaten() 
+	{
+	daten = new ArrayList<CallcenterStatistik>();
+	
+		for (CallcenterStatistik cs : stundenStatistiken.values()) 
+		{
+		daten.add(cs);	
+		}
+	return daten;
+	}
 }

@@ -4,6 +4,7 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -65,15 +66,24 @@ private int auswertungsJahr = 0;
 	this.eingehendeAnrufe = monatsStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
 	
 	monatsStatistikenStream = monatsStatistiken.values().stream();
+	this.angenommeneAnrufe = monatsStatistikenStream.mapToInt(cs -> cs.getAngenommeneAnrufe()).sum();
+	
+	monatsStatistikenStream = monatsStatistiken.values().stream();
+	this.zugeordneteAnrufe = monatsStatistikenStream.mapToInt(cs -> cs.getZugeordneteAnrufe()).sum();
+	
+	monatsStatistikenStream = monatsStatistiken.values().stream();
 	this.anrufeInWarteschlange = monatsStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
 	
 	monatsStatistikenStream = monatsStatistiken.values().stream();
 	this.InWarteschlangeAufgelegt = monatsStatistikenStream.mapToInt(cs -> cs.getInWarteschlangeAufgelegt()).sum();
 	
 	monatsStatistikenStream = monatsStatistiken.values().stream();
+	this.trotzZuordnungAufgelegt = monatsStatistikenStream.mapToInt(cs -> cs.getTrotzZuordnungAufgelegt()).sum();
+	
+	monatsStatistikenStream = monatsStatistiken.values().stream();
 	this.avgWarteZeitSekunden = monatsStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / monatsStatistiken.size();
 	
-	this.nodeName = String.valueOf(auswertungsZeitraum.getStartDatum().getYear());
+	setNodeName(String.valueOf(auswertungsZeitraum.getStartDatum().getYear()));
 	}
 
 	
@@ -124,4 +134,20 @@ private int auswertungsJahr = 0;
 		return quartalsStatistiken;
 	}
 	
+	@Override
+	public ArrayList<CallcenterStatistik> getDaten() 
+	{
+	daten = new ArrayList<CallcenterStatistik>();
+	ArrayList<CallcenterStatistik> chs = null;
+	
+		for (CallcenterMonatsStatistik cm : monatsStatistiken.values()) 
+		{
+		chs = cm.getDaten();
+			for (CallcenterStatistik ch : chs) 
+			{
+			daten.add(ch);	
+			}
+		}
+	return daten;
+	}
 }

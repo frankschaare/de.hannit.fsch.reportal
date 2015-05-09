@@ -1,6 +1,7 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -110,12 +111,21 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	{
 	tagesStatistikenStream = statistikenTag.values().stream();
 	this.eingehendeAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
-		
+
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.angenommeneAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getAngenommeneAnrufe()).sum();
+	
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.zugeordneteAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getZugeordneteAnrufe()).sum();
+	
 	tagesStatistikenStream = statistikenTag.values().stream();
 	this.anrufeInWarteschlange = tagesStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
 		
 	tagesStatistikenStream = statistikenTag.values().stream();
 	this.InWarteschlangeAufgelegt = tagesStatistikenStream.mapToInt(cs -> cs.getInWarteschlangeAufgelegt()).sum();
+	
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.trotzZuordnungAufgelegt = tagesStatistikenStream.mapToInt(cs -> cs.getTrotzZuordnungAufgelegt()).sum();
 		
 	tagesStatistikenStream = statistikenTag.values().stream();
 	this.avgWarteZeitSekunden = tagesStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / statistikenTag.size();
@@ -127,5 +137,21 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	public TreeMap<LocalDate, CallcenterTagesStatistik> getStatistikenTag() {
 		return statistikenTag;
 	}
-
+	
+	@Override
+	public ArrayList<CallcenterStatistik> getDaten() 
+	{
+	daten = new ArrayList<CallcenterStatistik>();
+	ArrayList<CallcenterStatistik> chs = null;
+	
+		for (CallcenterTagesStatistik ct : statistikenTag.values()) 
+		{
+		chs = ct.getDaten();	
+			for (CallcenterStatistik ch : chs) 
+			{
+			daten.add(ch);	
+			}
+		}
+	return daten;
+	}
 }

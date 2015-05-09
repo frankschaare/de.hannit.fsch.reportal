@@ -5,8 +5,8 @@ package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.stream.Stream;
 
 import de.hannit.fsch.reportal.model.Berichtszeitraum;
@@ -64,16 +64,25 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	this.eingehendeAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
 	
 	tagesStatistikenStream = tagesStatistiken.values().stream();
+	this.angenommeneAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getAngenommeneAnrufe()).sum();
+	
+	tagesStatistikenStream = tagesStatistiken.values().stream();
+	this.zugeordneteAnrufe = tagesStatistikenStream.mapToInt(cs -> cs.getZugeordneteAnrufe()).sum();
+	
+	tagesStatistikenStream = tagesStatistiken.values().stream();
 	this.anrufeInWarteschlange = tagesStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
 	
 	tagesStatistikenStream = tagesStatistiken.values().stream();
 	this.InWarteschlangeAufgelegt = tagesStatistikenStream.mapToInt(cs -> cs.getInWarteschlangeAufgelegt()).sum();
 	
 	tagesStatistikenStream = tagesStatistiken.values().stream();
+	this.trotzZuordnungAufgelegt = tagesStatistikenStream.mapToInt(cs -> cs.getTrotzZuordnungAufgelegt()).sum();
+	
+	tagesStatistikenStream = tagesStatistiken.values().stream();
 	this.avgWarteZeitSekunden = tagesStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / tagesStatistiken.size();
 	
 	DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM");
-	this.nodeName = df.format(auswertungsZeitraum.getStartDatum());
+	setNodeName(df.format(auswertungsZeitraum.getStartDatum()));
 	
 	setStatistikenKW();
 	}	
@@ -112,6 +121,23 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	
 	public TreeMap<String, CallcenterKWStatistik> getStatistikenKW() {
 		return statistikenKW;
+	}
+	
+	@Override
+	public ArrayList<CallcenterStatistik> getDaten() 
+	{
+	daten = new ArrayList<CallcenterStatistik>();
+	ArrayList<CallcenterStatistik> chs = null;
+	
+		for (CallcenterTagesStatistik ct : tagesStatistiken.values()) 
+		{
+		chs = ct.getDaten();
+			for (CallcenterStatistik ch : chs) 
+			{
+			daten.add(ch);	
+			}
+		}
+	return daten;
 	}
 
 	public Zeitraum getAuswertungsZeitraum() 

@@ -24,10 +24,13 @@ private LocalDateTime startDatumUhrzeit = null;
 private LocalDateTime endDatumUhrzeit = null;
 private String datumsFormat = "dd.MM.yyyy";
 private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
+private String berichtsZeitraum = "unbekannt";
 
 private KalenderWoche kw = null;
 private LocalDate auswertungsTag = null;
 private TreeMap<Integer, Quartal> quartale = null;
+private Quartal auswertungsQuartal = null;
+private int typ = 0;
 
 
 	/**
@@ -46,6 +49,8 @@ private TreeMap<Integer, Quartal> quartale = null;
 	 */
 	public Zeitraum(int zeitRaum) 
 	{
+	this.typ = zeitRaum;	
+	
 		switch (zeitRaum) 
 		{
 		// Berechnung der letzten vier Quartale
@@ -207,13 +212,37 @@ private TreeMap<Integer, Quartal> quartale = null;
 	return Date.valueOf(sqlDatum);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.hannit.fsch.reportal.model.Berichtszeitraum#getBerichtszeitraum()
+	/*
+	 * Leider bin ich hier auf einen Bug im DateTimeFormatter gestossen.
+	 * Das Enddatum wird daher etwas umständlich formatiert:
 	 */
 	@Override
-	public String getBerichtszeitraum() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getBerichtszeitraum() 
+	{
+	DateTimeFormatter ef = DateTimeFormatter.ofPattern("dd.MM.");
+	
+		switch (typ) 
+		{
+		case Berichtszeitraum.BERICHTSZEITRAUM_JAEHRLICH:
+		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: Gesamtjahr " + getBerichtsJahr() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: Gesamtjahr " + getBerichtsJahr() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		break;
+		case Berichtszeitraum.BERICHTSZEITRAUM_QUARTALSWEISE:
+		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: " + auswertungsQuartal.getBezeichnungLang() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: " + auswertungsQuartal.getBezeichnungLang() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		break;
+		case Berichtszeitraum.BERICHTSZEITRAUM_MONATLICH:
+		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: " + getBerichtsMonat() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: " + getBerichtsMonat() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		break;	
+		case Berichtszeitraum.BERICHTSZEITRAUM_KW:
+		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: " + kw.getBezeichnungLang() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: " + kw.getBezeichnungLang() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		break;			
+		
+		default:
+		DateTimeFormatter fDatumUhrzeit = DateTimeFormatter.ofPattern("dd.MM.YY HH:mm");	
+		berichtsZeitraum = "Berichtszeitraum: " + fDatumUhrzeit.format(startDatumUhrzeit) + " Uhr - " + fDatumUhrzeit.format(endDatumUhrzeit) + " Uhr";	
+		break;
+		}
+	
+	return berichtsZeitraum; 
 	}
 	
 	public String getBerichtszeitraumStart() 
@@ -239,9 +268,10 @@ private TreeMap<Integer, Quartal> quartale = null;
 	 * @see de.hannit.fsch.reportal.model.Berichtszeitraum#getBerichtsJahr()
 	 */
 	@Override
-	public String getBerichtsJahr() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getBerichtsJahr() 
+	{
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("YYYY");
+	return startDatum != null ? df.format(startDatum) : df.format(startDatumUhrzeit);
 	}
 
 	/* (non-Javadoc)
@@ -275,9 +305,10 @@ private TreeMap<Integer, Quartal> quartale = null;
 	 * @see de.hannit.fsch.reportal.model.Berichtszeitraum#getBerichtsMonat()
 	 */
 	@Override
-	public String getBerichtsMonat() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getBerichtsMonat() 
+	{
+	DateTimeFormatter fMonatLang = DateTimeFormatter.ofPattern("MMMM yyyy");
+	return startDatum != null ? fMonatLang.format(startDatum) : fMonatLang.format(startDatumUhrzeit);
 	}
 
 	/* (non-Javadoc)
@@ -314,6 +345,18 @@ private TreeMap<Integer, Quartal> quartale = null;
 
 	public void setEndDatumUhrzeit(LocalDateTime endDatumUhrzeit) {
 		this.endDatumUhrzeit = endDatumUhrzeit;
+	}
+
+	public int getTyp() {
+		return typ;
+	}
+
+	public Quartal getAuswertungsQuartal() {
+		return auswertungsQuartal;
+	}
+
+	public void setAuswertungsQuartal(Quartal auswertungsQuartal) {
+		this.auswertungsQuartal = auswertungsQuartal;
 	}
 
 }

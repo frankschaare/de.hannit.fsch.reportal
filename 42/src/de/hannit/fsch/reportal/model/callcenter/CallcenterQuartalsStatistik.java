@@ -4,6 +4,7 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -60,7 +61,8 @@ private Quartal quartal = null;
 
 	public void setQuartal(Quartal q) 
 	{
-	this.quartal = q;	
+	this.quartal = q;
+	auswertungsZeitraum.setAuswertungsQuartal(q);
 	}
 
 	public void setQuartalsSummen() 
@@ -69,20 +71,44 @@ private Quartal quartal = null;
 	this.eingehendeAnrufe = monatsStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
 	
 	monatsStatistikenStream = monatsStatistiken.values().stream();
+	this.angenommeneAnrufe = monatsStatistikenStream.mapToInt(cs -> cs.getAngenommeneAnrufe()).sum();
+	
+	monatsStatistikenStream = monatsStatistiken.values().stream();
+	this.zugeordneteAnrufe = monatsStatistikenStream.mapToInt(cs -> cs.getZugeordneteAnrufe()).sum();
+	
+	monatsStatistikenStream = monatsStatistiken.values().stream();
 	this.anrufeInWarteschlange = monatsStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
 	
 	monatsStatistikenStream = monatsStatistiken.values().stream();
 	this.InWarteschlangeAufgelegt = monatsStatistikenStream.mapToInt(cs -> cs.getInWarteschlangeAufgelegt()).sum();
+	
+	monatsStatistikenStream = monatsStatistiken.values().stream();
+	this.trotzZuordnungAufgelegt = monatsStatistikenStream.mapToInt(cs -> cs.getTrotzZuordnungAufgelegt()).sum();
 		
 	monatsStatistikenStream = monatsStatistiken.values().stream();
 	this.avgWarteZeitSekunden = monatsStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / monatsStatistiken.size();
 		
-	this.nodeName = quartal.getBezeichnung();
-		
+	setNodeName(quartal.getBezeichnung());
 	}
 
 	public TreeMap<LocalDate, CallcenterMonatsStatistik> getMonatsStatistiken() {
 		return monatsStatistiken;
 	}	
 
+	@Override
+	public ArrayList<CallcenterStatistik> getDaten() 
+	{
+	daten = new ArrayList<CallcenterStatistik>();
+	ArrayList<CallcenterStatistik> cms = null;
+	
+		for (CallcenterMonatsStatistik cm : monatsStatistiken.values()) 
+		{
+		cms = cm.getDaten();
+			for (CallcenterStatistik ch : cms) 
+			{
+			daten.add(ch);	
+			}
+		}
+	return daten;
+	}
 }

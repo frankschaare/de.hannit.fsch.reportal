@@ -2,6 +2,7 @@ package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -64,7 +65,7 @@ private	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH");
 	{
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.eingehendeAnrufe = stundenStatistikenStream.mapToInt(cs -> cs.getEingehendeAnrufe()).sum();
-		
+	
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.anrufeInWarteschlange = stundenStatistikenStream.mapToInt(cs -> cs.getAnrufeInWarteschlange()).sum();
 		
@@ -73,8 +74,11 @@ private	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH");
 		
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.avgWarteZeitSekunden = stundenStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / stundenStatistiken.size();	
+	}
 	
-	this.nodeName = df.format(auswertungsZeitraum.getStartDatumUhrzeit()) + "-" + df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";
+	public void setNodeName() 
+	{
+	this.nodeName = df.format(auswertungsZeitraum.getStartDatumUhrzeit()) + "-" + df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";	
 	}
 
 	@Override
@@ -94,8 +98,16 @@ private	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH");
 	{
 	return this.nodeName != null ? this.nodeName : df.format(auswertungsZeitraum.getStartDatumUhrzeit()) + "-" + df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";
 	}
-	
-	
-	
 
+	@Override
+	public ArrayList<CallcenterStatistik> getDaten() 
+	{
+	daten = new ArrayList<CallcenterStatistik>();
+	
+		for (CallcenterStatistik cs : stundenStatistiken.values()) 
+		{
+		daten.add(cs);	
+		}
+	return daten;
+	}
 }

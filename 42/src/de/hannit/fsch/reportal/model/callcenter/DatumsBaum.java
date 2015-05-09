@@ -1,6 +1,7 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -10,6 +11,7 @@ import java.util.concurrent.Future;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -28,36 +30,23 @@ private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_GESAM
 private TreeMap<LocalDateTime, CallcenterStatistik> statisikenGesamt;
 private CallcenterAuswertung auswertung = null;
 private DefaultTreeNode selectedNode = null;
+private CallcenterStatistik selected = null;
+private int nodeCount = 0;
+private String berichtsZeitraum = null;
 
 	public DatumsBaum() 
 	{
 	root = new DefaultTreeNode("Root", null);
 	
 	callcenterAbfrage = new CallcenterDBThread();
-	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_GESAMT);
+	dbAbfrage();
 	auswertung = new CallcenterAuswertung(statisikenGesamt);
 	init();
 	}
 	
-	public void setSelectedZeitraum(int selectedZeitraum) 
+	public void dbAbfrage() 
 	{
-	Zeitraum selected = null;
-		switch (selectedZeitraum) 
-		{
-		case Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE:
-		selected = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
-		break;
-
-		case Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE:
-		selected = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE);
-		break;
-
-		default:
-		selected = standardZeitraum;			
-		break;
-		}
-
-	callcenterAbfrage.setAbfrageZeitraum(selected);
+	callcenterAbfrage.setAbfrageZeitraum(standardZeitraum);
 	result = executor.submit(callcenterAbfrage);
 		try 
 		{
@@ -72,25 +61,32 @@ private DefaultTreeNode selectedNode = null;
 	@SuppressWarnings("unused")
     public void init() 
     {
+	
+	
        	for (CallcenterJahresStatistik cj : auswertung.getStatistikenJaehrlich().values()) 
     	{
 		TreeNode jahr = new DefaultTreeNode(cj, root);
-		
+		nodeCount++;
 			for (CallcenterQuartalsStatistik cq : cj.getQuartalsStatistiken().values()) 
 			{
 			TreeNode quartal = new DefaultTreeNode(cq, jahr);
+			nodeCount++;
 				for (CallcenterMonatsStatistik cm : cq.getMonatsStatistiken().values()) 
 				{
 				TreeNode monat = new DefaultTreeNode(cm, quartal);
+				nodeCount++;
 					for (CallcenterKWStatistik ckw : cm.getStatistikenKW().values()) 
 					{
 					TreeNode kw = new DefaultTreeNode(ckw, monat);
+					nodeCount++;
 						for (CallcenterTagesStatistik ct : ckw.getStatistikenTag().values()) 
 						{
 						TreeNode tag = new DefaultTreeNode(ct, kw);
+						nodeCount++;
 							for (CallcenterStundenStatistik ch : ct.getStundenStatistiken().values()) 
 							{
-							TreeNode stunde = new DefaultTreeNode(ch, tag);	
+							TreeNode stunde = new DefaultTreeNode(ch, tag);
+							nodeCount++;
 							}
 						}
 					}
@@ -98,9 +94,38 @@ private DefaultTreeNode selectedNode = null;
 			}
 		}    
     }
-    
 
-    public DefaultTreeNode getSelectedNode() {
+	public int getNodeCount() {
+		return nodeCount;
+	}
+	
+	/*
+	 * Leider bin ich hier auf einen Bug im DateTimeFormatter gestossen.
+	 * Das Enddatum wird daher etwas umständlich formatiert:
+	 */
+	public String getBerichtsZeitraum() 
+	{
+		if (selected != null) 
+		{
+		berichtsZeitraum = selected.getAuswertungsZeitraum().getBerichtszeitraum();
+		} 
+		else 
+		{
+		berichtsZeitraum = "Bitte im Navigationsbaum einen Berichtszeitraum auswählen. Ihnen stehen " + nodeCount + " Statistiken zur Verfügung.";	
+		}
+	return berichtsZeitraum;
+	}
+
+	public void onNodeSelect(NodeSelectEvent event) 
+	{
+	selected = (CallcenterStatistik) event.getTreeNode().getData();
+	}	
+
+	public CallcenterStatistik getSelected() {
+		return selected;
+	}
+
+	public DefaultTreeNode getSelectedNode() {
 		return selectedNode;
 	}
 
@@ -112,4 +137,9 @@ private DefaultTreeNode selectedNode = null;
     {
     return root;
     }    
+	
+	public int getAnzahlDaten()
+	{
+	return selected != null ? selected.getDaten().size() : 0;
+	}
 }
