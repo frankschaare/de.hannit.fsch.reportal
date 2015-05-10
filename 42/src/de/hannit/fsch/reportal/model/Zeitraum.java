@@ -327,6 +327,11 @@ private int typ = 0;
 	public void setStartDatumUhrzeit(LocalDateTime startDatumUhrzeit) 
 	{
 	this.startDatumUhrzeit = startDatumUhrzeit;
+	
+		if (startDatum == null) 
+		{
+		startDatum = LocalDate.of(startDatumUhrzeit.getYear(), startDatumUhrzeit.getMonthValue(), startDatumUhrzeit.getDayOfMonth());	
+		}
 	this.kw = new KalenderWoche(startDatumUhrzeit);
 	this.auswertungsTag = LocalDate.of(startDatumUhrzeit.getYear(), startDatumUhrzeit.getMonthValue(), startDatumUhrzeit.getDayOfMonth());
 	}
@@ -343,8 +348,14 @@ private int typ = 0;
 		return endDatumUhrzeit;
 	}
 
-	public void setEndDatumUhrzeit(LocalDateTime endDatumUhrzeit) {
-		this.endDatumUhrzeit = endDatumUhrzeit;
+	public void setEndDatumUhrzeit(LocalDateTime endDatumUhrzeit) 
+	{
+	this.endDatumUhrzeit = endDatumUhrzeit;
+		if (endDatum == null) 
+		{
+		endDatum = LocalDate.of(endDatumUhrzeit.getYear(), endDatumUhrzeit.getMonthValue(), endDatumUhrzeit.getDayOfMonth());	
+		}
+	
 	}
 
 	public int getTyp() {

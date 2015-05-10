@@ -226,6 +226,8 @@ private TreeMap<String, CallcenterStundenStatistik> statistikenStuendlich = null
 		ch.setInWarteschlangeAufgelegt(cs.getInWarteschlangeAufgelegt());
 		ch.setTrotzZuordnungAufgelegt(cs.getTrotzZuordnungAufgelegt());
 		ch.setZugeordneteAnrufe(cs.getZugeordneteAnrufe());
+		
+		ch.addStundenStatistik(cs);
 			
 			if (statistikenTag.containsKey(auswertungTag)) 
 			{

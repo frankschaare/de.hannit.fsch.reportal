@@ -23,10 +23,10 @@
 	
 		<h:form id="navForm">
 	<div id="content">
-			<p:layout styleClass="hit-layout-unit-content">
+			<p:layout>
 				<p:layoutUnit position="west" resizable="true" size="300"
 					minSize="100">
-					<p:tree value="#{ccBaum.root}" var="node" dynamic="true" selectionMode="single" selection="#{ccBaum.selectedNode}">
+					<p:tree value="#{ccBaum.root}" var="node" dynamic="true" selectionMode="single" selection="#{ccBaum.selectedNode}" styleClass="navTree">
 						<p:ajax event="select" update="@form" listener="#{ccBaum.onNodeSelect}" />
 						<p:treeNode>
 							<h:outputText value="#{node.nodeName}" />
@@ -49,43 +49,43 @@
 							<h:outputText value="Eingehende Anrufe:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.eingehendeAnrufe}" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.eingehendeAnrufe}" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="Zugeordnete Anrufe:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.zugeordneteAnrufe}" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.zugeordneteAnrufe}" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="Angenommene Anrufe:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.angenommeneAnrufe}" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.angenommeneAnrufe}" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="Anrufe in Warteschlange:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.anrufeInWarteschlange}" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.anrufeInWarteschlange}" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="Trotz Zuordnung aufgelegt:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.trotzZuordnungAufgelegt}" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.trotzZuordnungAufgelegt}" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="In Warteschlange aufgelegt:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.inWarteschlangeAufgelegt}" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.inWarteschlangeAufgelegt}" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="Durschschnittliche Wartezeit:" rendered="#{ccBaum.selected != null}"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{ccBaum.selected.avgWarteZeitSekunden} Sekunden" rendered="#{ccBaum.selected != null}"/>
+							<h:outputText value="#{ccBaum.selected.avgWarteZeitSekunden} Sekunden" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 
 					</p:panelGrid>
@@ -93,33 +93,55 @@
 						
 						<p:dataTable id="tbl" var="datensatz" value="#{ccBaum.selected.daten}">
 						    <f:facet name="header">
-						        List of Cars
+						        Anrufe im Auswertungszeitraum
 								<h:commandLink>
-									<h:graphicImage value="#{resource['images:excel.png']}" styleClass="dataExp" />
-								    <p:dataExporter type="xls" target="tbl" fileName="cars" />
+									<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="xls" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
 								</h:commandLink>
 								 
 								<h:commandLink>
-									<h:graphicImage value="#{resource['images:pdf.png']}" styleClass="dataExp" />
-								    <p:dataExporter type="pdf" target="tbl" fileName="cars"/>
+									<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="pdf" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
 						        </h:commandLink>
 								 
 						        <h:commandLink>
-									<h:graphicImage value="#{resource['images:csv.png']}" styleClass="dataExp" />
-								    <p:dataExporter type="csv" target="tbl" fileName="cars" />
+									<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="csv" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
 						        </h:commandLink>
 								 
 						         <h:commandLink>
-									<h:graphicImage value="#{resource['images:xml.png']}" styleClass="dataExp" />
-								    <p:dataExporter type="xml" target="tbl" fileName="cars" />
+									<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="xml" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
 								 </h:commandLink>
 						    </f:facet>
-							<p:column sortBy="#{datensatz.eingehendeAnrufe}" headerText="Eingehende Anrufe">
+						    
+   							<p:column sortBy="#{datensatz.formattedDatum}" headerText="Datum" style="width:6%">
+								<h:outputText value="#{datensatz.formattedDatum}" />
+							</p:column>
+   							<p:column sortBy="#{datensatz.formattedStartZeit}" headerText="von" style="width:6%">
+								<h:outputText value="#{datensatz.formattedStartZeit}" />
+							</p:column>
+   							<p:column sortBy="#{datensatz.formattedEndZeit}" headerText="bis" style="width:6%">
+								<h:outputText value="#{datensatz.formattedEndZeit}" />
+							</p:column>
+							<p:column sortBy="#{datensatz.eingehendeAnrufe}" headerText="Eingehend" style="text-align: center;">
 								<h:outputText value="#{datensatz.eingehendeAnrufe}" />
 							</p:column>
-							<p:column sortBy="#{datensatz.zugeordneteAnrufe}" headerText="zugeordnete Anrufe">
+							<p:column sortBy="#{datensatz.zugeordneteAnrufe}" headerText="zugeordnet" style="text-align: center;">
 								<h:outputText value="#{datensatz.zugeordneteAnrufe}" />
 							</p:column>
+							<p:column sortBy="#{datensatz.angenommeneAnrufe}" headerText="angenommen" style="text-align: center;">
+								<h:outputText value="#{datensatz.angenommeneAnrufe}" />
+							</p:column>	
+							<p:column sortBy="#{datensatz.anrufeInWarteschlange}" headerText="Warteschlange" style="text-align: center;">
+								<h:outputText value="#{datensatz.anrufeInWarteschlange}" />
+							</p:column>
+							<p:column sortBy="#{datensatz.inWarteschlangeAufgelegt}" headerText="erfolglos" style="text-align: center;">
+								<h:outputText value="#{datensatz.inWarteschlangeAufgelegt}" />
+							</p:column>																					
+							<p:column sortBy="#{datensatz.avgWarteZeitSekunden}" headerText="&#216; Wartezeit" style="text-align: center;">
+								<h:outputText value="#{datensatz.avgWarteZeitSekunden} Sek." />
+							</p:column>																					
 
 						</p:dataTable>
 					</p:fieldset>

@@ -99,23 +99,6 @@ private String berichtsZeitraum = null;
 		return nodeCount;
 	}
 	
-	/*
-	 * Leider bin ich hier auf einen Bug im DateTimeFormatter gestossen.
-	 * Das Enddatum wird daher etwas umständlich formatiert:
-	 */
-	public String getBerichtsZeitraum() 
-	{
-		if (selected != null) 
-		{
-		berichtsZeitraum = selected.getAuswertungsZeitraum().getBerichtszeitraum();
-		} 
-		else 
-		{
-		berichtsZeitraum = "Bitte im Navigationsbaum einen Berichtszeitraum auswählen. Ihnen stehen " + nodeCount + " Statistiken zur Verfügung.";	
-		}
-	return berichtsZeitraum;
-	}
-
 	public void onNodeSelect(NodeSelectEvent event) 
 	{
 	selected = (CallcenterStatistik) event.getTreeNode().getData();
@@ -141,5 +124,22 @@ private String berichtsZeitraum = null;
 	public int getAnzahlDaten()
 	{
 	return selected != null ? selected.getDaten().size() : 0;
+	}
+
+	/*
+	 * Leider bin ich hier auf einen Bug im DateTimeFormatter gestossen.
+	 * Das Enddatum wird daher etwas umständlich formatiert:
+	 */
+	public String getBerichtsZeitraum() 
+	{
+		if (selected != null) 
+		{
+		berichtsZeitraum = selected.getAuswertungsZeitraum().getBerichtszeitraum();
+		} 
+		else 
+		{
+		berichtsZeitraum = "Bitte im Navigationsbaum einen Berichtszeitraum auswählen. Ihnen stehen " + nodeCount + " Statistiken zur Verfügung.";	
+		}
+	return berichtsZeitraum;
 	}
 }

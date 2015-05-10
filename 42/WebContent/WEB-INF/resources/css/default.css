@@ -141,20 +141,15 @@ td.navZelleActive {
 .navTree {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
-	width: 20% !important;
+	width: 98% !important;
 	height: 100% !important; 
+	min-height: 380px;
 	border: none !important;
-	margin-top: 4px;
-	background-color: gray;
-	float: left;
-}
+	margin-top: 0px;
+	}
 
 .ui-tree {
 
-}
-ul.ui-tree-container {
-	width: 100% !important;
-	height: 500px !important;
 }
 
 .summe {
@@ -185,6 +180,8 @@ ul.ui-tree-container {
 	width: 20px;
 	height: 20px;
 	float:right;	
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 #title {

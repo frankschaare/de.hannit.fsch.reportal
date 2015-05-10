@@ -4,6 +4,7 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import de.hannit.fsch.reportal.model.Berichtszeitraum;
@@ -86,6 +87,7 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 	public void setStartZeit(LocalDateTime startZeit) 
 	{
 	this.startZeit = startZeit;
+	auswertungsZeitraum.setStartDatumUhrzeit(startZeit);
 	this.kw = new KalenderWoche(startZeit);
 	}
 
@@ -93,13 +95,35 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 		return endZeit;
 	}
 
+	public String getFormattedDatum() 
+	{
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+	
+	return df.format(auswertungsZeitraum.getStartDatumUhrzeit());
+	}
+	
+	public String getFormattedStartZeit() 
+	{
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm");
+	
+	return df.format(auswertungsZeitraum.getStartDatumUhrzeit()) + " Uhr";
+	}
+	
+	public String getFormattedEndZeit() 
+	{
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm");
+		
+	return df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";
+	}
 
 	public KalenderWoche getKw() {
 		return kw;
 	}
 
-	public void setEndZeit(LocalDateTime endZeit) {
-		this.endZeit = endZeit;
+	public void setEndZeit(LocalDateTime endZeit) 
+	{
+	this.endZeit = endZeit;
+	auswertungsZeitraum.setEndDatumUhrzeit(endZeit);
 	}
 
 
