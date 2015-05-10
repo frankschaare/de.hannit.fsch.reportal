@@ -181,6 +181,12 @@ ul.ui-tree-container {
 	height: 100%;
 }
 
+.dataExp {
+	width: 20px;
+	height: 20px;
+	float:right;	
+}
+
 #title {
 	color: #003c72;
 	width: 100%;

@@ -90,7 +90,30 @@
 
 					</p:panelGrid>
 					<p:fieldset legend="Details (#{ccBaum.anzahlDaten} Datensätze)" toggleable="true" toggleSpeed="500" collapsed="true" rendered="#{ccBaum.selected != null}">
-						<p:dataTable id="details" var="datensatz" value="#{ccBaum.selected.daten}">
+						
+						<p:dataTable id="tbl" var="datensatz" value="#{ccBaum.selected.daten}">
+						    <f:facet name="header">
+						        List of Cars
+								<h:commandLink>
+									<h:graphicImage value="#{resource['images:excel.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="xls" target="tbl" fileName="cars" />
+								</h:commandLink>
+								 
+								<h:commandLink>
+									<h:graphicImage value="#{resource['images:pdf.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="pdf" target="tbl" fileName="cars"/>
+						        </h:commandLink>
+								 
+						        <h:commandLink>
+									<h:graphicImage value="#{resource['images:csv.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="csv" target="tbl" fileName="cars" />
+						        </h:commandLink>
+								 
+						         <h:commandLink>
+									<h:graphicImage value="#{resource['images:xml.png']}" styleClass="dataExp" />
+								    <p:dataExporter type="xml" target="tbl" fileName="cars" />
+								 </h:commandLink>
+						    </f:facet>
 							<p:column sortBy="#{datensatz.eingehendeAnrufe}" headerText="Eingehende Anrufe">
 								<h:outputText value="#{datensatz.eingehendeAnrufe}" />
 							</p:column>
