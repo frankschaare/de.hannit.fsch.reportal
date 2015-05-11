@@ -16,6 +16,13 @@ div.chartContainer {
 	border: 1px solid white;
 }
 
+div.error {
+	font-family: 'Courier New', Arial;
+	min-width: 310px;
+	width: 98%;
+	margin: 10px;
+}
+
 select {
 	background: transparent;
 }
@@ -36,6 +43,18 @@ h1.title
     padding-top: 30px;
     margin: 0px;
 	}
+	
+h1.titleError
+	{
+	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Helvetica,sans-serif;
+	line-height: normal;
+	font-weight: normal;
+    text-align: center;
+	color: red;
+    font-size: 18px;
+    padding-top: 30px;
+    margin: 0px;
+	}	
 
 h1.subtitle
 	{
@@ -44,6 +63,18 @@ h1.subtitle
 	font-weight: normal;
     text-align: center;
 	color: #333333;
+    font-size: 12px;
+    margin: 0px;
+    padding-bottom: 30px;
+	}
+
+h1.subtitleError
+	{
+	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Helvetica,sans-serif;
+	line-height: normal;
+	font-weight: normal;
+    text-align: center;
+	color: red;
     font-size: 12px;
     margin: 0px;
     padding-bottom: 30px;

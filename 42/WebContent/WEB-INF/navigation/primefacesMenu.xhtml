@@ -9,7 +9,7 @@
 	    <p:menubar style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
 	            <p:menuitem value="Zusammenfassung" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
-	            <p:menuitem value="Echolon Daten" url="#" icon="fa fa-database" />
+	            <p:menuitem value="Echolon Daten" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
 	        </p:submenu>
 	 
 	        <p:submenu label="Echolon Charts" icon="fa fa-signal">
@@ -30,11 +30,18 @@
 	                <p:menuitem value="nach Uhrzeit" action="/charts/callcenter/cch" icon="fa fa-line-chart"/>
 	            </p:submenu>
 	        </p:submenu>
-	 
+	       
+	        <p:submenu label="Hilfe" icon="fa fa-question">
+	            <p:menuitem value="Startseite" url="/" icon="fa fa-home"/>
+	            <p:menuitem value="#{dbs.echolonDBStatus}" url="/daten/echolon/dbStatus.xhtml" icon="fa fa-database" rendered="#{dbs.echolonDBConnected}"/>
+	            <p:menuitem value="#{dbs.echolonDBStatus}" action="/daten/echolon/dbError" icon="fa fa-warning" rendered="#{!dbs.echolonDBConnected}" style="color: red;"/>
+				<p:menuitem value="Info" url="/about.xhtml" icon="fa fa-info"/>
+	        </p:submenu>	 
 	 
 	        <f:facet name="options">
 	            <p:inputText style="margin-right:10px" placeholder="Search"/>
-	            <p:commandButton type="button" value="Home" icon="fa fa-home" />
+	            <p:menuitem value="index" action="index?faces-redirect=true" icon="fa fa-home" ajax="false"/>
+	            <p:commandButton type="button" action="index?faces-redirect=true" value="Home" icon="fa fa-home" ajax="false"/>
 	        </f:facet>
 	    </p:menubar>
 	</h:form>

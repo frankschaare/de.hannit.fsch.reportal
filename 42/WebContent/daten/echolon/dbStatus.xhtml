@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+
+	<div id="content">
+		<h1 class="titleError">Datenbankfehler</h1>
+		<h1 class="subtitleError">Bei der Verbindung zur Echolon-Datenbank hat es folgenden Fehler gegeben:</h1>	
+		<div class="error">
+			<h:outputText value="#{dbs.exception.message}"/>
+		</div>
+		<p:panelGrid id="dbSettings" cellpadding="5" columns="2" style="margin-bottom:10px; height: 100%;" layout="grid">
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="2">
+						<h:outputText value="Verbindungseinstellungen:" />
+					</p:column>
+				</p:row>
+			</f:facet>
+			<p:column>
+				<h:outputText value="databaseProductName:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.databaseProductName}" />
+			</p:column>			
+			<p:column>
+				<h:outputText value="databaseProductVersion:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.databaseProductVersion}" />
+			</p:column>			
+			<p:column>
+				<h:outputText value="databaseMajorVersion:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.databaseMajorVersion}" />
+			</p:column>			
+			<p:column>
+				<h:outputText value="databaseMinorVersion:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.databaseMinorVersion}" />
+			</p:column>			
+			<p:column>
+				<h:outputText value="driverName:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.driverName}" />
+			</p:column>
+			<p:column>
+				<h:outputText value="driverVersion:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.driverVersion}" />
+			</p:column>						
+			<p:column>
+				<h:outputText value="URL:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.URL}" />
+			</p:column>
+			<p:column>
+				<h:outputText value="userName:" style="padding-left: 50%;"/>
+			</p:column>
+			<p:column>
+					<h:outputText value="#{dbs.echolonDS.connection.metaData.userName}" />
+			</p:column>						
+									
+									
+		</p:panelGrid>		
+	</div>
+</body>
+</html>

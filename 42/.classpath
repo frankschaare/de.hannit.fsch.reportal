@@ -20,5 +20,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PrimeFaces"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MSSQL JDBC 4.0"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

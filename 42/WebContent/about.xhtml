@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+	
+	<div id="content">
+	<h:form>
+		<h1 class="title">HannIT Reportal</h1>
+		<h1 class="subtitle">Entwicklung: 2014 - 2015 Frank.Schaare@HannIT.de</h1>
+		
+		<p:panelGrid id="summen" cellpadding="5" columns="2" style="margin-bottom:10px; height: 100%;" layout="grid">
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="2">
+						<h:outputText value="Eingesetzte Technologien:" />
+					</p:column>
+				</p:row>
+			</f:facet>
+			<p:column>
+				<h:outputText value="Java Version:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:Java8.jpg']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">
+					<h:outputText value="Java SE Development Kit 8 oder höher" />
+				</h:outputLink>
+			</p:column>			
+			<p:column>
+				<h:outputText value="IDE:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:javaee.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-jee-luna-SR2-win32-x86_64.zip">
+					<h:outputText value="Eclipse Luna for Java EE Developers" />
+				</h:outputLink>
+			</p:column>
+			<p:column>
+				<h:outputText value="Datenbank:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:SQLServer.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.microsoft.com/de-de/server-cloud/products/sql-server/">
+					<h:outputText value="Entwicklung: Microsoft SQL Server Express 11.0.2100.60" />
+				</h:outputLink>
+			</p:column>	
+			<p:column>
+				<h:outputText value="" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:SQLServer.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="#{request.contextPath}/sqljdbc40/help/default.htm">
+					<h:outputText value="Microsoft SQL Server JDBC Treiber Dokumentation" />
+				</h:outputLink>
+			</p:column>	
+			<p:column>
+				<h:outputText value="Webserver:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:tomcat8.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="https://tomcat.apache.org/download-80.cgi">
+					<h:outputText value="Apache Tomcat 8 oder höher" />
+				</h:outputLink>
+			</p:column>			
+			<p:column>
+				<h:outputText value="JSF Framework:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:PrimeFaces_icon.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.primefaces.org/downloads">
+					<h:outputText value="Primefaces 5.2 oder höher" />
+				</h:outputLink>
+			</p:column>	
+			<p:column>
+				<h:outputText value="" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:PrimeFaces_icon.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.primefaces.org/showcase/">
+					<h:outputText value="Primefaces Showcase" />
+				</h:outputLink>
+			</p:column>	
+			<p:column>
+				<h:outputText value="" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:PrimeFaces_icon.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://primefaces.org/documentation.html">
+					<h:outputText value="Primefaces Dokumentation" />
+				</h:outputLink>
+			</p:column>			
+			<p:column>
+				<h:outputText value="Chart Engine:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:HighCharts-32x32.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.highcharts.com/download">
+					<h:outputText value="HighCharts 4.1.5 oder höher" />
+				</h:outputLink>
+			</p:column>		
+			<p:column>
+				<h:outputText value="" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:HighCharts-32x32.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://www.highcharts.com/demo">
+					<h:outputText value="HighCharts Demo" />
+				</h:outputLink>
+			</p:column>	
+			<p:column>
+				<h:outputText value="" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:HighCharts-32x32.png']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="http://api.highcharts.com/highcharts">
+					<h:outputText value="HighCharts API Reference" />
+				</h:outputLink>
+			</p:column>	
+			<p:column>
+				<h:outputText value="Source Code:" style="padding-left: 50%;"/>
+		    	<h:graphicImage value="#{resource['images:github.jpeg']}" styleClass="dataExp" />
+			</p:column>
+			<p:column>
+				<h:outputLink value="https://github.com/frankschaare/de.hannit.fsch.reportal">
+					<h:outputText value="de.hannit.fsch.reportal [master]" />
+				</h:outputLink>
+			</p:column>	
+		</p:panelGrid>
+	</h:form>
+	</div>
+</body>
+</html>
