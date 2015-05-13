@@ -14,6 +14,7 @@
 	<h:outputStylesheet library="css" name="menu.css" target="head" />
 	<h:outputScript library="js" name="jquery.min.js" target="head" />
 	<h:outputScript library="js" name="highcharts.js" target="head" />
+	<h:outputScript library="js" name="exporting.js" target="head" />
 
 	<script type="text/javascript">
 		$(function () {
@@ -92,7 +93,7 @@
 		            	name: 'Ansagetext',
 		            	data: #{callcenterChart.seriesAnsagetext},
 		            	type: 'line',
-		            	color: '#ffff00',
+		            	color: 'orange',
 		            	zIndex: 2
 		        		}, 
 		        		{
@@ -111,7 +112,7 @@
 		                	{
 		                    valueSuffix: ' Sekunden'
 		                    },
-		                color: '#e0e0e0',    
+		                color: 'gray',    
 		                zIndex: 0
 		        		}
 		        		]

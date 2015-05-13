@@ -10,15 +10,13 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 
-public class MonatsStatistik
+public class MonatsStatistik extends EcholonStatistik
 {
 private int anzahlVorgaengeGesamt = 0;
 private int anzahlIncidents = 0;
 private long anzahlIncidentsServicezeitNichtEingehalten = 0;
-private float prozentanteilIncidentsServicezeitNichtEingehalten = 0;
 private int anzahlserviceAbrufe = 0;
 private long anzahlServiceAbrufeServicezeitNichtEingehalten = 0;
-private float prozentanteilServiceAbrufeServicezeitNichtEingehalten = 0;
 
 private String bezeichnungLang = "unbekannt";
 
@@ -54,12 +52,14 @@ private Stream<Vorgang> si = null;
 	this.anzahlIncidents = incidents.size();
 	si = incidents.values().stream();
 	this.anzahlIncidentsServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / anzahlIncidents);
+	this.prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / (float)anzahlIncidents);
+	setDurchschnittlicheDauerMinutenIncidents(getDurchschnittlicheDauerMinutenIncidents());
 	
 	this.anzahlserviceAbrufe = serviceAbrufe.size();
 	si = serviceAbrufe.values().stream();
 	this.anzahlServiceAbrufeServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / anzahlserviceAbrufe);
+	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / (float)anzahlserviceAbrufe);
+	setDurchschnittlicheDauerMinutenServiceAbrufe(getDurchschnittlicheDauerMinutenServiceAbrufe());
 	}
 	
 	private void split() 
@@ -143,7 +143,7 @@ private Stream<Vorgang> si = null;
 	public long getAnzahlIncidentsServicezeitNichtEingehalten() {return anzahlIncidentsServicezeitNichtEingehalten;}
 	
 	public float getProzentanteilIncidentsServicezeitNichtEingehalten() {return prozentanteilIncidentsServicezeitNichtEingehalten;}
-
+	
 	public int getDurchschnittlicheDauerMinutenIncidents() 
 	{
 	si = incidents.values().stream();	

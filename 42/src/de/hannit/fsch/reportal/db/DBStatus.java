@@ -24,6 +24,7 @@ private InitialContext ic;
 private DataSource ds = null;
 private Connection con = null;
 private Exception exception = null;
+private String version = "Release Candidate 1.2";
 
 	/**
 	 * 
@@ -62,7 +63,10 @@ private Exception exception = null;
 	{
 	return ds;
 	}
-	
+
+	public String getVersion() {
+		return version;
+	}
 	
 
 }

@@ -219,21 +219,19 @@ private int typ = 0;
 	@Override
 	public String getBerichtszeitraum() 
 	{
-	DateTimeFormatter ef = DateTimeFormatter.ofPattern("dd.MM.");
-	
 		switch (typ) 
 		{
 		case Berichtszeitraum.BERICHTSZEITRAUM_JAEHRLICH:
-		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: Gesamtjahr " + getBerichtsJahr() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: Gesamtjahr " + getBerichtsJahr() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		berichtsZeitraum = "Berichtszeitraum: Gesamtjahr " + getBerichtsJahr(); 	
 		break;
 		case Berichtszeitraum.BERICHTSZEITRAUM_QUARTALSWEISE:
-		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: " + auswertungsQuartal.getBezeichnungLang() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: " + auswertungsQuartal.getBezeichnungLang() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		berichtsZeitraum = "Berichtszeitraum: " + auswertungsQuartal.getBezeichnungLang(); 	
 		break;
 		case Berichtszeitraum.BERICHTSZEITRAUM_MONATLICH:
-		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: " + getBerichtsMonat() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: " + getBerichtsMonat() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		berichtsZeitraum = "Berichtszeitraum: " + getBerichtsMonat(); 	
 		break;	
 		case Berichtszeitraum.BERICHTSZEITRAUM_KW:
-		berichtsZeitraum = startDatum != null ? "Berichtszeitraum: " + kw.getBezeichnungLang() + " (" + df.format(startDatum) + " - " + ef.format(endDatum) + String.valueOf(endDatum.getYear()) + ")" : "Berichtszeitraum: " + kw.getBezeichnungLang() + " (" + df.format(startDatumUhrzeit) + " - " + ef.format(endDatumUhrzeit) + String.valueOf(endDatumUhrzeit.getYear()) + ")"; 	
+		berichtsZeitraum = "Berichtszeitraum: " + kw.getBezeichnungLang(); 	
 		break;			
 		
 		default:

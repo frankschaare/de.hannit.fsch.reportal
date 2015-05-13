@@ -22,7 +22,92 @@
 	</div>
 
 	<div id="content">
-
+		<h1 class="title">Willkommen beim HannIT Reportal</h1>
+		<h1 class="subtitle"><h:outputText value="#{dbs.version}" /></h1>
+		
+		<table width="100%" >
+			<thead>
+				<tr>
+					<th>Liste der Bugfixes gegenüber der letzten Version</th>
+					<th>Allgemeine Hinweise</th>
+				</tr>	
+			</thead>
+			<tbody>
+				<tr >
+					<td>
+						<ul class="bugfixes">
+							<li>
+								<h:link value="Echolon Daten | Zusammenfassung"	outcome="/daten/echolon/echolonZusammenfassung" />
+								<ul>
+									<li>Servicezeit nicht eingehalten (%): Dezimalgenauigkeit auf zwei Nachkommastellen erhöht.</li>
+									<li>Ø Dauer Incident / Serviceabruf (Stunden) hinzugefügt</li>
+									<li>Ø Dauer Incident / Serviceabruf (Tage) hinzugefügt</li>
+									<li><b>CSV-Export hinzugefügt</b>: Es besteht nun die Möglickeit, die gesamte Tabelle als CSV-Datei herunterzuladen. Die CSV-Datei kann leicht in Excel eingefügt und zu eigenen Charts verarbeitet werden !</li>
+								</ul>
+							</li>
+							<li>
+								<h:link value="Echolon Daten | Echolon Daten"	outcome="/daten/echolon/echolonDaten" />
+								<ul>
+									<li>Menubar wurde fehlerhaft dargestellt. Ist nun Primefaces Menubar</li>
+								</ul>
+							</li>
+							<li>
+								<h:link value="Echolon Charts | letzte 4 Quartale nach Kategorien"	outcome="/charts/echolon/EcholonKategorienChart" />
+								<ul>
+									<li>Internet Explorer kann Farbräume nicht darstellen. Enhält jetzt nur noch Hexwerte</li>
+								</ul>
+							</li>
+							<li>
+								<h:link value="Callcenter Daten | Callcenter Daten"	outcome="/daten/callcenter/callcenterDaten" />
+								<ul>
+									<li>Berichtszeitraum wurde fehlerhaft dargestellt. Korrigiert.</li>
+								</ul>
+							</li>								
+						</ul>
+					</td>
+					<td>
+						<ul class="bugfixes">
+							<li>
+								Daten Allgemein
+								<ul>
+									<li>Falls die Navigationsbäume nicht richtig aktualisieren, einfach nochmal draufklicken. Die Bäume benötigen erst den Focus, bevor ein Klick registriert wird !</li>
+								</ul>
+							</li>
+							<li>
+								Charts Allgemein
+								<ul>
+									<li>Durch einen Klick auf die Datenreihen in der Legende, können diese ein-/ausgeschaltet werden.</li>
+									<li>Rechts oben befindet sich der Button 'Chart Kontext Menu', welcher Exportfunktionen bereit stellt. Mit dem Ergebnis bin ich aber nocht nicht zufrieden.</li>
+								</ul>
+							</li>
+							<li>
+								Menubar Allgemein
+								<ul>
+									<li>Auf allen Seiten OHNE Charts, findet Ihr die Primefaces Menubar. Search und Home-Button sind noch ohne Funktion, zur Startseite kann aber über Hilfe | Startseite navigiert werden.</li>
+									<li>Auf allen Chartseiten, findet Ihr ein schlichtes CSS-Menu. Leider kollidiert das Primefaces-JavaScript mit dem Highcharts-Javascript, da arbeite ich noch dran.</li>
+								</ul>
+							</li>														
+							<li>
+								<h:link value="Echolon Daten | Echolon Daten"	outcome="/daten/echolon/echolonDaten" />
+								<ul>
+									<li>Die Echolon-View produziert gelegentlich Deadlocks, was dazu führen kann, dass die Applikation nicht mehr reagiert. Bitte zum Testen der Datenfunktion daher zunächst die Seite <h:link value="Callcenter Daten | Callcenter Daten"	outcome="/daten/callcenter/callcenterDaten" /> benutzen.</li>
+									<li>Aufgrund der Deadlocks ist der Echolon Navigationsbaum auch nocht nicht dynamisch. Service Anfrage HannIT-124221 soll den Echolon-View in eine eigene DB replizieren, danach wird die Seite <h:link value="Echolon Daten | Echolon Daten"	outcome="/daten/echolon/echolonDaten" /> fertiggestellt.</li>
+								</ul>
+							</li>
+							<li>
+								<h:link value="Callcenter Daten | Callcenter Daten"	outcome="/daten/callcenter/callcenterDaten" />
+								<ul>
+									<li>Hier stehen 7660 Statistiken zur Verfügung, die über wenige Mausklicks erreicht werden können.</li>
+									<li>Öffnet man die Datentabelle (Klick auf Details), stehen diverse Exportfunktionen für die Daten zur Verfügung.</li>
+								</ul>
+							</li>	
+						</ul>
+					</td>
+				</tr>			
+					
+			</tbody>
+		</table>
+		
 	</div>
 </body>
 </html>

@@ -11,7 +11,6 @@
 <h:head>
 	<title>HannIT Reportal</title>
 	<h:outputStylesheet library="css" name="default.css" target="head" />
-	<h:outputStylesheet library="css" name="menu.css" target="head" />
 	<h:outputStylesheet library="css" name="echolonZusammenfassung.css" target="head" />
 </h:head>
 <body>
@@ -20,18 +19,23 @@
 	</div>
 	<div id="title">Reportal</div>
 	<div id="menubar">
-		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 	</div>
 
 	<div id="content">
 		<h:form id="form">
 		<h1 class="title">Zusammenfassung der Monatswerte für alle Vorgänge</h1>
 		<h1 class="subtitle"><h:outputText value="#{ez.subtitle}" /></h1>
-			
+			<!-- ez ist Backing Bean: de.hannit.fsch.reportal.db.EcholonZusammenfassung -->			
 			<table>
 				<thead>
 					<tr>
-					<th></th>
+					<th>
+						<h:commandLink>
+							<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+							<p:fileDownload value="#{ez.file}" />
+						</h:commandLink>
+					</th>
 					<th><h:outputText value="#{ez.quartale[0].monate[0].bezeichnungLang}" /></th>
 					<th><h:outputText value="#{ez.quartale[0].monate[1].bezeichnungLang}" /></th>
 					<th><h:outputText value="#{ez.quartale[0].monate[2].bezeichnungLang}" /></th>
@@ -113,24 +117,24 @@
 					
 					<tr class="incidents">
 						<td class="label">Servicezeit nicht eingehalten (%):</td>
-						<td><h:outputText value="#{ez.quartale[0].monate[0].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[0].monate[1].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[0].monate[2].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
-						<td><h:outputText value="#{ez.quartale[1].monate[0].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[1].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[2].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
-						<td><h:outputText value="#{ez.quartale[2].monate[0].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[1].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[2].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
-						<td><h:outputText value="#{ez.quartale[3].monate[0].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[1].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[2].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
-						<td><h:outputText value="#{ez.quartale[0].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].prozentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
+						<td><h:outputText value="#{ez.quartale[1].monate[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
+						<td><h:outputText value="#{ez.quartale[2].monate[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
+						<td><h:outputText value="#{ez.quartale[3].monate[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
+						<td><h:outputText value="#{ez.quartale[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
 					</tr>
-	
+
 					<tr class="incidents">
 						<td class="label">&#216; Dauer Incident (Minuten):</td>
 						<td><h:outputText value="#{ez.quartale[0].monate[0].durchschnittlicheDauerMinutenIncidents}" /></td>
@@ -151,25 +155,143 @@
 						<td><h:outputText value="#{ez.quartale[3].durchschnittlicheDauerMinutenIncidents}" /></td>
 					</tr>	
 					
-					<tr class="spacer">
-						<td class="label">&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>								
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>								
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>								
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
+					<tr class="incidents">
+						<td class="label">&#216; Dauer Incident (Stunden):</td>
+						<td>
+							<h:outputText value="#{ez.quartale[0].monate[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[2].monate[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[3].monate[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
 					</tr>	
+					
+					<tr class="incidents">
+						<td class="label">&#216; Dauer Incident (Tage):</td>
+						<td>
+							<h:outputText value="#{ez.quartale[0].monate[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[2].monate[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[3].monate[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>											
 					
 					<tr class="serviceAbrufe">
 						<td class="label">Anzahl Serviceabrufe:</td>
@@ -211,22 +333,22 @@
 					</tr>								
 					<tr class="serviceAbrufe">
 						<td class="label">Servicezeit nicht eingehalten (%):</td>
-						<td><h:outputText value="#{ez.quartale[0].monate[0].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[0].monate[1].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[0].monate[2].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[0].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[1].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[2].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[0].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[1].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[2].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[0].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[1].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[2].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>												
-						<td><h:outputText value="#{ez.quartale[0].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[1].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[2].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
-						<td><h:outputText value="#{ez.quartale[3].prozentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>												
+						<td><h:outputText value="#{ez.quartale[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[1].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[2].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{ez.quartale[3].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
 					</tr>	
 					<tr class="serviceAbrufe">
 						<td class="label">&#216; Dauer Serviceabrufe (Minuten):</td>
@@ -247,6 +369,144 @@
 						<td><h:outputText value="#{ez.quartale[2].durchschnittlicheDauerMinutenServiceAbrufe}" /></td>
 						<td><h:outputText value="#{ez.quartale[3].durchschnittlicheDauerMinutenServiceAbrufe}" /></td>
 					</tr>
+					
+					<tr class="serviceAbrufe">
+						<td class="label">&#216; Dauer Serviceabrufe (Stunden):</td>
+						<td>
+							<h:outputText value="#{ez.quartale[0].monate[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[2].monate[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[3].monate[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>	
+					
+					<tr class="serviceAbrufe">
+						<td class="label">&#216; Dauer Serviceabrufe (Tage):</td>
+						<td>
+							<h:outputText value="#{ez.quartale[0].monate[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[2].monate[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[3].monate[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>								
+						<td><h:outputText value="#{ez.quartale[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[1].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[2].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{ez.quartale[3].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>						
 				</tbody>
 			</table>
 			

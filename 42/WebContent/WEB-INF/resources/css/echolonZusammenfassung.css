@@ -41,15 +41,17 @@ tr.serviceAbrufe
 	}	
 
 td 	{
+	font-size: 11px;	
 	text-align: right;
-	padding-right: 1.5%;
 	padding-top: 10px;
+	padding-right: 20px;
 	padding-bottom: 10px;
 	width: 5%;
 }
 
 td.label
  	{
+ 	padding-left: 20px;
 	text-align: left;
 	font-weight: bold;
 	width: 20%;	

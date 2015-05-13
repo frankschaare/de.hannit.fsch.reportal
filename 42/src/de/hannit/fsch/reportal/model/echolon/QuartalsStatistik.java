@@ -14,7 +14,7 @@ import de.hannit.fsch.reportal.model.Quartal;
  * @author fsch
  *
  */
-public class QuartalsStatistik 
+public class QuartalsStatistik extends EcholonStatistik
 {
 private Quartal berichtsQuartal = null;
 private TreeMap<LocalDateTime, Vorgang> vorgaenge = new TreeMap<LocalDateTime, Vorgang>();
@@ -27,10 +27,8 @@ private TreeMap<LocalDate, MonatsStatistik> monatsStatistiken = new TreeMap<Loca
 private int vorgaengeGesamt = 0;
 private long anzahlIncidents = 0;
 private long anzahlIncidentsServicezeitNichtEingehalten = 0;
-private float prozentanteilIncidentsServicezeitNichtEingehalten = 0;
 private int anzahlserviceAbrufe = 0;
 private long anzahlServiceAbrufeServicezeitNichtEingehalten = 0;
-private float prozentanteilServiceAbrufeServicezeitNichtEingehalten = 0;
 
 private Stream<Vorgang> si = null;
 
@@ -85,12 +83,14 @@ private Stream<Vorgang> si = null;
 	this.anzahlIncidents = incidents.size();
 	si = incidents.values().stream();
 	this.anzahlIncidentsServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / anzahlIncidents);
+	this.prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / (float)anzahlIncidents);
+	setDurchschnittlicheDauerMinutenIncidents(getDurchschnittlicheDauerMinutenIncidents());
 	
 	this.anzahlserviceAbrufe = serviceAbrufe.size();
 	si = serviceAbrufe.values().stream();
 	this.anzahlServiceAbrufeServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / anzahlserviceAbrufe);
+	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / (float)anzahlserviceAbrufe);
+	setDurchschnittlicheDauerMinutenServiceAbrufe(getDurchschnittlicheDauerMinutenServiceAbrufe());
 	
 		for (MonatsStatistik ms : monatsStatistiken.values()) 
 		{
@@ -167,7 +167,10 @@ private Stream<Vorgang> si = null;
 	public Object[] getMonate()
 	{
 	return monatsStatistiken.values().toArray();	
+	}
+
+	public TreeMap<LocalDate, MonatsStatistik> getMonatsStatistiken() {
+		return monatsStatistiken;
 	}	
-	
 
 }
