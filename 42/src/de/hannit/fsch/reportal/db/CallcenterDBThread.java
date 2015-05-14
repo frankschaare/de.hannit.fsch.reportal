@@ -16,7 +16,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.Zeitraum;
 import de.hannit.fsch.reportal.model.callcenter.CallcenterStatistik;
 
@@ -73,7 +72,6 @@ private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
 	Instant abfrageStart = Instant.now();
 	
 	CallcenterStatistik cs = null;
-	Zeitraum berichtsZeitraum = null;
 	LocalDate tmpDate = null;
 	LocalDateTime tmpTime = null;
 	
@@ -88,7 +86,6 @@ private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
 			while (rs.next()) 
 			{
 			cs = new CallcenterStatistik();
-			berichtsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH);
 			cs.setId(rs.getString("ID"));
 			
 			tmpDate = rs.getDate("Datum").toLocalDate();
@@ -107,7 +104,6 @@ private TreeMap<LocalDateTime, CallcenterStatistik> statisiken;
 			
 			statisiken.put(cs.getStartZeit(), cs);
 			}
-			
 		} 
 		catch (SQLException e) 
 		{

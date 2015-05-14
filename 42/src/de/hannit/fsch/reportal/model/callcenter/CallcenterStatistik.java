@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.KalenderWoche;
 import de.hannit.fsch.reportal.model.Zeitraum;
@@ -15,6 +19,7 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  * @author fsch
  *
  */
+@XmlType (propOrder = { "id", "startZeit", "endZeit", "eingehendeAnrufe", "angenommeneAnrufe", "zugeordneteAnrufe", "anrufeInWarteschlange", "inWarteschlangeAufgelegt", "trotzZuordnungAufgelegt", "avgWarteZeitSekunden" })
 public class CallcenterStatistik 
 {
 protected String id = null;
@@ -33,6 +38,7 @@ protected String nodeName = null;
 protected String berichtsZeitraum = "Berichtszeitraum: ";
 protected Zeitraum auswertungsZeitraum = null;
 protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatistik>();
+protected DateTimeFormatter timeStampFormatter = DateTimeFormatter.ofPattern("dd.MM.YYYY mm:HH");
 
 
 	/**
@@ -68,8 +74,10 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 		this.id = id;
 	}
 
-	public LocalDateTime getStartZeit() {
-		return startZeit;
+	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+	public LocalDateTime getStartZeit() 
+	{
+	return auswertungsZeitraum.getStartDatumUhrzeit();
 	}
 
 	/*
@@ -91,8 +99,10 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 	this.kw = new KalenderWoche(startZeit);
 	}
 
-	public LocalDateTime getEndZeit() {
-		return endZeit;
+	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+	public LocalDateTime getEndZeit() 
+	{
+	return auswertungsZeitraum.getEndDatumUhrzeit();
 	}
 
 	public String getFormattedDatum() 
@@ -126,7 +136,7 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 	auswertungsZeitraum.setEndDatumUhrzeit(endZeit);
 	}
 
-
+	@XmlTransient
 	public int getWochenNummer() {
 		return wochenNummer;
 	}
@@ -220,6 +230,7 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 		this.avgWarteZeitSekunden = avgWarteZeitSekunden;
 	}
 
+	@XmlTransient
 	public String getNodeName() {
 		return nodeName;
 	}
@@ -231,7 +242,8 @@ protected ArrayList<CallcenterStatistik> daten = new ArrayList<CallcenterStatist
 	public Zeitraum getAuswertungsZeitraum() {
 		return auswertungsZeitraum;
 	}
-
+	
+	@XmlTransient
 	public ArrayList<CallcenterStatistik> getDaten() {
 	return daten == null ? new ArrayList<CallcenterStatistik>() : daten;
 	}

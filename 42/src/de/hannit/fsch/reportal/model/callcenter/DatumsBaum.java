@@ -1,5 +1,7 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -7,9 +9,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -25,6 +31,7 @@ public class DatumsBaum
 private TreeNode root;
 private CallcenterDBThread callcenterAbfrage = null;
 private Future<TreeMap<LocalDateTime, CallcenterStatistik>> result = null;
+private Future<Boolean> dbCacheGeschrieben = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
 private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_GESAMT);
 private TreeMap<LocalDateTime, CallcenterStatistik> statisikenGesamt;
@@ -42,8 +49,22 @@ private String berichtsZeitraum = null;
 	dbAbfrage();
 	auswertung = new CallcenterAuswertung(statisikenGesamt);
 	init();
+	setDBCache();
 	}
 	
+	// Nachdem die Datenbank abgefragt wurde, wird eine XML-Datei erzeugt, die den Inhalt der Abfrage cached:	
+	private void setDBCache() 
+	{
+	ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	Path testPath = FileSystems.getDefault().getPath(servletContext.getRealPath("/downloads"),  "CallcenterStatistikenGesamt.xml");
+		
+	Stream<CallcenterStatistik> csStream = statisikenGesamt.values().stream();	
+	CallcenterStatistiken xml = new CallcenterStatistiken();
+	xml.setAbsolutePath(testPath);
+	xml.setStatistiken(csStream.collect(Collectors.toCollection(ArrayList::new)));
+	dbCacheGeschrieben = executor.submit(xml);	
+	}
+
 	public void dbAbfrage() 
 	{
 	callcenterAbfrage.setAbfrageZeitraum(standardZeitraum);
