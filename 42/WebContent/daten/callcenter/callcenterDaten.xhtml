@@ -2,29 +2,32 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>HannIT Reportal</title>
 	<h:outputStylesheet library="css" name="default.css" target="head" />
-
 </h:head>
 <body>
 	<div id="logo">
-		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
+			styleClass="logo" />
 	</div>
-	<div id="title">Callcenter Daten</div>
+	<div id="title">Reportal</div>
 	<div id="menubar">
 		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 	</div>
-	
-		<h:form id="navForm">
+
 	<div id="content">
-			<p:layout>
-				<p:layoutUnit position="west" resizable="true" size="300"
+		<h:form id="navForm">
+			<p:growl id="messages" autoUpdate="true" />
+			<p:layout styleClass="hit-layout-unit-content">
+				<p:layoutUnit position="west" resizable="true" size="200"
 					minSize="100">
 					<p:tree value="#{ccBaum.root}" var="node" dynamic="true" selectionMode="single" selection="#{ccBaum.selectedNode}" styleClass="navTree">
 						<p:ajax event="select" update="@form" listener="#{ccBaum.onNodeSelect}" />
@@ -32,11 +35,9 @@
 							<h:outputText value="#{node.nodeName}" />
 						</p:treeNode>
 					</p:tree>
-
 				</p:layoutUnit>
 
 				<p:layoutUnit position="center">
-				<!-- p:log id="log" /-->
 					<p:panelGrid id="summen" cellpadding="5" columns="4" style="margin-bottom:10px" layout="grid">
 						<f:facet name="header">
 							<p:row>
@@ -88,7 +89,8 @@
 							<h:outputText value="#{ccBaum.selected.avgWarteZeitSekunden} Sekunden" rendered="#{ccBaum.selected != null}" style="font-weight: bold;"/>
 						</p:column>
 
-					</p:panelGrid>
+					</p:panelGrid>	
+					
 					<p:fieldset legend="Details (#{ccBaum.anzahlDaten} Datensätze)" toggleable="true" toggleSpeed="500" collapsed="true" rendered="#{ccBaum.selected != null}">
 						
 						<p:dataTable id="tbl" var="datensatz" value="#{ccBaum.selected.daten}">
@@ -145,10 +147,10 @@
 
 						</p:dataTable>
 					</p:fieldset>
+													
 				</p:layoutUnit>
 			</p:layout>
+		</h:form>
 	</div>
-	</h:form>				
-
 </body>
 </html>
