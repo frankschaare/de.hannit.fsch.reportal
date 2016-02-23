@@ -83,7 +83,7 @@ private boolean loadFinished = false;
 				dbCache.put(aktuelleJahresstatistik.getBerichtsJahr(), aktuelleJahresstatistik);
 				}
 			loadFinished = true;
-			} 
+			}
 			catch (InterruptedException | ExecutionException e) 
 			{
 			e.printStackTrace();

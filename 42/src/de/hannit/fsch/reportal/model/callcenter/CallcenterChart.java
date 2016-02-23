@@ -6,6 +6,8 @@ package de.hannit.fsch.reportal.model.callcenter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -283,7 +285,20 @@ private CallcenterAuswertung auswertung = null;
 		
 	return seriesWartezeit;
 	}
+	
+	/**
+	 * Liefert die Statistik 'Wartezeit nach KW' welche die Detaildatensätze für den Export nach Excel enthält
+	 */
+	public Collection<CallcenterKWStatistik> getSumKW() 
+	{
+	return auswertung.getStatistikenKW().values();
+	}
 
+	public Collection<CallcenterStundenStatistik> getStundenStatistiken() 
+	{
+	return auswertung.getStatistikenStuendlich().values();
+	}
+	
 	public long getMaxValue() {return maxValue;}
 
 	public int getAnzahlVorgaengeGesamt()

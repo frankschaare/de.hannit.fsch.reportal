@@ -126,8 +126,9 @@ protected DateTimeFormatter timeStampFormatter = DateTimeFormatter.ofPattern("dd
 	return df.format(auswertungsZeitraum.getEndDatumUhrzeit()) + " Uhr";
 	}
 
-	public KalenderWoche getKw() {
-		return kw;
+	public int getKw() 
+	{
+	return kw != null ? kw.getKw() : auswertungsZeitraum.getKw().getKw();
 	}
 
 	public void setEndZeit(LocalDateTime endZeit) 
@@ -212,7 +213,10 @@ protected DateTimeFormatter timeStampFormatter = DateTimeFormatter.ofPattern("dd
 		return InWarteschlangeAufgelegt;
 	}
 
-
+	public double getInWarteschlangeAufgelegtProzent() 
+	{
+	return InWarteschlangeAufgelegt != 0 ? ((InWarteschlangeAufgelegt * 100) / eingehendeAnrufe) : 0;
+	}
 
 	public void setInWarteschlangeAufgelegt(int inWarteschlangeAufgelegt) {
 		InWarteschlangeAufgelegt = inWarteschlangeAufgelegt;

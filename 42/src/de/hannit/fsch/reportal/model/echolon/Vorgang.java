@@ -20,6 +20,7 @@ private String vorgangsNummer = null;
 private String status = null;
 private String typ = "unbekannt";
 private String kategorie = null;
+private String organisation = null;
 private int prioritaet = 0;
 private boolean reaktionszeitEingehalten = false;
 private boolean zielzeitEingehalten = false;
@@ -113,56 +114,51 @@ private int loesungszeitMinuten = 0;
 		return vorgangsNummer;
 	}
 
-
-
 	public void setVorgangsNummer(String vorgangsNummer) {
 		this.vorgangsNummer = vorgangsNummer;
 	}
-
-
 
 	public String getStatus() {
 		return status;
 	}
 
-
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-
 
 	public String getTyp() {
 		return typ;
 	}
 
-
-
 	public void setTyp(String typ) {
 		this.typ = typ;
 	}
-
-
 
 	public String getKategorie() {
 		return kategorie;
 	}
 
-
-
 	public void setKategorie(String kategorie) {
 		this.kategorie = kategorie;
 	}
-
-
 
 	public int getPrioritaet() 
 	{
 	return prioritaet;
 	}
 
-
+	public String getPrioritaetAsString() 
+	{
+	String result = "";	
+		switch (prioritaet) 
+		{
+		case 1: result = EcholonConstants.PRIORITAET1; break;
+		case 2: result = EcholonConstants.PRIORITAET2; break;
+		case 3: result = EcholonConstants.PRIORITAET3; break;
+		default: result = EcholonConstants.PRIORITAET4; break;
+		}
+	return result;
+	}
 
 	public void setPrioritaet(String prioritaet) 
 	{
@@ -175,10 +171,23 @@ private int loesungszeitMinuten = 0;
 		}
 	}
 
+	public String getOrganisation() {
+		return organisation;
+	}
+
+	public void setOrganisation(String organisation) {
+		this.organisation = organisation;
+	}
+
 	public boolean isReaktionszeitEingehalten() {
 		return reaktionszeitEingehalten;
 	}
 
+	public String getReaktionszeitEingehalten() 
+	{
+	return reaktionszeitEingehalten ? "Reaktionszeit eingehalten" : "Reaktionszeit nicht eingehalten";
+	}
+	
 	public void setReaktionszeitEingehalten(boolean reaktionszeitEingehalten) {
 		this.reaktionszeitEingehalten = reaktionszeitEingehalten;
 	}
@@ -219,7 +228,10 @@ private int loesungszeitMinuten = 0;
 		this.zielzeitEingehalten = zielzeitEingehalten;
 	}
 
-
+	public String getZielzeitEingehalten() 
+	{
+	return zielzeitEingehalten ? "Zielzeit eingehalten" : "Zielzeit nicht eingehalten";
+	}
 
 	public int getLoesungszeitMinuten() {
 		return loesungszeitMinuten;

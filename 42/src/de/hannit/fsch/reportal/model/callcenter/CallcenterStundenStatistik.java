@@ -1,5 +1,6 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -75,6 +76,72 @@ private	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH");
 	stundenStatistikenStream = stundenStatistiken.values().stream();
 	this.avgWarteZeitSekunden = stundenStatistikenStream.mapToInt(cs -> cs.getAvgWarteZeitSekunden()).sum() / stundenStatistiken.size();	
 	}
+	
+	@Override
+	public int getEingehendeAnrufe() 
+	{
+	stundenStatistikenStream = stundenStatistiken.values().stream();	
+	this.eingehendeAnrufe = stundenStatistikenStream.mapToInt(ts -> ts.getEingehendeAnrufe()).sum();
+	return eingehendeAnrufe;
+	}
+	
+	@Override
+	public int getZugeordneteAnrufe() 
+	{
+	stundenStatistikenStream = stundenStatistiken.values().stream();
+	this.zugeordneteAnrufe = stundenStatistikenStream.mapToInt(ts -> ts.getZugeordneteAnrufe()).sum(); 
+	return zugeordneteAnrufe;
+	}
+	
+	@Override
+	public int getAngenommeneAnrufe() 
+	{
+	stundenStatistikenStream = stundenStatistiken.values().stream();
+	this.angenommeneAnrufe = stundenStatistikenStream.mapToInt(ts -> ts.getAngenommeneAnrufe()).sum();
+	return angenommeneAnrufe;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.hannit.fsch.reportal.model.callcenter.CallcenterStatistik#getAnrufeInWarteschlange()
+	 * 
+	 * Summiert die Anrufe des Tages in Warteschlange
+	 * Chartseries: Ansagetext
+	 */
+	@Override
+	public int getAnrufeInWarteschlange() 
+	{
+	stundenStatistikenStream = stundenStatistiken.values().stream();		
+	return stundenStatistikenStream.mapToInt(ts -> ts.getAnrufeInWarteschlange()).sum();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.hannit.fsch.reportal.model.callcenter.CallcenterStatistik#getInWarteschlangeAufgelegt()
+	 * 
+	 * Summiert die erfolglosen Anrufe des Tages.
+	 * Chartseries: Erfolglos
+	 */
+	@Override
+	public int getInWarteschlangeAufgelegt() 
+	{
+	stundenStatistikenStream = stundenStatistiken.values().stream();
+	this.InWarteschlangeAufgelegt = stundenStatistikenStream.mapToInt(ts -> ts.getInWarteschlangeAufgelegt()).sum();
+	return InWarteschlangeAufgelegt;
+	}
+	
+	@Override
+	public double getInWarteschlangeAufgelegtProzent() 
+	{
+	return InWarteschlangeAufgelegt != 0 ? ((InWarteschlangeAufgelegt * 100) / (double) eingehendeAnrufe) : 0;
+	}
+
+	public String getFormattedInWarteschlangeAufgelegtProzent() 
+	{
+	DecimalFormat df = new DecimalFormat( "###.##" );
+	return InWarteschlangeAufgelegt != 0 ? df.format(((InWarteschlangeAufgelegt * 100) / (double) eingehendeAnrufe)) : "0";
+	}
+	
 	
 	public void setNodeName() 
 	{

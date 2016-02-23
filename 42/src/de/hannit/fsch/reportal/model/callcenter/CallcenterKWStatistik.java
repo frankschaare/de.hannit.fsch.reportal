@@ -1,5 +1,6 @@
 package de.hannit.fsch.reportal.model.callcenter;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -61,10 +62,27 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	@Override
 	public int getEingehendeAnrufe() 
 	{
-	tagesStatistikenStream = statistikenTag.values().stream();		
-	return tagesStatistikenStream.mapToInt(ts -> ts.getEingehendeAnrufe()).sum();
+	tagesStatistikenStream = statistikenTag.values().stream();	
+	this.eingehendeAnrufe = tagesStatistikenStream.mapToInt(ts -> ts.getEingehendeAnrufe()).sum();
+	return eingehendeAnrufe;
 	}
 	
+	@Override
+	public int getZugeordneteAnrufe() 
+	{
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.zugeordneteAnrufe = tagesStatistikenStream.mapToInt(ts -> ts.getZugeordneteAnrufe()).sum(); 
+	return zugeordneteAnrufe;
+	}
+	
+	@Override
+	public int getAngenommeneAnrufe() 
+	{
+	tagesStatistikenStream = statistikenTag.values().stream();
+	this.angenommeneAnrufe = tagesStatistikenStream.mapToInt(ts -> ts.getAngenommeneAnrufe()).sum();
+	return angenommeneAnrufe;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.hannit.fsch.reportal.model.callcenter.CallcenterStatistik#getAnrufeInWarteschlange()
@@ -90,8 +108,22 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	public int getInWarteschlangeAufgelegt() 
 	{
 	tagesStatistikenStream = statistikenTag.values().stream();
-	return tagesStatistikenStream.mapToInt(ts -> ts.getInWarteschlangeAufgelegt()).sum();
+	this.InWarteschlangeAufgelegt = tagesStatistikenStream.mapToInt(ts -> ts.getInWarteschlangeAufgelegt()).sum();
+	return InWarteschlangeAufgelegt;
 	}
+	
+	@Override
+	public double getInWarteschlangeAufgelegtProzent() 
+	{
+	return InWarteschlangeAufgelegt != 0 ? ((InWarteschlangeAufgelegt * 100) / (double) eingehendeAnrufe) : 0;
+	}
+
+	public String getFormattedInWarteschlangeAufgelegtProzent() 
+	{
+	DecimalFormat df = new DecimalFormat( "###.##" );
+	return InWarteschlangeAufgelegt != 0 ? df.format(((InWarteschlangeAufgelegt * 100) / (double) eingehendeAnrufe)) : "0";
+	}
+
 
 	/*
 	 * (non-Javadoc)

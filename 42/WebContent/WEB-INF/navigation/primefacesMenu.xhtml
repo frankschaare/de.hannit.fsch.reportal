@@ -9,6 +9,7 @@
 	    <p:menubar style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
 	            <p:menuitem value="Zusammenfassung" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
+	            <p:menuitem value="HRG Auswertung" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table" />
 	            <p:menuitem value="Echolon Daten" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
 	        </p:submenu>
 	 
@@ -21,6 +22,11 @@
 	 
 	        <p:submenu label="Callcenter Daten" icon="fa fa-phone">
 				<p:menuitem value="Callcenter Daten" action="/daten/callcenter/callcenterDaten" icon="fa fa-database" />
+		 			<p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
+	                	<p:menuitem value="Wartezeit / KW" action="/daten/callcenter/wartezeitKW" icon="fa fa-table"/>
+	                	<p:menuitem value="AVG Wartezeit / KW" action="/daten/callcenter/sumKW" icon="fa fa-table"/>
+	                	<p:menuitem value="nach Uhrzeit" action="/daten/callcenter/gesamtStuendlich" icon="fa fa-table"/>
+	            	</p:submenu>
 	        </p:submenu>
 
 	        <p:submenu label="Callcenter Charts" icon="fa fa-signal">

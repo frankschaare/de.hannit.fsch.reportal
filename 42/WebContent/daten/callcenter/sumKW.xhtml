@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
+			styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+
+	<div id="content">
+		<h:form id="navForm">
+			<p:dataTable id="tbl" var="datensatz" value="#{callcenterChart.sumKW}">
+			    <f:facet name="header">
+		        Summen nach Kalenderwoche
+					<h:commandLink>
+						<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+						    <p:dataExporter type="xls" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
+					</h:commandLink>
+								 
+					<h:commandLink>
+						<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+						    <p:dataExporter type="pdf" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
+					</h:commandLink>
+								 
+					<h:commandLink>
+						<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+						    <p:dataExporter type="csv" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
+					</h:commandLink>
+								 
+					<h:commandLink>
+						<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+							<p:dataExporter type="xml" target="tbl" fileName="CallcenterStatistik" pageOnly="true"/>
+					 </h:commandLink>
+			    </f:facet>
+
+				<p:column sortBy="#{datensatz.kw}" headerText="KW" style="width:2%">
+					<h:outputText value="#{datensatz.kw}" />
+				</p:column>						    
+				<p:column sortBy="#{datensatz.eingehendeAnrufe}" headerText="Eingehend" style="text-align: center;">
+					<h:outputText value="#{datensatz.eingehendeAnrufe}" />
+				</p:column>
+				<p:column sortBy="#{datensatz.zugeordneteAnrufe}" headerText="zugeordnet" style="text-align: center;">
+					<h:outputText value="#{datensatz.zugeordneteAnrufe}" />
+				</p:column>
+				<p:column sortBy="#{datensatz.angenommeneAnrufe}" headerText="angenommen" style="text-align: center;">
+					<h:outputText value="#{datensatz.angenommeneAnrufe}" />
+				</p:column>	
+				<p:column sortBy="#{datensatz.anrufeInWarteschlange}" headerText="Warteschlange" style="text-align: center;">
+					<h:outputText value="#{datensatz.anrufeInWarteschlange}" />
+				</p:column>
+				<p:column sortBy="#{datensatz.inWarteschlangeAufgelegt}" headerText="erfolglos" style="text-align: center;">
+					<h:outputText value="#{datensatz.inWarteschlangeAufgelegt}" />
+				</p:column>
+				<p:column sortBy="#{datensatz.inWarteschlangeAufgelegt}" headerText="erfolglos (%)" style="text-align: center;">
+					<h:outputText value="#{datensatz.formattedInWarteschlangeAufgelegtProzent}" />
+				</p:column>
+				<p:column sortBy="#{datensatz.avgWarteZeitSekunden}" headerText="&#216; Wartezeit (Sek.)" style="text-align: center;">
+					<h:outputText value="#{datensatz.avgWarteZeitSekunden}" />
+				</p:column>																					
+
+			</p:dataTable>
+		</h:form>
+	</div>
+</body>
+</html>

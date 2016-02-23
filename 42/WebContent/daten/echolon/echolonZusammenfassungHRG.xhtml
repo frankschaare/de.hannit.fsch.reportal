@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+	<h:outputStylesheet library="css" name="HRGZusammenfassung.css" target="head" />
+</h:head>
+<body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+
+	<div id="content">
+		<h:form id="form">
+		<h1 class="title">Zusammenfassung der Monatswerte für alle Vorgänge der HRG</h1>
+		<h1 class="subtitle"><h:outputText value="#{hrg.subtitle}" /></h1>
+			<!-- hrg ist Backing Bean: de.hannit.fsch.reportal.db.HRGZusammenfassung -->			
+			<table>
+				<thead>
+					<tr>
+					<th>
+						<h:commandLink>
+							<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+							<p:fileDownload value="#{hrg.file}" />
+						</h:commandLink>
+					</th>
+					<th><h:outputText value="#{hrg.quartale[0].monate[0].bezeichnungLang}" /></th>
+					<th><h:outputText value="#{hrg.quartale[0].monate[1].bezeichnungLang}" /></th>
+					<th><h:outputText value="#{hrg.quartale[0].monate[2].bezeichnungLang}" /></th>
+					<th><h:outputText value="#{hrg.quartale[0].bezeichnungLang}" /></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="gesamt">
+						<td class="label">Anzahl Vorgänge Gesamt:</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].anzahlVorgaengeGesamt}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].anzahlVorgaengeGesamt}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].anzahlVorgaengeGesamt}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].vorgaengeGesamt}" /></td>
+					</tr>
+					
+					<tr class="incidents">
+						<td class="label">Anzahl Incidents:</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].anzahlIncidents}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].anzahlIncidents}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].anzahlIncidents}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].anzahlIncidents}" /></td>
+					</tr>
+					
+					<tr class="incidents">
+						<td class="label">Servicezeit nicht eingehalten:</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].anzahlIncidentsServicezeitNichtEingehalten}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].anzahlIncidentsServicezeitNichtEingehalten}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].anzahlIncidentsServicezeitNichtEingehalten}" /></td>								
+						<td><h:outputText value="#{hrg.quartale[0].anzahlIncidentsServicezeitNichtEingehalten}" /></td>
+					</tr>
+					
+					<tr class="incidents">
+						<td class="label">Servicezeit nicht eingehalten (%):</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>								
+						<td><h:outputText value="#{hrg.quartale[0].formattedProzentanteilIncidentsServicezeitNichtEingehalten} %" /></td>
+					</tr>
+
+					<tr class="incidents">
+						<td class="label">&#216; Dauer Incident (Minuten):</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].durchschnittlicheDauerMinutenIncidents}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].durchschnittlicheDauerMinutenIncidents}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].durchschnittlicheDauerMinutenIncidents}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].durchschnittlicheDauerMinutenIncidents}" /></td>
+					</tr>	
+					
+					<tr class="incidents">
+						<td class="label">&#216; Dauer Incident (Stunden):</td>
+						<td>
+							<h:outputText value="#{hrg.quartale[0].monate[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].avgDauerStundenIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>	
+					
+					<tr class="incidents">
+						<td class="label">&#216; Dauer Incident (Tage):</td>
+						<td>
+							<h:outputText value="#{hrg.quartale[0].monate[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].avgDauerTageIncidents}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>											
+					
+					<tr class="serviceAbrufe">
+						<td class="label">Anzahl Serviceabrufe:</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].anzahlserviceAbrufe}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].anzahlserviceAbrufe}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].anzahlserviceAbrufe}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].anzahlserviceAbrufe}" /></td>
+					</tr>	
+					<tr class="serviceAbrufe">
+						<td class="label">Servicezeit nicht eingehalten:</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].anzahlServiceAbrufeServicezeitNichtEingehalten}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].anzahlServiceAbrufeServicezeitNichtEingehalten}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].anzahlServiceAbrufeServicezeitNichtEingehalten}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].anzahlServiceAbrufeServicezeitNichtEingehalten}" /></td>
+					</tr>								
+					<tr class="serviceAbrufe">
+						<td class="label">Servicezeit nicht eingehalten (%):</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].formattedProzentanteilServiceAbrufeServicezeitNichtEingehalten} %" /></td>
+					</tr>	
+					<tr class="serviceAbrufe">
+						<td class="label">&#216; Dauer Serviceabrufe (Minuten):</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[0].durchschnittlicheDauerMinutenServiceAbrufe}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].durchschnittlicheDauerMinutenServiceAbrufe}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].durchschnittlicheDauerMinutenServiceAbrufe}" /></td>
+						<td><h:outputText value="#{hrg.quartale[0].durchschnittlicheDauerMinutenServiceAbrufe}" /></td>
+					</tr>
+					
+					<tr class="serviceAbrufe">
+						<td class="label">&#216; Dauer Serviceabrufe (Stunden):</td>
+						<td>
+							<h:outputText value="#{hrg.quartale[0].monate[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].avgDauerStundenServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>	
+					
+					<tr class="serviceAbrufe">
+						<td class="label">&#216; Dauer Serviceabrufe (Tage):</td>
+						<td>
+							<h:outputText value="#{hrg.quartale[0].monate[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[1].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].monate[2].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+						<td><h:outputText value="#{hrg.quartale[0].avgDauerTageServiceAbrufe}">
+								<f:convertNumber pattern="###.##" />
+							</h:outputText>
+						</td>
+					</tr>						
+				</tbody>
+			</table>
+			
+		</h:form>
+	</div>
+</body>
+</html>
