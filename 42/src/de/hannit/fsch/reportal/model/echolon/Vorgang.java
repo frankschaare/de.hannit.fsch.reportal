@@ -71,6 +71,8 @@ private int loesungszeitMinuten = 0;
 	public void setErstellDatumZeit(Timestamp dbValue) 
 	{
 	this.erstellDatumZeit = dbValue.toLocalDateTime();
+	this.erstellDatum = LocalDate.of(erstellDatumZeit.getYear(), erstellDatumZeit.getMonthValue(), erstellDatumZeit.getDayOfMonth());
+	this.erstellZeit = LocalTime.of(erstellDatumZeit.getHour(), erstellDatumZeit.getMinute());
 	this.berichtsJahr = erstellDatumZeit.getYear();
 	this.berichtsMonat = erstellDatumZeit.getMonthValue();
 		switch (this.berichtsMonat) 

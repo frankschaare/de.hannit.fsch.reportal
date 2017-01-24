@@ -4,6 +4,10 @@
 package de.hannit.fsch.reportal.model.echolon;
 
 import java.text.DecimalFormat;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+
+import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
  * @author fsch
@@ -11,6 +15,17 @@ import java.text.DecimalFormat;
  */
 public class EcholonStatistik 
 {
+protected ArrayList<Vorgang> vorgaengeBerichtszeitraum;
+protected ArrayList<SimpleEntry<String, Integer>> zusammenfassung;
+protected Zeitraum berichtsZeitraum = null;
+
+protected int anzahlVorgaengeBerichtszeitraum = 0;
+protected long anzahlIncidentsServicezeitEingehalten = 0;
+protected long anzahlIncidentsServicezeitNichtEingehalten = 0;
+protected long anzahlServiceAbrufeServicezeitEingehalten = 0;
+protected long anzahlServiceAbrufeServicezeitNichtEingehalten = 0;
+protected double prozentanteilIncidentsServicezeitEingehalten = 0;
+protected double prozentanteilServiceAbrufeServicezeitEingehalten = 0;
 protected float prozentanteilIncidentsServicezeitNichtEingehalten = 0;
 protected float prozentanteilServiceAbrufeServicezeitNichtEingehalten = 0;
 protected double avgDauerMinutenIncidents = 0;
@@ -19,8 +34,10 @@ protected double avgDauerTageIncidents = 0;
 protected double avgDauerMinutenServiceAbrufe = 0;
 protected double avgDauerStundenServiceAbrufe = 0;
 protected double avgDauerTageServiceAbrufe = 0;
+protected String label = null;
 
-private	DecimalFormat df = new DecimalFormat( "###.##" );
+protected DecimalFormat df = new DecimalFormat( "###.##" );
+
 
 	/**
 	 * Superklasse für alle Echolon Statistiken 
@@ -28,6 +45,50 @@ private	DecimalFormat df = new DecimalFormat( "###.##" );
 	public EcholonStatistik() 
 	{
 
+	}
+	
+	/*
+	 * Berechnet die Statistikwerte für den Auswertungszeitraum
+	 * Beim Aufruf muss sichergestellt sein, dass alle Werte enthalten sind ! 
+	 */
+	public void setStatistik()
+	{
+		
+	}
+	
+	public int getAnzahlVorgaengeBerichtszeitraum() 
+	{
+	return anzahlVorgaengeBerichtszeitraum;
+	}
+
+	public ArrayList<Vorgang> getVorgaengeBerichtszeitraum() 
+	{
+	return vorgaengeBerichtszeitraum;
+	}
+
+	protected ArrayList<SimpleEntry<String, Integer>> getZusammenfassung() 
+	{
+	return zusammenfassung;
+	}
+
+	public Zeitraum getBerichtsZeitraum() 
+	{
+	return berichtsZeitraum;
+	}
+
+	public void setBerichtsZeitraum(Zeitraum incoming) 
+	{
+	this.berichtsZeitraum = incoming;
+	}
+
+	public String getLabel() 
+	{
+	return label;
+	}
+
+	public void setLabel(String label) 
+	{
+	this.label = label;
 	}
 	
 	public void setDurchschnittlicheDauerMinutenIncidents(double durchschnittlicheDauerMinutenIncidents) 
@@ -87,6 +148,26 @@ private	DecimalFormat df = new DecimalFormat( "###.##" );
 	public String getFormattedProzentanteilServiceAbrufeServicezeitNichtEingehalten() 
 	{
 	return df.format(prozentanteilServiceAbrufeServicezeitNichtEingehalten);
+	}
+
+	public long getAnzahlIncidentsServicezeitEingehalten() 
+	{
+	return anzahlIncidentsServicezeitEingehalten;
+	}
+
+	public long getAnzahlServiceAbrufeServicezeitEingehalten() 
+	{
+	return anzahlServiceAbrufeServicezeitEingehalten;
+	}
+
+	public String getProzentanteilIncidentsServicezeitEingehalten() 
+	{
+	return null;
+	}
+
+	public String getProzentanteilServiceAbrufeServicezeitEingehalten() 
+	{
+	return null;
 	}
 
 }

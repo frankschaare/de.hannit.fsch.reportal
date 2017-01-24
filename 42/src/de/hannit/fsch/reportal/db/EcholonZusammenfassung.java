@@ -4,8 +4,6 @@
 package de.hannit.fsch.reportal.db;
 
 import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,10 +77,10 @@ private ArrayList<String> lines = null;
 				{
 					if (v.getErstellDatumZeit().isAfter(q.getStartDatumUhrzeit()) && v.getErstellDatumZeit().isBefore(q.getEndDatumUhrzeit())) 
 					{
-					qs.addVorgang(v);	
+					//qs.addVorgang(v);	
 					}
 				}
-			qs.setQuartalswerte();	
+			qs.setStatistik();	
 			quartale.put(q.getIndex(), qs);	
 			}
 			
@@ -105,7 +103,7 @@ private ArrayList<String> lines = null;
 			
 			for (QuartalsStatistik qs : quartale.values()) 
 			{
-				for (MonatsStatistik m : qs.getMonatsStatistiken().values()) 
+				for (MonatsStatistik m : qs.getMonatsStatistiken()) 
 				{
 				einheiten = einheiten + ";" + m.getBezeichnungLang();	
 				lineGesamt = lineGesamt + ";" + m.getAnzahlVorgaengeGesamt();
@@ -116,7 +114,7 @@ private ArrayList<String> lines = null;
 				lineDauerIncidentStunden = lineDauerIncidentStunden + ";" + m.getFormattedAvgDauerStundenIncidents();
 				lineDauerIncidentTage = lineDauerIncidentTage + ";" + m.getFormattedAvgDauerTageIncidents();
 				
-				lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + m.getAnzahlserviceAbrufe();
+				lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + m.getAnzahlServiceabrufe();
 				lineAnzahlServiceabrufeServicezeitNichtEingehalten = lineAnzahlServiceabrufeServicezeitNichtEingehalten + ";" + m.getAnzahlServiceAbrufeServicezeitNichtEingehalten();
 				lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent = lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent + ";" + m.getFormattedProzentanteilServiceAbrufeServicezeitNichtEingehalten() + " %";
 				lineDauerServiceabrufeMinuten = lineDauerServiceabrufeMinuten + ";" + m.getDurchschnittlicheDauerMinutenServiceAbrufe();
@@ -128,7 +126,7 @@ private ArrayList<String> lines = null;
 			for (QuartalsStatistik qs : quartale.values()) 
 			{
 			einheiten = einheiten + ";" + qs.getBezeichnungLang();	
-			lineGesamt = lineGesamt + ";" + qs.getVorgaengeGesamt();
+			lineGesamt = lineGesamt + ";" + qs.getAnzahlVorgaengeBerichtszeitraum();
 			lineAnzahlIncidents = lineAnzahlIncidents + ";" + qs.getAnzahlIncidents();
 			lineAnzahlIncidentsServicezeitNichtEingehalten = lineAnzahlIncidentsServicezeitNichtEingehalten + ";" + qs.getAnzahlIncidentsServicezeitNichtEingehalten();
 			lineAnzahlIncidentsServicezeitNichtEingehaltenProzent = lineAnzahlIncidentsServicezeitNichtEingehaltenProzent + ";" + qs.getFormattedProzentanteilIncidentsServicezeitNichtEingehalten() + " %";
@@ -136,7 +134,7 @@ private ArrayList<String> lines = null;
 			lineDauerIncidentStunden = lineDauerIncidentStunden + ";" + qs.getFormattedAvgDauerStundenIncidents();
 			lineDauerIncidentTage = lineDauerIncidentTage + ";" + qs.getFormattedAvgDauerTageIncidents();
 			
-			lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + qs.getAnzahlserviceAbrufe();
+			lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + qs.getAnzahlServiceabrufe();
 			lineAnzahlServiceabrufeServicezeitNichtEingehalten = lineAnzahlServiceabrufeServicezeitNichtEingehalten + ";" + qs.getAnzahlServiceAbrufeServicezeitNichtEingehalten();
 			lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent = lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent + ";" + qs.getFormattedProzentanteilServiceAbrufeServicezeitNichtEingehalten() + " %";
 			lineDauerServiceabrufeMinuten = lineDauerServiceabrufeMinuten + ";" + qs.getDurchschnittlicheDauerMinutenServiceAbrufe();

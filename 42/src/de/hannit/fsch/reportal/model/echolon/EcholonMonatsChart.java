@@ -21,7 +21,6 @@ import javax.faces.bean.SessionScoped;
 
 import de.hannit.fsch.reportal.db.EcholonDBThread;
 import de.hannit.fsch.reportal.model.Zeitraum;
-import de.hannit.fsch.reportal.model.callcenter.CallcenterKWStatistik;
 
 /**
  * @author fsch
@@ -94,7 +93,7 @@ private String seriesAVGWartezeit = null;
 		// Nachdem alle Vorgänge sortiert sind, werden die Monatswerte berechnet:
 		for (MonatsStatistik m : monatsStatistiken.values()) 
 		{
-		m.setMonatswerte();	
+		m.setStatistik();	
 		}
 	}
 	
@@ -140,11 +139,10 @@ private String seriesAVGWartezeit = null;
 	
 	public String getTicks() 
 	{
-	DateTimeFormatter mf = DateTimeFormatter.ofPattern("MMMM yy"); 	
 	ticks = "[";	
     	for (MonatsStatistik m : monatsStatistiken.values()) 
     	{
-    	ticks = ticks + "'" + mf.format(m.getBerichtsZeitraum()) + "',";	
+    	ticks = ticks + "'" + m.getBerichtsZeitraum().getBerichtsMonat() + "',";	
 		}
     ticks = ticks + "]";
     
@@ -192,7 +190,7 @@ private String seriesAVGWartezeit = null;
 	seriesServiceAbruf = "[";	
 		for (MonatsStatistik m : monatsStatistiken.values()) 
 		{
-		seriesServiceAbruf = seriesServiceAbruf + m.getAnzahlserviceAbrufe() + ",";	
+		seriesServiceAbruf = seriesServiceAbruf + m.getAnzahlServiceabrufe() + ",";	
 		}
 	seriesServiceAbruf = seriesServiceAbruf + "]";	
 	

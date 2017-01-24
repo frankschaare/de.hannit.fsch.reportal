@@ -35,7 +35,7 @@
 						<p:ajax event="select" update=":navForm:grid, :navForm:tabs"
 							listener="#{edb.onNodeSelect}" />
 						<p:treeNode>
-							<h:outputText value="#{node}" />
+							<h:outputText value="#{node.label}" />
 						</p:treeNode>
 					</p:tree>
 				</p:layoutUnit>
@@ -46,8 +46,8 @@
 						<f:facet name="header">
 							<p:row>
 								<p:column colspan="4">Berichtszeitraum: <h:outputText
-										value="#{edb.berichtsZeitraum}" /> (<h:outputText
-										value="#{edb.jahresstatistik.anzahlVorgaengeGesamt}" /> Vorgänge)</p:column>
+										value=" #{edb.jahresstatistik.berichtsZeitraum.berichtszeitraumStart} - #{edb.jahresstatistik.berichtsZeitraum.berichtszeitraumEnde}"/> (<h:outputText
+										value="#{edb.jahresstatistik.anzahlVorgaengeBerichtszeitraum}" /> Vorgänge)</p:column>
 							</p:row>
 						</f:facet>
 						<p:column>
@@ -151,7 +151,7 @@
 					<p:fieldset legend="Details" toggleable="true" toggleSpeed="500" collapsed="true">
 						<p:tabView id="tabs" effect="fade" effectDuration="fast" dynamic="true">
 							<p:ajax event="tabChange" update=":navForm:tabs" />
-							<p:tab title="Incidents">
+							<p:tab title="Incidents (#{edb.jahresstatistik.anzahlIncidents})">
 								<p:dataTable id="tblIncidents" var="vorgang" value="#{edb.jahresstatistik.incidents}">
 									<f:facet name="header">
 										<h:commandLink>
@@ -217,7 +217,7 @@
 									</p:column>
 								</p:dataTable>
 							</p:tab>
-							<p:tab title="Serviceabrufe">
+							<p:tab title="Serviceabrufe (#{edb.jahresstatistik.anzahlServiceabrufe})">
 								<p:dataTable id="tblServiceabrufe" var="vorgang" value="#{edb.jahresstatistik.serviceabrufe}">
 									<f:facet name="header">
 										<h:commandLink>
@@ -283,6 +283,422 @@
 									</p:column>
 								</p:dataTable>
 							</p:tab>
+
+							<p:tab title="Beschwerden (#{edb.jahresstatistik.anzahlBeschwerden})">
+								<p:dataTable id="tblBeschwerden" var="vorgang" value="#{edb.jahresstatistik.beschwerden}">
+									<f:facet name="header">
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="xls" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>
+											 
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="pdf" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									       </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+											<p:dataExporter type="csv" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									    </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+											<p:dataExporter type="xml" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>														
+						        		Beschwerden im Berichtszeitraum
+						        	</f:facet>
+									<p:column sortBy="#{vorgang.vorgangsNummer}"
+										headerText="Vorgangsnummer">
+										<h:outputText value="#{vorgang.vorgangsNummer}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellDatum}"
+										headerText="Erstelldatum">
+										<h:outputText value="#{vorgang.erstellDatum}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellZeit}"
+										headerText="Erstellzeit">
+										<h:outputText value="#{vorgang.erstellZeit}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.typ}" headerText="Typ">
+										<h:outputText value="#{vorgang.typ}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.status}" headerText="Status">
+										<h:outputText value="#{vorgang.status}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Priorität" />
+										</f:facet>
+										<h:outputText value="#{vorgang.prioritaet}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.loesungszeitMinuten}"
+										headerText="Lösungszeit">
+										<h:outputText value="#{vorgang.loesungszeitMinuten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Reaktionszeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Servicezeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.zielzeitEingehalten}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+							
+							<p:tab title="Serviceanfragen (#{edb.jahresstatistik.anzahlServiceanfragen})">
+								<p:dataTable id="tblServiceanfragen" var="vorgang" value="#{edb.jahresstatistik.serviceanfragen}">
+									<f:facet name="header">
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="xls" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>
+											 
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="pdf" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									       </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+											<p:dataExporter type="csv" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									    </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+											<p:dataExporter type="xml" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>														
+						        		Beschwerden im Berichtszeitraum
+						        	</f:facet>
+									<p:column sortBy="#{vorgang.vorgangsNummer}"
+										headerText="Vorgangsnummer">
+										<h:outputText value="#{vorgang.vorgangsNummer}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellDatum}"
+										headerText="Erstelldatum">
+										<h:outputText value="#{vorgang.erstellDatum}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellZeit}"
+										headerText="Erstellzeit">
+										<h:outputText value="#{vorgang.erstellZeit}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.typ}" headerText="Typ">
+										<h:outputText value="#{vorgang.typ}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.status}" headerText="Status">
+										<h:outputText value="#{vorgang.status}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Priorität" />
+										</f:facet>
+										<h:outputText value="#{vorgang.prioritaet}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.loesungszeitMinuten}"
+										headerText="Lösungszeit">
+										<h:outputText value="#{vorgang.loesungszeitMinuten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Reaktionszeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Servicezeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.zielzeitEingehalten}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+
+							<p:tab title="Serviceinfos (#{edb.jahresstatistik.anzahlServiceinfos})">
+								<p:dataTable id="tblServiceinfos" var="vorgang" value="#{edb.jahresstatistik.serviceinfos}">
+									<f:facet name="header">
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="xls" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>
+											 
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="pdf" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									       </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+											<p:dataExporter type="csv" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									    </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+											<p:dataExporter type="xml" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>														
+						        		Serviceinfos im Berichtszeitraum
+						        	</f:facet>
+									<p:column sortBy="#{vorgang.vorgangsNummer}"
+										headerText="Vorgangsnummer">
+										<h:outputText value="#{vorgang.vorgangsNummer}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellDatum}"
+										headerText="Erstelldatum">
+										<h:outputText value="#{vorgang.erstellDatum}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellZeit}"
+										headerText="Erstellzeit">
+										<h:outputText value="#{vorgang.erstellZeit}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.typ}" headerText="Typ">
+										<h:outputText value="#{vorgang.typ}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.status}" headerText="Status">
+										<h:outputText value="#{vorgang.status}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Priorität" />
+										</f:facet>
+										<h:outputText value="#{vorgang.prioritaet}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.loesungszeitMinuten}"
+										headerText="Lösungszeit">
+										<h:outputText value="#{vorgang.loesungszeitMinuten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Reaktionszeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Servicezeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.zielzeitEingehalten}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+
+							<p:tab title="Shortcalls (#{edb.jahresstatistik.anzahlShortCalls})">
+								<p:dataTable id="tblShortCalls" var="vorgang" value="#{edb.jahresstatistik.shortcalls}">
+									<f:facet name="header">
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="xls" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>
+											 
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="pdf" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									       </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+											<p:dataExporter type="csv" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									    </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+											<p:dataExporter type="xml" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>														
+						        		Shortcalls im Berichtszeitraum
+						        	</f:facet>
+									<p:column sortBy="#{vorgang.vorgangsNummer}"
+										headerText="Vorgangsnummer">
+										<h:outputText value="#{vorgang.vorgangsNummer}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellDatum}"
+										headerText="Erstelldatum">
+										<h:outputText value="#{vorgang.erstellDatum}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellZeit}"
+										headerText="Erstellzeit">
+										<h:outputText value="#{vorgang.erstellZeit}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.typ}" headerText="Typ">
+										<h:outputText value="#{vorgang.typ}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.status}" headerText="Status">
+										<h:outputText value="#{vorgang.status}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Priorität" />
+										</f:facet>
+										<h:outputText value="#{vorgang.prioritaet}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.loesungszeitMinuten}"
+										headerText="Lösungszeit">
+										<h:outputText value="#{vorgang.loesungszeitMinuten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Reaktionszeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Servicezeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.zielzeitEingehalten}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+
+							<p:tab title="Workorders (#{edb.jahresstatistik.anzahlWorkorders})">
+								<p:dataTable id="tblWorkorders" var="vorgang" value="#{edb.jahresstatistik.workorders}">
+									<f:facet name="header">
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="xls" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>
+											 
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="pdf" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									       </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+											<p:dataExporter type="csv" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									    </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+											<p:dataExporter type="xml" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>														
+						        		Workorders im Berichtszeitraum
+						        	</f:facet>
+									<p:column sortBy="#{vorgang.vorgangsNummer}"
+										headerText="Vorgangsnummer">
+										<h:outputText value="#{vorgang.vorgangsNummer}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellDatum}"
+										headerText="Erstelldatum">
+										<h:outputText value="#{vorgang.erstellDatum}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellZeit}"
+										headerText="Erstellzeit">
+										<h:outputText value="#{vorgang.erstellZeit}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.typ}" headerText="Typ">
+										<h:outputText value="#{vorgang.typ}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.status}" headerText="Status">
+										<h:outputText value="#{vorgang.status}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Priorität" />
+										</f:facet>
+										<h:outputText value="#{vorgang.prioritaet}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.loesungszeitMinuten}"
+										headerText="Lösungszeit">
+										<h:outputText value="#{vorgang.loesungszeitMinuten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Reaktionszeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Servicezeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.zielzeitEingehalten}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+
+							<p:tab title="CustomerRequests (#{edb.jahresstatistik.anzahlCustomerRequests})">
+								<p:dataTable id="tblCustomerRequests" var="vorgang" value="#{edb.jahresstatistik.customerRequests}">
+									<f:facet name="header">
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="xls" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>
+											 
+										<h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportPDF.png']}" styleClass="dataExp" />
+										    <p:dataExporter type="pdf" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									       </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportCSV.png']}" styleClass="dataExp" />
+											<p:dataExporter type="csv" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+									    </h:commandLink>
+											 
+									    <h:commandLink>
+											<h:graphicImage value="#{resource['images:ExportXML.png']}" styleClass="dataExp" />
+											<p:dataExporter type="xml" target="tblServiceabrufe" fileName="CallcenterStatistik" pageOnly="true"/>
+										</h:commandLink>														
+						        		Customer Requests im Berichtszeitraum
+						        	</f:facet>
+									<p:column sortBy="#{vorgang.vorgangsNummer}"
+										headerText="Vorgangsnummer">
+										<h:outputText value="#{vorgang.vorgangsNummer}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellDatum}"
+										headerText="Erstelldatum">
+										<h:outputText value="#{vorgang.erstellDatum}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.erstellZeit}"
+										headerText="Erstellzeit">
+										<h:outputText value="#{vorgang.erstellZeit}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.typ}" headerText="Typ">
+										<h:outputText value="#{vorgang.typ}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.status}" headerText="Status">
+										<h:outputText value="#{vorgang.status}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Priorität" />
+										</f:facet>
+										<h:outputText value="#{vorgang.prioritaet}" />
+									</p:column>
+									<p:column sortBy="#{vorgang.loesungszeitMinuten}"
+										headerText="Lösungszeit">
+										<h:outputText value="#{vorgang.loesungszeitMinuten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Reaktionszeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.reaktionszeitEingehalten}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Servicezeit eingehalten" />
+										</f:facet>
+										<h:outputText value="#{vorgang.zielzeitEingehalten}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+		
+							<p:tab title="Summe (#{edb.jahresstatistik.summeVorgaenge})">
+								<p:dataTable id="tblZusammenfassung" var="z" value="#{edb.jahresstatistik.zusammenfassung}">
+									<f:facet name="header">Zusammenfassung</f:facet>
+									<p:column>
+										<h:outputText value="#{z.key}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{z.value}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>							
+
+							
 						</p:tabView>
 					</p:fieldset>
 				</p:layoutUnit>

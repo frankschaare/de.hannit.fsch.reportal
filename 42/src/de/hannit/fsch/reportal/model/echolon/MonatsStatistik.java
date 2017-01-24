@@ -1,13 +1,13 @@
 package de.hannit.fsch.reportal.model.echolon;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.TreeMap;
+import java.util.Comparator;
 import java.util.stream.Stream;
+
+import de.hannit.fsch.reportal.model.Zeitraum;
 
 
 public class MonatsStatistik extends EcholonStatistik
@@ -19,62 +19,162 @@ private int anzahlserviceAbrufe = 0;
 private long anzahlServiceAbrufeServicezeitNichtEingehalten = 0;
 
 private String bezeichnungLang = "unbekannt";
+private String bezeichnungkurz = "unbekannt";
 
-private LocalDate berichtsZeitraum = null;
-private ArrayList<Vorgang> vorgaengeGesamt = null;
-private TreeMap<LocalDateTime, Vorgang> incidents = new TreeMap<LocalDateTime, Vorgang>();
-private TreeMap<LocalDateTime, Vorgang> serviceAbrufe = new TreeMap<LocalDateTime, Vorgang>();
+private ArrayList<Vorgang> incidents = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> workOrder = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> serviceInfo = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> serviceAbrufe = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> serviceAnfrage = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> beschwerden = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> customerRequest = new ArrayList<Vorgang>();
+private ArrayList<Vorgang> shortCall = new ArrayList<Vorgang>();
+
 private Stream<Vorgang> si = null;
 
 	public MonatsStatistik(LocalDate incoming) 
 	{
-	this.berichtsZeitraum = incoming;
-	vorgaengeGesamt = new ArrayList<Vorgang>();
-	
+	vorgaengeBerichtszeitraum = new ArrayList<Vorgang>();
+
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-	this.bezeichnungLang = formatter.format(berichtsZeitraum);
+	this.bezeichnungLang = formatter.format(incoming);
+	formatter = DateTimeFormatter.ofPattern("MMMM");
+	setLabel(formatter.format(incoming));
 	}
 	
 	public void addVorgang(Vorgang incoming) 
 	{
-	vorgaengeGesamt.add(incoming);	
+	vorgaengeBerichtszeitraum.add(incoming);	
 	}
 	
-	/*
-	 * Bildet die Summenwerte für den Berichtsmonat
-	 */
-	public void setMonatswerte()
+	public ArrayList<Vorgang> getIncidents() {return incidents;}
+	public ArrayList<Vorgang> getServiceabrufe() {return serviceAbrufe;}
+	public ArrayList<Vorgang> getBeschwerden() {return beschwerden;}
+	public ArrayList<Vorgang> getServiceanfragen() {return serviceAnfrage;}
+	public ArrayList<Vorgang> getServiceinfos() {return serviceInfo;}
+	public ArrayList<Vorgang> getShortcalls() {return shortCall;}
+	public ArrayList<Vorgang> getWorkorders() {return workOrder;}
+	public ArrayList<Vorgang> getCustomerRequests() {return customerRequest;}
+	
+	public int getAnzahlIncidents() {return (incidents != null && incidents.size() > 0) ? incidents.size() : 0;}
+	public int getAnzahlServiceabrufe() {return (serviceAbrufe != null && serviceAbrufe.size() > 0) ? serviceAbrufe.size() : 0;}
+	public int getAnzahlBeschwerden() {return (beschwerden != null && beschwerden.size() > 0) ? beschwerden.size() : 0;}
+	public int getAnzahlServiceanfragen() {return (serviceAnfrage != null && serviceAnfrage.size() > 0) ? serviceAnfrage.size() : 0;}
+	public int getAnzahlServiceinfos() {return (serviceInfo != null && serviceInfo.size() > 0) ? serviceInfo.size() : 0;}
+	public int getAnzahlShortCalls() {return (shortCall != null && shortCall.size() > 0) ? shortCall.size() : 0;}
+	public int getAnzahlWorkorders() {return (workOrder != null && workOrder.size() > 0) ? workOrder.size() : 0;}
+	public int getAnzahlCustomerRequests() {return (customerRequest != null && customerRequest.size() > 0) ? customerRequest.size() : 0;}
+	
+	public int getSummeVorgaenge () 
 	{
-	this.anzahlVorgaengeGesamt = vorgaengeGesamt.size();
+	int summe = 0;	
 		
+	summe += getAnzahlIncidents();
+	summe += getAnzahlServiceabrufe();
+	summe += getAnzahlBeschwerden();
+	summe += getAnzahlServiceanfragen();
+	summe += getAnzahlServiceinfos();
+	summe += getAnzahlShortCalls();
+	summe += getAnzahlWorkorders();
+	summe += getAnzahlCustomerRequests();
+	
+	return summe;
+	}
+	
+	@Override
+	public ArrayList<SimpleEntry<String, Integer>> getZusammenfassung() 
+	{
+	zusammenfassung = new ArrayList<>();
+	
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceabrufe()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_CUSTOMERREQUEST, getAnzahlCustomerRequests()));
+	
+	return zusammenfassung;
+	}
+
+	@Override
+	public ArrayList<Vorgang> getVorgaengeBerichtszeitraum() 
+	{
+	return vorgaengeBerichtszeitraum;
+	}
+	
+	@Override
+	public void setStatistik() 
+	{
+	this.anzahlVorgaengeGesamt = vorgaengeBerichtszeitraum.size();
+	
+	Vorgang max	= vorgaengeBerichtszeitraum.stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+	Vorgang min = vorgaengeBerichtszeitraum.stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();	
+	berichtsZeitraum = new Zeitraum(min.getErstellDatumZeit(), max.getErstellDatumZeit());	
+	
 	split();
 		
 	this.anzahlIncidents = incidents.size();
-	si = incidents.values().stream();
+	si = incidents.stream();
 	this.anzahlIncidentsServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / (float)anzahlIncidents);
+	this.prozentanteilIncidentsServicezeitNichtEingehalten = incidents.size() > 0 ? ((anzahlIncidentsServicezeitNichtEingehalten * 100) / (float)anzahlIncidents) : 0;
 	setDurchschnittlicheDauerMinutenIncidents(getDurchschnittlicheDauerMinutenIncidents());
-	
+		
 	this.anzahlserviceAbrufe = serviceAbrufe.size();
-	si = serviceAbrufe.values().stream();
+	si = serviceAbrufe.stream();
 	this.anzahlServiceAbrufeServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / (float)anzahlserviceAbrufe);
+	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = serviceAbrufe.size() > 0 ? ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / (float)anzahlserviceAbrufe) : 0;
 	setDurchschnittlicheDauerMinutenServiceAbrufe(getDurchschnittlicheDauerMinutenServiceAbrufe());
 	}
-	
+
+
 	private void split() 
 	{
-		for (Vorgang v : vorgaengeGesamt) 
+	beschwerden.clear();	
+	incidents.clear();
+	serviceAbrufe.clear();
+	serviceAnfrage.clear();
+	serviceInfo.clear();
+	shortCall.clear();
+	workOrder.clear();
+	customerRequest.clear();
+	
+		for (Vorgang v : vorgaengeBerichtszeitraum) 
 		{
 			switch (v.getTyp()) 
 			{
+			case EcholonConstants.TYP_BESCHWERDE:
+			beschwerden.add(v);
+			break;		
+			
 			case EcholonConstants.TYP_INCIDENT:
-			incidents.put(v.getErstellDatumZeit(), v);
+			incidents.add(v);
 			break;
 
 			case EcholonConstants.TYP_SERVICEABRUF:
-			serviceAbrufe.put(v.getErstellDatumZeit(), v);
+			serviceAbrufe.add(v);
 			break;
+			
+			case EcholonConstants.TYP_SERVICEANFRAGE:
+			serviceAnfrage.add(v);
+			break;			
+			
+			case EcholonConstants.TYP_SERVICEINFO:
+			serviceInfo.add(v);
+			break;		
+			
+			case EcholonConstants.TYP_SHORTCALL:
+			shortCall.add(v);
+			break;			
+			
+			case EcholonConstants.TYP_WORKORDER:
+			workOrder.add(v);
+			break;
+			
+			case EcholonConstants.TYP_CUSTOMERREQUEST:
+			customerRequest.add(v);
+			break;	
 			
 			default:
 			break;
@@ -85,94 +185,123 @@ private Stream<Vorgang> si = null;
 	
 	public String getBerichtsMonatAsString()
 	{
-	return berichtsZeitraum.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());	
+	return "Monatsstatisik#getBerichtsMonatAsString muss noch gemacht wertden ! ";	
+	//return berichtsZeitraum.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());	
+	}
+	
+	public int getAnzahlVorgaengeBerichtszeitraum() 
+	{
+	return vorgaengeBerichtszeitraum != null ? vorgaengeBerichtszeitraum.size() : 0;	
 	}
 	
 	public int getAnzahlVorgaengeGesamt()
 	{
-	return anzahlVorgaengeGesamt;	
-	}
-	
-	public long getAnzahlIncidents() 
-	{
-	return anzahlIncidents;
-	}
-	
-	public long getAnzahlBeschwerden() 
-	{
-	si = vorgaengeGesamt.stream();		
-	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_BESCHWERDE)).count();
-	}
-
-	public long getCustomerRequests() 
-	{
-	si = vorgaengeGesamt.stream();		
-	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_CUSTOMERREQUEST)).count();
+	return anzahlVorgaengeGesamt == 0 ? vorgaengeBerichtszeitraum.size() : anzahlVorgaengeGesamt;	
 	}
 	
 	public long getAnzahlServiceAnfragen() 
 	{
-	si = vorgaengeGesamt.stream();		
+	si = vorgaengeBerichtszeitraum.stream();		
 	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_SERVICEANFRAGE)).count();
 	}
 	
 	public long getAnzahlServiceInfo() 
 	{
-	si = vorgaengeGesamt.stream();		
+	si = vorgaengeBerichtszeitraum.stream();		
 	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_SERVICEINFO)).count();
-	}
-	
-	public long getAnzahlShortCalls() 
-	{
-	si = vorgaengeGesamt.stream();		
-	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_SHORTCALL)).count();
 	}
 	
 	public long getAnzahlWorkOrders() 
 	{
-	si = vorgaengeGesamt.stream();		
+	si = vorgaengeBerichtszeitraum.stream();		
 	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_WORKORDER)).count();
 	}
 	
-	public long getAnzahlCustomerRequests() 
+	public long getAnzahlIncidentsServicezeitEingehalten() 
 	{
-	si = vorgaengeGesamt.stream();		
-	return si.filter(v -> v.getTyp().equalsIgnoreCase(EcholonConstants.TYP_CUSTOMERREQUEST)).count();
+	si = incidents.stream();
+	anzahlIncidentsServicezeitEingehalten = si.filter(v -> v.isZielzeitEingehalten()).count();
+	return anzahlIncidentsServicezeitEingehalten;
 	}
 	
 	public long getAnzahlIncidentsServicezeitNichtEingehalten() {return anzahlIncidentsServicezeitNichtEingehalten;}
 	
-	public float getProzentanteilIncidentsServicezeitNichtEingehalten() {return prozentanteilIncidentsServicezeitNichtEingehalten;}
+	public String getProzentanteilIncidentsServicezeitEingehalten() 
+	{
+	prozentanteilIncidentsServicezeitEingehalten = (anzahlIncidentsServicezeitEingehalten * 100) / ((double)incidents.size());	
+	return df.format(prozentanteilIncidentsServicezeitEingehalten);
+	}
+	
+	public String getProzentanteilIncidentsServicezeitNichtEingehalten() 
+	{
+	prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / ((float)incidents.size()));	
+	return df.format(prozentanteilIncidentsServicezeitNichtEingehalten);
+	}
 	
 	public int getDurchschnittlicheDauerMinutenIncidents() 
 	{
-	si = incidents.values().stream();	
-	Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
-	return d.intValue();
+	int returnValue = 0;
+	
+		if (incidents.size() > 0) 
+		{
+		si = incidents.stream();	
+		Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
+		returnValue = d.intValue();
+		} 
+		else 
+		{
+		returnValue = 0;	
+		}
+	return returnValue;
 	}	
 	
 	public int getDurchschnittlicheDauerMinutenServiceAbrufe() 
 	{
-	si = serviceAbrufe.values().stream();	
-	Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
-	return d.intValue();
+	int returnValue = 0;
+		
+		if (serviceAbrufe.size() > 0) 
+		{
+		si = serviceAbrufe.stream();	
+		Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
+		returnValue = d.intValue();	
+		} 
+		else 
+		{
+		returnValue = 0;
+		}
+	return returnValue;		
 	}		
 	
-	public int getAnzahlserviceAbrufe() {return anzahlserviceAbrufe;}
+	@Override
+	public long getAnzahlServiceAbrufeServicezeitEingehalten() 
+	{
+	si = serviceAbrufe.stream();
+	anzahlServiceAbrufeServicezeitEingehalten = si.filter(v -> v.isZielzeitEingehalten()).count();
+	return anzahlServiceAbrufeServicezeitEingehalten;
+	}
 
 	public long getAnzahlServiceAbrufeServicezeitNichtEingehalten() {
 		return anzahlServiceAbrufeServicezeitNichtEingehalten;
 	}
+	
+	public String getProzentanteilServiceAbrufeServicezeitEingehalten() 
+	{
+	prozentanteilServiceAbrufeServicezeitEingehalten = (anzahlServiceAbrufeServicezeitEingehalten * 100) / ((float)serviceAbrufe.size());	
+	return df.format(prozentanteilServiceAbrufeServicezeitEingehalten);
+	}
 
-	public float getProzentanteilServiceAbrufeServicezeitNichtEingehalten() {
-		return prozentanteilServiceAbrufeServicezeitNichtEingehalten;
+	public String getProzentanteilServiceAbrufeServicezeitNichtEingehalten() 
+	{
+	prozentanteilServiceAbrufeServicezeitNichtEingehalten = (anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / ((float)serviceAbrufe.size());	
+	return df.format(prozentanteilServiceAbrufeServicezeitNichtEingehalten);
 	}
 
 	public String getBezeichnungLang() {
 	return bezeichnungLang;
 	}
 
-	public LocalDate getBerichtsZeitraum() {
+	public Zeitraum getBerichtsZeitraum() 
+	{
 		return berichtsZeitraum;
 	}	
 	

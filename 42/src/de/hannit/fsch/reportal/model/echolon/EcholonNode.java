@@ -37,7 +37,10 @@ private String berichtsMonat = null;
 	public String getBerichtsJahr() {return berichtsJahr;}
 
 	@Override
-	public void setBerichtsJahr(String berichtsJahr) {this.berichtsJahr = berichtsJahr;}
+	public void setBerichtsJahr(String berichtsJahr) 
+	{
+	this.berichtsJahr = berichtsJahr;
+	}
 
 	@Override
 	public String getBerichtsQuartal() {return berichtsQuartal;}

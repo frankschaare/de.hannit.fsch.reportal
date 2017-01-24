@@ -14,10 +14,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
-public class DataBaseThread implements Callable<JahresStatistik> 
+public class DataBaseThread implements Callable<ArrayList<Vorgang>> 
 {
 private final static Logger log = Logger.getLogger(DataBaseThread.class.getSimpleName());	
 private InitialContext ic;
@@ -54,25 +53,24 @@ private String selection = null;
 	}
 
 	@Override
-	public JahresStatistik call() throws Exception 
+	public ArrayList<Vorgang> call() throws Exception 
 	{
-	log.log(Level.INFO, "Starte asynchrone Datenbankabfrage für das Jahr " + selection);	
+	log.log(Level.INFO, "Starte asynchrone Datenbankabfrage");	
 	Instant abfrageStart = Instant.now();
 	
 	ArrayList<Vorgang> vorgaenge = new ArrayList<Vorgang>();	
 	Vorgang v = null;
 		try 
 		{
-		ps = con.prepareStatement(PreparedStatements.SELECT_ALLEVORGAENGE_AKTUELLES_JAHR);
-		ps.setString(1, "%" + selection);
+		ps = con.prepareStatement(PreparedStatements.SELECT_ALLEVORGAENGE);
 		rs = ps.executeQuery();
 						
 			while (rs.next()) 
 			{
 			v = new Vorgang();
 			v.setId(rs.getString("IncidentId"));
-			v.setErstellDatum(rs.getString("AnfrageDatum"));
-			v.setErstellZeit(rs.getString("AnfrageZeit"));
+			v.setErstellDatumZeit(rs.getTimestamp("IncidentCreatedOn"));;
+			// v.setErstellZeit(rs.getString("AnfrageZeit"));
 			v.setVorgangsNummer(rs.getString("Vorgangsnummer"));
 			v.setTyp(rs.getString("Typ").trim());
 			v.setStatus(rs.getString("Status"));
@@ -95,9 +93,9 @@ private String selection = null;
 	/*
 	 * Die Vorgänge werden in der Jahresstatistik gespeichert und es wird das Chartmodel generiert.
 	 */
-	JahresStatistik js = new JahresStatistik(vorgaenge, selection);
+	// JahresStatistik js = new JahresStatistik(vorgaenge, selection);
 	log.log(Level.INFO, vorgaenge.size() + " Datensätze aus der Datenbank geladen. Abfagezeit: " + abfrageZeit.toEpochMilli() + " Milisekunden.");
-	return js;
+	return vorgaenge;
 	}
 
 	public String getSelection() {return selection;}

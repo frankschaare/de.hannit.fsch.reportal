@@ -43,6 +43,21 @@ private int typ = 0;
 	this.endDatum = endZeit;
 	}
 	
+	public Zeitraum(LocalDateTime minDatumZeit, LocalDateTime maxDatumZeit) 
+	{
+	this.startDatum = LocalDate.of(minDatumZeit.getYear(), minDatumZeit.getMonthValue(), minDatumZeit.getDayOfMonth());
+	this.endDatum = LocalDate.of(maxDatumZeit.getYear(), maxDatumZeit.getMonthValue(), maxDatumZeit.getDayOfMonth());
+	}
+	
+	/*
+	 * Konstruktor für Jahresstatistiken
+	 */
+	public Zeitraum(String berichtsJahr) 
+	{
+		startDatum = LocalDate.of(Integer.parseInt(berichtsJahr), 1, 1);
+		endDatum = LocalDate.of(Integer.parseInt(berichtsJahr), 12, 31);
+	}
+	
 	/**
 	 * Der Konstruktor empfängt einen der im Interface Berichtszeitraum vordefinierten
 	 * Konstanten für mögliche Berichtszeiträume
@@ -200,6 +215,7 @@ private int typ = 0;
 	
 	}
 	
+
 	/*
 	 * Berechnet die enthaltenen Quartale und liegt diese in der TreeMap ab.
 	 * 
