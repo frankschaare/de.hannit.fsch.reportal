@@ -52,13 +52,13 @@ private Stream<Vorgang> si = null;
 	this.anzahlIncidents = incidents.size();
 	si = incidents.values().stream();
 	this.anzahlIncidentsServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / (float)anzahlIncidents);
+	this.prozentanteilIncidentsServicezeitNichtEingehalten = incidents.size() > 0 ? ((anzahlIncidentsServicezeitNichtEingehalten * 100) / (float)anzahlIncidents) : 0;
 	setDurchschnittlicheDauerMinutenIncidents(getDurchschnittlicheDauerMinutenIncidents());
 	
 	this.anzahlserviceAbrufe = serviceAbrufe.size();
 	si = serviceAbrufe.values().stream();
 	this.anzahlServiceAbrufeServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
-	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / (float)anzahlserviceAbrufe);
+	this.prozentanteilServiceAbrufeServicezeitNichtEingehalten = serviceAbrufe.size() > 0 ? ((anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / (float)anzahlserviceAbrufe) : 0;
 	setDurchschnittlicheDauerMinutenServiceAbrufe(getDurchschnittlicheDauerMinutenServiceAbrufe());
 	}
 	
@@ -146,16 +146,36 @@ private Stream<Vorgang> si = null;
 	
 	public int getDurchschnittlicheDauerMinutenIncidents() 
 	{
-	si = incidents.values().stream();	
-	Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
-	return d.intValue();
+	int returnValue = 0;
+	
+		if (incidents.size() > 0) 
+		{
+		si = incidents.values().stream();	
+		Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
+		returnValue = d.intValue();
+		} 
+		else 
+		{
+		returnValue = 0;	
+		}
+	return returnValue;
 	}	
 	
 	public int getDurchschnittlicheDauerMinutenServiceAbrufe() 
 	{
-	si = serviceAbrufe.values().stream();	
-	Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
-	return d.intValue();
+	int returnValue = 0;
+		
+		if (serviceAbrufe.size() > 0) 
+		{
+		si = serviceAbrufe.values().stream();	
+		Double d =  si.mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
+		returnValue = d.intValue();	
+		} 
+		else 
+		{
+		returnValue = 0;
+		}
+	return returnValue;		
 	}		
 	
 	public int getAnzahlserviceAbrufe() {return anzahlserviceAbrufe;}
