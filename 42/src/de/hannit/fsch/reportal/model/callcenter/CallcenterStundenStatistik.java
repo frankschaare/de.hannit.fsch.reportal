@@ -18,12 +18,12 @@ private	DateTimeFormatter df = DateTimeFormatter.ofPattern("HH");
 
 	public CallcenterStundenStatistik() 
 	{
-	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH);	
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH, null);	
 	}
 	
 	public CallcenterStundenStatistik(LocalDateTime startZeit, LocalDateTime endZeit) 
 	{
-	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH);	
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_STUENDLICH, null);	
 	auswertungsZeitraum.setStartDatumUhrzeit(startZeit);
 	auswertungsZeitraum.setEndDatumUhrzeit(endZeit);
 	}

@@ -39,7 +39,7 @@ private Future<HashMap<String, Vorgang>> result = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private TreeMap<LocalDate, MonatsStatistik> monatsStatistiken = new TreeMap<LocalDate, MonatsStatistik>();
-private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
+private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, null);
 private int selectedZeitraum = 0;
 private BarChartModel barModel;	
 private long maxValue = 0;
@@ -155,7 +155,7 @@ private int avgDauerIncidents = 0;
 		break;
 
 		case Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE:
-		selected = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE);
+		selected = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE, null);
 		break;
 
 		default:

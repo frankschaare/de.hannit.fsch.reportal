@@ -10,6 +10,8 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
 
+import de.hannit.fsch.reportal.model.echolon.Vorgang;
+
 /**
  * @author fsch
  * Die Klasse Zeitraum berechnet, ausgehend vom heutigen Datum,
@@ -17,13 +19,13 @@ import java.util.TreeMap;
  */
 public class Zeitraum implements Berichtszeitraum 
 {
-private LocalDate heute = LocalDate.now();	
+private LocalDate checkDate = LocalDate.now();	
 private LocalDate startDatum = null;
 private LocalDate endDatum = null;
 private LocalDateTime startDatumUhrzeit = null;
 private LocalDateTime endDatumUhrzeit = null;
-private String datumsFormat = "dd.MM.yyyy";
-private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
+private static String datumsFormat = "dd.MM.yyyy";
+public static DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 private String berichtsZeitraum = "unbekannt";
 
 private KalenderWoche kw = null;
@@ -41,12 +43,14 @@ private int typ = 0;
 	{
 	this.startDatum = startZeit;	
 	this.endDatum = endZeit;
+	this.auswertungsQuartal = new Quartal(startDatum.getMonthValue(), startDatum.getYear());
 	}
 	
 	public Zeitraum(LocalDateTime minDatumZeit, LocalDateTime maxDatumZeit) 
 	{
 	this.startDatum = LocalDate.of(minDatumZeit.getYear(), minDatumZeit.getMonthValue(), minDatumZeit.getDayOfMonth());
 	this.endDatum = LocalDate.of(maxDatumZeit.getYear(), maxDatumZeit.getMonthValue(), maxDatumZeit.getDayOfMonth());
+	this.auswertungsQuartal = new Quartal(startDatum.getMonthValue(), startDatum.getYear());
 	}
 	
 	/*
@@ -61,68 +65,74 @@ private int typ = 0;
 	/**
 	 * Der Konstruktor empfängt einen der im Interface Berichtszeitraum vordefinierten
 	 * Konstanten für mögliche Berichtszeiträume
+	 * @param max: Der letzte Vorgang, für den Daten vorliegen 
 	 */
-	public Zeitraum(int zeitRaum) 
+	public Zeitraum(int zeitRaum, Vorgang max) 
 	{
 	this.typ = zeitRaum;	
+		
+		if (max != null) 
+		{
+		checkDate = max.getErstellDatum();	
+		}
 	
 		switch (zeitRaum) 
 		{
 		// Berechnung ab dem ersten des letzten Quartals. wird benötigt, um die Daten aus dem Echolon-View zu dumpen
 		case BERICHTSZEITRAUM_LETZTES_QUARTAL:
-			switch (heute.getMonthValue()) 
+			switch (checkDate.getMonthValue()) 
 			{
 			// Heute ist im 1. Quartal: Aktualisiere Daten ab dem 01.10. des Vorjahres
 			case 1:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.OCTOBER, 1);
-			this.endDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.DECEMBER, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.OCTOBER, 1);
+			this.endDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.DECEMBER, 31);
 			break;
 			case 2:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.OCTOBER, 1);
-			this.endDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.DECEMBER, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.OCTOBER, 1);
+			this.endDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.DECEMBER, 31);
 			break;
 			case 3:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.OCTOBER, 1);
-			this.endDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.DECEMBER, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.OCTOBER, 1);
+			this.endDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.DECEMBER, 31);
 			break;
 			// Heute ist im 2. Quartal: Aktualisiere Daten ab dem 01.01. des aktuellen Jahres			
 			case 4:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.JANUARY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.MARCH, 31);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.JANUARY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.MARCH, 31);
 			break;
 			case 5:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.JANUARY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.MARCH, 31);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.JANUARY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.MARCH, 31);
 			break;			
 			case 6:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.JANUARY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.MARCH, 31);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.JANUARY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.MARCH, 31);
 			break;
 			// Heute ist im 3. Quartal: Aktualisiere Daten ab dem 01.04. des aktuellen Jahres			
 			case 7:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.APRIL, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.JUNE, 30);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.APRIL, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.JUNE, 30);
 			break;
 			case 8:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.APRIL, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.JUNE, 30);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.APRIL, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.JUNE, 30);
 			break;			
 			case 9:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.APRIL, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.JUNE, 30);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.APRIL, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.JUNE, 30);
 			break;
 			// Heute ist im 4. Quartal: Aktualisiere Daten ab dem 01.07. des aktuellen Jahres			
 			case 10:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.JULY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.SEPTEMBER, 30);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.JULY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.SEPTEMBER, 30);
 			break;
 			case 11:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.JULY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.SEPTEMBER, 30);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.JULY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.SEPTEMBER, 30);
 			break;			
 			case 12:
-			this.startDatum = LocalDate.of(heute.getYear(), Month.JULY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.SEPTEMBER, 30);
+			this.startDatum = LocalDate.of(checkDate.getYear(), Month.JULY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.SEPTEMBER, 30);
 			break;						
 			default:
 			break;
@@ -131,61 +141,67 @@ private int typ = 0;
 		setQuartale();
 			
 		break;			
-		// Berechnung der letzten vier Quartale
+		/*
+		 * Berechnung der letzten vier Quartale
+		 * 
+		 * Es wird geprüft, welches Quartal das letzte Quartal ist, für das VOLLSTÄNDIGE DATEN vorliegen
+		 * 
+		 */
 		case BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE:
-			switch (heute.getMonthValue()) 
+			
+			switch (checkDate.getMonthValue()) 
 			{
 			// Heute ist im 1. Quartal: Abfrage Quartale 1-4 des Vorjahres
 			case 1:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.JANUARY, 1);
-			this.endDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.DECEMBER, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.JANUARY, 1);
+			this.endDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.DECEMBER, 31);
 			break;
 			case 2:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.JANUARY, 1);
-			this.endDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.DECEMBER, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.JANUARY, 1);
+			this.endDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.DECEMBER, 31);
 			break;
 			case 3:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.JANUARY, 1);
-			this.endDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.DECEMBER, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.JANUARY, 1);
+			this.endDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.DECEMBER, 31);
 			break;
 			// Heute ist im 2. Quartal: Abfrage Quartale 2-4 des Vorjahres und Quartal 1 des aktuellen Jahres			
 			case 4:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.APRIL, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.MARCH, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.APRIL, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.MARCH, 31);
 			break;
 			case 5:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.APRIL, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.MARCH, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.APRIL, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.MARCH, 31);
 			break;			
 			case 6:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.APRIL, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.MARCH, 31);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.APRIL, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.MARCH, 31);
 			break;
 			// Heute ist im 3. Quartal: Abfrage Quartale 3-4 des Vorjahres und Quartal 1-2 des aktuellen Jahres			
 			case 7:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.JULY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.JUNE, 30);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.JULY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.JUNE, 30);
 			break;
 			case 8:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.JULY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.JUNE, 30);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.JULY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.JUNE, 30);
 			break;			
 			case 9:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.JULY, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.JUNE, 30);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.JULY, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.JUNE, 30);
 			break;
 			// Heute ist im 4. Quartal: Abfrage Quartal 4 des Vorjahres und Quartal 1-3 des aktuellen Jahres			
 			case 10:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.OCTOBER, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.SEPTEMBER, 30);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.OCTOBER, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.SEPTEMBER, 30);
 			break;
 			case 11:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.OCTOBER, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.SEPTEMBER, 30);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.OCTOBER, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.SEPTEMBER, 30);
 			break;			
 			case 12:
-			this.startDatum = LocalDate.of(heute.minusYears(1).getYear(), Month.OCTOBER, 1);
-			this.endDatum = LocalDate.of(heute.getYear(), Month.SEPTEMBER, 30);
+			this.startDatum = LocalDate.of(checkDate.minusYears(1).getYear(), Month.OCTOBER, 1);
+			this.endDatum = LocalDate.of(checkDate.getYear(), Month.SEPTEMBER, 30);
 			break;						
 			default:
 			break;
@@ -198,7 +214,7 @@ private int typ = 0;
 		
 		// Berechnung der letzten zwölf Monate
 		case BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE:
-		LocalDate monatsErster = LocalDate.of(heute.getYear(), heute.getMonthValue(), 1);
+		LocalDate monatsErster = LocalDate.of(checkDate.getYear(), checkDate.getMonthValue(), 1);
 		this.startDatum = monatsErster.minusMonths(12);
 		this.endDatum = monatsErster.minusDays(1);
 		break;
@@ -206,7 +222,7 @@ private int typ = 0;
 		// Berechnung Gesamtzeitraum. Daten liegen erst ab dem 01.01.2013 vor
 		case BERICHTSZEITRAUM_GESAMT:
 		this.startDatum = LocalDate.of(2013, 1, 1);
-		this.endDatum = heute;
+		this.endDatum = checkDate;
 		break;
 		
 		default:
@@ -215,7 +231,9 @@ private int typ = 0;
 	
 	}
 	
-
+	
+	
+	
 	/*
 	 * Berechnet die enthaltenen Quartale und liegt diese in der TreeMap ab.
 	 * 

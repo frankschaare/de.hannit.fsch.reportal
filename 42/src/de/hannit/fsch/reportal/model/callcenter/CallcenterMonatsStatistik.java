@@ -27,7 +27,7 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	 */
 	public CallcenterMonatsStatistik() 
 	{
-	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONATLICH);
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONATLICH, null);
 	}
 
 	public void addTagesStatistik(CallcenterTagesStatistik ct) 

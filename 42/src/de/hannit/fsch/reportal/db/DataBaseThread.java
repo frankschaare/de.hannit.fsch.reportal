@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
-public class DataBaseThread implements Callable<ArrayList<Vorgang>> 
+public class DataBaseThread implements Callable<HashMap<String, Vorgang>> 
 {
 private final static Logger log = Logger.getLogger(DataBaseThread.class.getSimpleName());	
 private InitialContext ic;
@@ -25,6 +25,7 @@ private Connection con = null;
 private PreparedStatement ps = null;
 private ResultSet rs = null;
 private String selection = null;
+private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();	
 
 	public DataBaseThread() 
 	{
@@ -53,12 +54,12 @@ private String selection = null;
 	}
 
 	@Override
-	public ArrayList<Vorgang> call() throws Exception 
+	public HashMap<String, Vorgang> call() throws Exception 
 	{
 	log.log(Level.INFO, "Starte asynchrone Datenbankabfrage");	
 	Instant abfrageStart = Instant.now();
 	
-	ArrayList<Vorgang> vorgaenge = new ArrayList<Vorgang>();	
+	distinctCases = new HashMap<String, Vorgang>();	
 	Vorgang v = null;
 		try 
 		{
@@ -80,7 +81,10 @@ private String selection = null;
 			v.setReaktionszeitEingehalten(rs.getString("Reaktionszeit_eingehalten").equalsIgnoreCase("Reaktionszeit eingehalten") ? true : false);
 			v.setZielzeitEingehalten(rs.getString("Zielzeit_eingehalten").equalsIgnoreCase("Zielzeit eingehalten") ? true : false);
 				
-			vorgaenge.add(v);
+				if (!distinctCases.containsKey(v.getId())) 
+				{
+				distinctCases.put(v.getId(), v);
+				} 
 			}
 		} 
 		catch (SQLException e) 
@@ -94,8 +98,8 @@ private String selection = null;
 	 * Die Vorgänge werden in der Jahresstatistik gespeichert und es wird das Chartmodel generiert.
 	 */
 	// JahresStatistik js = new JahresStatistik(vorgaenge, selection);
-	log.log(Level.INFO, vorgaenge.size() + " Datensätze aus der Datenbank geladen. Abfagezeit: " + abfrageZeit.toEpochMilli() + " Milisekunden.");
-	return vorgaenge;
+	log.log(Level.INFO, this.getClass().getName() +  ": " + distinctCases.size() + " Datensätze aus der Datenbank geladen. Abfagezeit: " + abfrageZeit.toEpochMilli() + " Milisekunden.");
+	return distinctCases;
 	}
 
 	public String getSelection() {return selection;}

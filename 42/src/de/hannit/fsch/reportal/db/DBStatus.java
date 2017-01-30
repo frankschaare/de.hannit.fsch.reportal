@@ -84,14 +84,14 @@ private Future<Integer> result = null;
 			{
 			case 0: // lokale Datenbank ist leer, es wird ein kompletter Dump durchgeführt
 			log.log(Level.INFO, "Keine Daten in lokaler EcholonDB gefunden. Starte Komplettdump der Echolon-View. ");
-			dump.setAbfrageZeitraum(new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_GESAMT));
+			dump.setAbfrageZeitraum(new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_GESAMT, null));
 			
 			result = executor.submit(dump);
 			break;
 
 			default: // lokale Datenbank ist nicht leer, es werden nur Daten nach dem Ersten des letzten Quartals gedumpt.
 			log.log(Level.INFO, "Es wurden " + anzahlDatensätze + " Datensätze in lokaler EcholonDB gefunden. Starte Dump der Echolon-View ab dem Ersten des letzten Quartals. ");
-			dump.setAbfrageZeitraum(new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL));
+			dump.setAbfrageZeitraum(new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL, null));
 				
 			break;
 			}

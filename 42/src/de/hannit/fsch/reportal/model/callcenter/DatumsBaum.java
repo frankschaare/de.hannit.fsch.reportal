@@ -33,7 +33,7 @@ private CallcenterDBThread callcenterAbfrage = null;
 private Future<TreeMap<LocalDateTime, CallcenterStatistik>> result = null;
 private Future<Boolean> dbCacheGeschrieben = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
-private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_GESAMT);
+private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_GESAMT, null);
 private TreeMap<LocalDateTime, CallcenterStatistik> statisikenGesamt;
 private CallcenterAuswertung auswertung = null;
 private DefaultTreeNode selectedNode = null;

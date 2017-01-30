@@ -2,17 +2,20 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+<f:view contentType="text/html">
 <h:head>
-	<title>HannIT Reportal</title>
-	<h:outputStylesheet library="css" name="default.css" target="head" />
+	<f:facet name="last">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>HannIT Reportal</title>
+		<h:outputStylesheet library="css" name="default.css" target="head" />
+	</f:facet>
 </h:head>
-<body>
+<h:body>
 	<div id="logo">
 		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
 			styleClass="logo" />
@@ -60,7 +63,7 @@
 							<h:outputText value="Anzahl Serviceabrufe:" />
 						</p:column>
 						<p:column>
-							<h:outputText value="#{edb.jahresstatistik.anzahlServiceabrufe}" />
+							<h:outputText value="#{edb.jahresstatistik.anzahlServiceAbrufe}" />
 						</p:column>
 
 						<p:column>
@@ -217,8 +220,8 @@
 									</p:column>
 								</p:dataTable>
 							</p:tab>
-							<p:tab title="Serviceabrufe (#{edb.jahresstatistik.anzahlServiceabrufe})">
-								<p:dataTable id="tblServiceabrufe" var="vorgang" value="#{edb.jahresstatistik.serviceabrufe}">
+							<p:tab title="Serviceabrufe (#{edb.jahresstatistik.anzahlServiceAbrufe})">
+								<p:dataTable id="tblServiceabrufe" var="vorgang" value="#{edb.jahresstatistik.serviceAbrufe}">
 									<f:facet name="header">
 										<h:commandLink>
 											<h:graphicImage value="#{resource['images:Excel2013.png']}" styleClass="dataExp" />
@@ -687,15 +690,22 @@
 							</p:tab>							
 		
 							<p:tab title="Summe (#{edb.jahresstatistik.summeVorgaenge})">
-								<p:dataTable id="tblZusammenfassung" var="z" value="#{edb.jahresstatistik.zusammenfassung}">
-									<f:facet name="header">Zusammenfassung</f:facet>
-									<p:column>
-										<h:outputText value="#{z.key}" />
-									</p:column>
-									<p:column>
-										<h:outputText value="#{z.value}" />
-									</p:column>
-								</p:dataTable>
+								<p:layout styleClass="hit-layout-unit-summary">
+									<p:layoutUnit position="west" resizable="true" size="280" minSize="100">
+										<p:dataTable id="tblZusammenfassung" var="z" value="#{edb.jahresstatistik.zusammenfassung}">
+											<f:facet name="header">Zusammenfassung</f:facet>
+											<p:column>
+												<h:outputText value="#{z.key}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="#{z.value}" />
+											</p:column>
+										</p:dataTable>
+									</p:layoutUnit>
+								    <p:layoutUnit position="center">
+								     	<p:chart type="pie" model="#{edb.jahresstatistik.pieModel}" style="width:600px;height:100%" />
+								    </p:layoutUnit>									
+								</p:layout>
 							</p:tab>							
 
 							
@@ -705,5 +715,6 @@
 			</p:layout>
 		</h:form>
 	</div>
-</body>
+</h:body>
+</f:view>
 </html>

@@ -31,7 +31,7 @@ public class CallcenterChart
 private CallcenterDBThread callcenterAbfrage = null;
 private Future<TreeMap<LocalDateTime, CallcenterStatistik>> result = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
-private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
+private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, null);
 private int selectedZeitraum = 0;
 private long maxValue = 0;
 private String ticks = null;
@@ -80,7 +80,7 @@ private CallcenterAuswertung auswertung = null;
 		break;
 
 		case Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE:
-		selected = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE);
+		selected = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE, null);
 		break;
 
 		default:

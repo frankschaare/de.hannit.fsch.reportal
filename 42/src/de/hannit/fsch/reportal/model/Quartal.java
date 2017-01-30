@@ -14,6 +14,7 @@ import java.time.Period;
 public class Quartal 
 {
 private int quartalsNummer = 0;
+private int quartalsJahr = 0;
 private String bezeichnung = "unbekannt";
 private String bezeichnungLang = "unbekannt";
 private int index = 0;	
@@ -63,6 +64,7 @@ private Period quartalsPeriode = null;
 	public void setQuartalsNummer(int quartalsNummer, int jahr) 
 	{
 	this.quartalsNummer = quartalsNummer;
+	this.quartalsJahr = jahr;
 		
 		switch (quartalsNummer) 
 		{
@@ -130,6 +132,10 @@ private Period quartalsPeriode = null;
 
 	public int getQuartalsNummer() {
 		return quartalsNummer;
+	}
+	
+	public int getQuartalsJahr() {
+		return quartalsJahr;
 	}
 
 	public LocalDate getStartDatum() {

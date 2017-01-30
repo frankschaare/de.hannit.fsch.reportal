@@ -25,7 +25,7 @@
 	<div id="content">
 		<h:form id="form">
 		<h1 class="title">Zusammenfassung der Monatswerte für alle Vorgänge</h1>
-		<h1 class="subtitle"><h:outputText value="#{ez.subtitle}" /></h1>
+		<h1 class="subtitle"><h:outputText value="#{ez.subtitle}" title="Ausgwertet werden die letzten vier Quartale, für die vollständige Daten vorliegen."/></h1>
 			<!-- ez ist Backing Bean: de.hannit.fsch.reportal.db.EcholonZusammenfassung -->			
 			<table>
 				<thead>
@@ -69,10 +69,10 @@
 						<td><h:outputText value="#{ez.quartale[3].monate[0].anzahlVorgaengeGesamt}" /></td>
 						<td><h:outputText value="#{ez.quartale[3].monate[1].anzahlVorgaengeGesamt}" /></td>
 						<td><h:outputText value="#{ez.quartale[3].monate[2].anzahlVorgaengeGesamt}" /></td>
-						<td><h:outputText value="#{ez.quartale[0].vorgaengeGesamt}" /></td>
-						<td><h:outputText value="#{ez.quartale[1].vorgaengeGesamt}" /></td>
-						<td><h:outputText value="#{ez.quartale[2].vorgaengeGesamt}" /></td>
-						<td><h:outputText value="#{ez.quartale[3].vorgaengeGesamt}" /></td>				
+						<td><h:outputText value="#{ez.quartale[0].anzahlVorgaengeBerichtszeitraum}" /></td>
+						<td><h:outputText value="#{ez.quartale[1].anzahlVorgaengeBerichtszeitraum}" /></td>
+						<td><h:outputText value="#{ez.quartale[2].anzahlVorgaengeBerichtszeitraum}" /></td>
+						<td><h:outputText value="#{ez.quartale[3].anzahlVorgaengeBerichtszeitraum}" /></td>				
 					</tr>
 					
 					<tr class="incidents">
@@ -295,22 +295,22 @@
 					
 					<tr class="serviceAbrufe">
 						<td class="label">Anzahl Serviceabrufe:</td>
-						<td><h:outputText value="#{ez.quartale[0].monate[0].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[0].monate[1].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[0].monate[2].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[0].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[1].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[1].monate[2].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[0].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[1].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[2].monate[2].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[0].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[1].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[3].monate[2].anzahlserviceAbrufe}" /></td>												
-						<td><h:outputText value="#{ez.quartale[0].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[1].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[2].anzahlserviceAbrufe}" /></td>
-						<td><h:outputText value="#{ez.quartale[3].anzahlserviceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[0].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[1].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[0].monate[2].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[0].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[1].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[1].monate[2].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[0].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[1].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[2].monate[2].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[0].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[1].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[3].monate[2].anzahlServiceAbrufe}" /></td>												
+						<td><h:outputText value="#{ez.quartale[0].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[1].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[2].anzahlServiceAbrufe}" /></td>
+						<td><h:outputText value="#{ez.quartale[3].anzahlServiceAbrufe}" /></td>
 					</tr>	
 					<tr class="serviceAbrufe">
 						<td class="label">Servicezeit nicht eingehalten:</td>

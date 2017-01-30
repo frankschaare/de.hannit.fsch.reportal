@@ -3,8 +3,11 @@ package de.hannit.fsch.reportal.model.echolon;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.primefaces.model.chart.PieChartModel;
 
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.Quartal;
@@ -57,9 +60,7 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 		}
 
 	}
-	
-	
-	
+
 	private void setQuartale(int iBerichtsJahr) 
 	{
 	quartale.add(new Quartal(1,iBerichtsJahr));
@@ -233,8 +234,8 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 	public ArrayList<Vorgang> getWorkorders() {return workOrder;}
 	public ArrayList<Vorgang> getCustomerRequests() {return customerRequest;}
 	
-	public long getAnzahlIncidents() {return (incidents != null && incidents.size() > 0) ? incidents.size() : 0;}
-	public int getAnzahlServiceabrufe() {return (serviceAbrufe != null && serviceAbrufe.size() > 0) ? serviceAbrufe.size() : 0;}
+	public Integer getAnzahlIncidents() {return (incidents != null && incidents.size() > 0) ? incidents.size() : 0;}
+	public int getAnzahlServiceAbrufe() {return (serviceAbrufe != null && serviceAbrufe.size() > 0) ? serviceAbrufe.size() : 0;}
 	public int getAnzahlBeschwerden() {return (beschwerden != null && beschwerden.size() > 0) ? beschwerden.size() : 0;}
 	public int getAnzahlServiceanfragen() {return (serviceAnfrage != null && serviceAnfrage.size() > 0) ? serviceAnfrage.size() : 0;}
 	public int getAnzahlServiceinfos() {return (serviceInfo != null && serviceInfo.size() > 0) ? serviceInfo.size() : 0;}
@@ -247,7 +248,7 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 	int summe = 0;	
 		
 	summe += getAnzahlIncidents();
-	summe += getAnzahlServiceabrufe();
+	summe += getAnzahlServiceAbrufe();
 	summe += getAnzahlBeschwerden();
 	summe += getAnzahlServiceanfragen();
 	summe += getAnzahlServiceinfos();
@@ -257,6 +258,44 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 	
 	return summe;
 	}
+	
+	@Override
+	public ArrayList<SimpleEntry<String, Integer>> getZusammenfassung() 
+	{
+	zusammenfassung = new ArrayList<>();
+	
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_CUSTOMERREQUEST, getAnzahlCustomerRequests()));
+	
+	return zusammenfassung;
+	}
+	
+	
+	@Override
+	public PieChartModel getPieModel() 
+	{
+	pieModel = new PieChartModel();
+	pieModel.set(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents());
+	pieModel.set(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe());
+	pieModel.set(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen());
+	pieModel.set(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos());
+	pieModel.set(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden());
+	pieModel.set(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls());
+	pieModel.set(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders());
+	pieModel.set(EcholonConstants.TYP_CUSTOMERREQUEST, getAnzahlCustomerRequests());
+	
+	 pieModel.setTitle("Vorgangsübersicht");
+     pieModel.setLegendPosition("w");
+	
+	return pieModel;
+	}
+	
 
 	public String getBerichtsJahr() {return berichtsJahr;}
 	

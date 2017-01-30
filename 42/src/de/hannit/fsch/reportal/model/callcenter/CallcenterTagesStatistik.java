@@ -31,7 +31,7 @@ private Stream<CallcenterStundenStatistik> stundenStatistikenStream = null;
 	 */
 	public CallcenterTagesStatistik() 
 	{
-	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_TAG);
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_TAG, null);
 	}
 	
 	/*

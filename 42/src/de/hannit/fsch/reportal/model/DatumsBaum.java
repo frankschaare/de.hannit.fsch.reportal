@@ -1,8 +1,5 @@
 package de.hannit.fsch.reportal.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,7 +12,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 import org.primefaces.model.DefaultTreeNode;
@@ -38,7 +34,8 @@ private TreeNode root;
 private HashMap<String, EcholonNode> jahresNodes = new HashMap<String, EcholonNode>();
 private ExecutorService executor = Executors.newCachedThreadPool();
 private DataBaseThread dbThread = null;
-private Future<ArrayList<Vorgang>> result = null;
+private Future<HashMap<String, Vorgang>> result = null;
+private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private ArrayList<Vorgang> vorgaenge = null;
 private Vorgang max = null;
 private Vorgang min = null;
@@ -50,7 +47,7 @@ private Vorgang min = null;
 	result = executor.submit(dbThread);	
 		try 
 		{
-		vorgaenge = result.get();
+		distinctCases = result.get();
 		} 
 		catch (InterruptedException e) 
 		{
@@ -72,11 +69,10 @@ private Vorgang min = null;
 	 */
     private void setMinMaxNode() 
     {
-	max = vorgaenge.stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
-	min = vorgaenge.stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+	max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+	min = distinctCases.values().stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
 	}
 
-	@SuppressWarnings("unused")
 	@PostConstruct
     public void init() 
     {
@@ -103,7 +99,12 @@ private Vorgang min = null;
 		aktuellerJahresknoten = new EcholonNode(berichtsJahr, root);
 		aktuellerJahresknoten.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_JAHR);
 		aktuellerJahresknoten.setBerichtsJahr(berichtsJahr);
-			
+		
+			vorgaenge = new ArrayList<>();
+			for (Vorgang vorgang : distinctCases.values()) 
+			{
+			vorgaenge.add(vorgang);	
+			}
 		js = new JahresStatistik(vorgaenge, berichtsJahr);
 		aktuellerJahresknoten.setData(js);
 			
@@ -228,102 +229,4 @@ private Vorgang min = null;
 	    TreeNode node201111 = new DefaultTreeNode(DatumsConstants.NOVEMBER_LANG, node2011Q4);
 	    TreeNode node201112 = new DefaultTreeNode(DatumsConstants.DEZEMBER_LANG, node2011Q4);		
 	}  
-	
-	private void setQuartalsNodes()
-	{
-	EcholonNode tempQuartal = null;	
-	EcholonNode tempMonat = null;
-	
-		// Für alle vorhandenen Jahresknoten werden Quartalsknoten eingehängt
-		for (EcholonNode jahresNode : jahresNodes.values()) 
-		{
-
-			for (int i = 1; i <= 4; i++) 
-			{
-				
-				switch (i) 
-				{
-				// Erstes Quartal
-				case 1:
-				tempQuartal = new EcholonNode(DatumsConstants.QUARTAL1_LANG, jahresNode);
-				tempQuartal.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_Quartal);
-				tempQuartal.setBerichtsQuartal(DatumsConstants.QUARTAL1);
-				
-				tempMonat = new EcholonNode(DatumsConstants.JANUAR_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.JANUAR_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.FEBRUAR_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.FEBRUAR_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.MÄRZ_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.MÄRZ_KURZ);
-				break;
-				
-				// Zweites Quartal
-				case 2:
-				tempQuartal = new EcholonNode(DatumsConstants.QUARTAL2_LANG, jahresNode);
-				tempQuartal.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_Quartal);
-				tempQuartal.setBerichtsQuartal(DatumsConstants.QUARTAL2);
-				
-				tempMonat = new EcholonNode(DatumsConstants.APRIL_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.APRIL_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.MAI_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.MAI_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.JUNI_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.JUNI_KURZ);
-				break;
-
-				// Drittes Quartal
-				case 3:
-				tempQuartal = new EcholonNode(DatumsConstants.QUARTAL3_LANG, jahresNode);
-				tempQuartal.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_Quartal);
-				tempQuartal.setBerichtsQuartal(DatumsConstants.QUARTAL3);
-				
-				tempMonat = new EcholonNode(DatumsConstants.JULI_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.JULI_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.AUGUST_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.AUGUST_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.SEPTEMBER_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.SEPTEMBER_KURZ);
-				break;				
-				
-				// Viertes Quartal
-				case 4:
-				tempQuartal = new EcholonNode(DatumsConstants.QUARTAL4_LANG, jahresNode);
-				tempQuartal.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_Quartal);
-				tempQuartal.setBerichtsQuartal(DatumsConstants.QUARTAL4);
-				
-				tempMonat = new EcholonNode(DatumsConstants.OKTOBER_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.OKTOBER_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.NOVEMBER_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.NOVEMBER_KURZ);
-				
-				tempMonat = new EcholonNode(DatumsConstants.DEZEMBER_LANG, tempQuartal);
-				tempMonat.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_MONAT);
-				tempMonat.setBerichtsMonat(DatumsConstants.DEZEMBER_KURZ);
-				break;				
-				default:
-					break;
-				}
-				
-			}
-		}
-	}
-	
 }

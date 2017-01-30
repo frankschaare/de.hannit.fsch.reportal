@@ -46,7 +46,7 @@ protected DateTimeFormatter timeStampFormatter = DateTimeFormatter.ofPattern("dd
 	 */
 	public CallcenterStatistik() 
 	{
-	auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_STUENDLICH);	
+	auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_STUENDLICH, null);	
 	}
 
 	public String getBerichtsZeitraum() 

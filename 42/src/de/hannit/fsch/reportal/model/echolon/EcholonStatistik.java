@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 
+import org.primefaces.model.chart.PieChartModel;
+
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -36,6 +38,8 @@ protected double avgDauerStundenServiceAbrufe = 0;
 protected double avgDauerTageServiceAbrufe = 0;
 protected String label = null;
 
+protected PieChartModel pieModel;
+
 protected DecimalFormat df = new DecimalFormat( "###.##" );
 
 
@@ -55,6 +59,11 @@ protected DecimalFormat df = new DecimalFormat( "###.##" );
 	{
 		
 	}
+	
+    public PieChartModel getPieModel() 
+    {
+    return null;
+    }
 	
 	public int getAnzahlVorgaengeBerichtszeitraum() 
 	{

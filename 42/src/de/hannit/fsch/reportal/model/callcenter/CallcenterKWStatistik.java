@@ -16,7 +16,7 @@ private Stream<CallcenterTagesStatistik> tagesStatistikenStream = null;
 	public CallcenterKWStatistik() 
 	{
 	statistikenTag = new TreeMap<LocalDate, CallcenterTagesStatistik>();
-	auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_KW);
+	auswertungsZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_KW, null);
 	}
 
 	public void addTagesStatistik(CallcenterTagesStatistik incoming) 

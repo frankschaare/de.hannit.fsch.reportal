@@ -58,7 +58,7 @@ private ArrayList<String> lines = null;
 	public HRGZusammenfassung() 
 	{
 	// Standardabfragezeitraum über die letzen drei Monate:
-	abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL);
+	abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL, null);
 	
 	dbThread = new HRGDBThread();
 	dbThread.setAbfrageZeitraum(abfrageZeitraum);
@@ -114,7 +114,7 @@ private ArrayList<String> lines = null;
 				lineDauerIncidentStunden = lineDauerIncidentStunden + ";" + m.getFormattedAvgDauerStundenIncidents();
 				lineDauerIncidentTage = lineDauerIncidentTage + ";" + m.getFormattedAvgDauerTageIncidents();
 				
-				lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + m.getAnzahlServiceabrufe();
+				lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + m.getAnzahlServiceAbrufe();
 				lineAnzahlServiceabrufeServicezeitNichtEingehalten = lineAnzahlServiceabrufeServicezeitNichtEingehalten + ";" + m.getAnzahlServiceAbrufeServicezeitNichtEingehalten();
 				lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent = lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent + ";" + m.getFormattedProzentanteilServiceAbrufeServicezeitNichtEingehalten() + " %";
 				lineDauerServiceabrufeMinuten = lineDauerServiceabrufeMinuten + ";" + m.getDurchschnittlicheDauerMinutenServiceAbrufe();
@@ -134,7 +134,7 @@ private ArrayList<String> lines = null;
 			lineDauerIncidentStunden = lineDauerIncidentStunden + ";" + qs.getFormattedAvgDauerStundenIncidents();
 			lineDauerIncidentTage = lineDauerIncidentTage + ";" + qs.getFormattedAvgDauerTageIncidents();
 			
-			lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + qs.getAnzahlServiceabrufe();
+			lineAnzahlServiceabrufe = lineAnzahlServiceabrufe + ";" + qs.getAnzahlServiceAbrufe();
 			lineAnzahlServiceabrufeServicezeitNichtEingehalten = lineAnzahlServiceabrufeServicezeitNichtEingehalten + ";" + qs.getAnzahlServiceAbrufeServicezeitNichtEingehalten();
 			lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent = lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent + ";" + qs.getFormattedProzentanteilServiceAbrufeServicezeitNichtEingehalten() + " %";
 			lineDauerServiceabrufeMinuten = lineDauerServiceabrufeMinuten + ";" + qs.getDurchschnittlicheDauerMinutenServiceAbrufe();

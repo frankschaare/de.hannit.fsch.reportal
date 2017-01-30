@@ -27,7 +27,7 @@ private Quartal quartal = null;
 	 */
 	public CallcenterQuartalsStatistik() 
 	{
-	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_QUARTALSWEISE);
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_QUARTALSWEISE, null);
 	}
 	
 	public void addMonatsStatistik(CallcenterMonatsStatistik incoming) 

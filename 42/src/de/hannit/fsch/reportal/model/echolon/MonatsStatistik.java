@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+import org.primefaces.model.chart.PieChartModel;
+
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 
@@ -57,7 +59,7 @@ private Stream<Vorgang> si = null;
 	public ArrayList<Vorgang> getCustomerRequests() {return customerRequest;}
 	
 	public int getAnzahlIncidents() {return (incidents != null && incidents.size() > 0) ? incidents.size() : 0;}
-	public int getAnzahlServiceabrufe() {return (serviceAbrufe != null && serviceAbrufe.size() > 0) ? serviceAbrufe.size() : 0;}
+	public int getAnzahlServiceAbrufe() {return (serviceAbrufe != null && serviceAbrufe.size() > 0) ? serviceAbrufe.size() : 0;}
 	public int getAnzahlBeschwerden() {return (beschwerden != null && beschwerden.size() > 0) ? beschwerden.size() : 0;}
 	public int getAnzahlServiceanfragen() {return (serviceAnfrage != null && serviceAnfrage.size() > 0) ? serviceAnfrage.size() : 0;}
 	public int getAnzahlServiceinfos() {return (serviceInfo != null && serviceInfo.size() > 0) ? serviceInfo.size() : 0;}
@@ -70,7 +72,7 @@ private Stream<Vorgang> si = null;
 	int summe = 0;	
 		
 	summe += getAnzahlIncidents();
-	summe += getAnzahlServiceabrufe();
+	summe += getAnzahlServiceAbrufe();
 	summe += getAnzahlBeschwerden();
 	summe += getAnzahlServiceanfragen();
 	summe += getAnzahlServiceinfos();
@@ -87,7 +89,7 @@ private Stream<Vorgang> si = null;
 	zusammenfassung = new ArrayList<>();
 	
 	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents()));
-	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceabrufe()));
+	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe()));
 	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen()));
 	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos()));
 	zusammenfassung.add(new SimpleEntry<String, Integer>(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden()));
@@ -98,6 +100,25 @@ private Stream<Vorgang> si = null;
 	return zusammenfassung;
 	}
 
+	@Override
+	public PieChartModel getPieModel() 
+	{
+	pieModel = new PieChartModel();
+	pieModel.set(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents());
+	pieModel.set(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe());
+	pieModel.set(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen());
+	pieModel.set(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos());
+	pieModel.set(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden());
+	pieModel.set(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls());
+	pieModel.set(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders());
+	pieModel.set(EcholonConstants.TYP_CUSTOMERREQUEST, getAnzahlCustomerRequests());
+	
+	 pieModel.setTitle("Vorgangsübersicht");
+     pieModel.setLegendPosition("w");
+	
+	return pieModel;
+	}
+	
 	@Override
 	public ArrayList<Vorgang> getVorgaengeBerichtszeitraum() 
 	{

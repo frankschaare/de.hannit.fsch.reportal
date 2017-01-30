@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TreeMap;
@@ -19,6 +20,7 @@ import java.util.concurrent.Future;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import de.hannit.fsch.reportal.db.DataBaseThread;
 import de.hannit.fsch.reportal.db.EcholonDBThread;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
@@ -30,12 +32,12 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 @SessionScoped
 public class EcholonMonatsChart 
 {
-private EcholonDBThread echolonAbfrage = null;
+private DataBaseThread echolonAbfrage = null;
 private Future<HashMap<String, Vorgang>> result = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private TreeMap<LocalDate, MonatsStatistik> monatsStatistiken = new TreeMap<LocalDate, MonatsStatistik>();
-private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
+private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, null);
 private Zeitraum abfrageZeitraum = null;
 private int selectedZeitraum = 0;
 private long maxValue = 0;
@@ -52,6 +54,8 @@ private String seriesCustomerRequest  = null;
 private String seriesShortCall  = null;
 private String seriesWorkOrder  = null;
 private String seriesAVGWartezeit = null;
+private Vorgang max = null;
+private Vorgang min = null;
 
 	/**
 	 * Managed Bean für die Darstellung der Echolon-Daten im Chart 
@@ -59,9 +63,30 @@ private String seriesAVGWartezeit = null;
 	public EcholonMonatsChart() 
 	{
 	// Standardmässig werden die Echolon Daten der vergangenen vier Quartale abgefragt.
-	echolonAbfrage = new EcholonDBThread();
+	echolonAbfrage = new DataBaseThread();
+	result = executor.submit(echolonAbfrage);
+		try 
+		{
+		distinctCases = result.get();
+		setMinMaxVorgang();
+		setMonatsstatistiken();
+		} 
+		catch (InterruptedException | ExecutionException e) 
+		{
+		e.printStackTrace();
+		}		
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
 	}
+	
+	/*
+	 * Ermittelt den jüngsten Vorgang und legt fest,
+	 * welches der oberste Node im Baum sein wird
+	 */
+    private void setMinMaxVorgang() 
+    {
+	max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+	min = distinctCases.values().stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+	}	
 	
 	/*
 	 * Aufteilung der gesamten Vorgänge nach Monaten,
@@ -110,24 +135,14 @@ private String seriesAVGWartezeit = null;
 		break;
 
 		case Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE:
-		abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE);
+		abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE, null);
 		break;
 
 		default:
 			break;
 		}
 
-	echolonAbfrage.setAbfrageZeitraum(abfrageZeitraum);
-	result = executor.submit(echolonAbfrage);
-		try 
-		{
-		distinctCases = result.get();
-		setMonatsstatistiken();
-		} 
-		catch (InterruptedException | ExecutionException e) 
-		{
-		e.printStackTrace();
-		}		
+	// echolonAbfrage.setAbfrageZeitraum(abfrageZeitraum);
 	}
 
 	public long getMaxValue() {return maxValue;}
@@ -190,7 +205,7 @@ private String seriesAVGWartezeit = null;
 	seriesServiceAbruf = "[";	
 		for (MonatsStatistik m : monatsStatistiken.values()) 
 		{
-		seriesServiceAbruf = seriesServiceAbruf + m.getAnzahlServiceabrufe() + ",";	
+		seriesServiceAbruf = seriesServiceAbruf + m.getAnzahlServiceAbrufe() + ",";	
 		}
 	seriesServiceAbruf = seriesServiceAbruf + "]";	
 	

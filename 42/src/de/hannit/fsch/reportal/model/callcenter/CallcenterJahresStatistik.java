@@ -28,7 +28,7 @@ private int auswertungsJahr = 0;
 	 */
 	public CallcenterJahresStatistik() 
 	{
-	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_JAEHRLICH);
+	auswertungsZeitraum = new Zeitraum(Berichtszeitraum.BERICHTSZEITRAUM_JAEHRLICH, null);
 	}
 
 	public void addMonatsStatistik(CallcenterMonatsStatistik incoming) 
