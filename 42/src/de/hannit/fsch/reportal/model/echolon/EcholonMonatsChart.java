@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
@@ -16,12 +17,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import de.hannit.fsch.reportal.db.DataBaseThread;
-import de.hannit.fsch.reportal.db.EcholonDBThread;
+import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -32,12 +37,15 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 @SessionScoped
 public class EcholonMonatsChart 
 {
+private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());
+private Stream<Vorgang> si = null;
 private DataBaseThread echolonAbfrage = null;
 private Future<HashMap<String, Vorgang>> result = null;
 private ExecutorService executor = Executors.newCachedThreadPool();
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
+private ArrayList<Vorgang> vorgaengeBerichtszeitraum = null;
 private TreeMap<LocalDate, MonatsStatistik> monatsStatistiken = new TreeMap<LocalDate, MonatsStatistik>();
-private Zeitraum standardZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, null);
+private Zeitraum standardZeitraum = null;
 private Zeitraum abfrageZeitraum = null;
 private int selectedZeitraum = 0;
 private long maxValue = 0;
@@ -69,13 +77,22 @@ private Vorgang min = null;
 		{
 		distinctCases = result.get();
 		setMinMaxVorgang();
-		setMonatsstatistiken();
 		} 
 		catch (InterruptedException | ExecutionException e) 
 		{
 		e.printStackTrace();
 		}		
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
+	
+	LocalDate start = abfrageZeitraum.getStartDatum();
+	LocalDate end = abfrageZeitraum.getEndDatum();
+
+	log.log(Level.INFO, this.getClass().getName() + ": Filtere Daten für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
+	si = distinctCases.values().parallelStream(); 
+	vorgaengeBerichtszeitraum = si.filter(v -> (v.getErstellDatum().isAfter(start) || v.getErstellDatum().isEqual(start)) && (v.getErstellDatum().isBefore(end) || v.getErstellDatum().isEqual(end))).collect(Collectors.toCollection(ArrayList::new ));
+	log.log(Level.INFO, this.getClass().getName() + ": Für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " wurden " + vorgaengeBerichtszeitraum.size() + " Vorgänge gefiltert.");
+
+	setMonatsstatistiken();
 	}
 	
 	/*
@@ -98,7 +115,7 @@ private Vorgang min = null;
 	LocalDate monat;	
 	TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear(); 
 	
-		for (Vorgang v : distinctCases.values()) 
+		for (Vorgang v : vorgaengeBerichtszeitraum) 
 		{
 		erstellDatum = v.getErstellDatumZeit();
 		int weekNumber = erstellDatum.get(woy);
@@ -131,7 +148,7 @@ private Vorgang min = null;
 		switch (selectedZeitraum) 
 		{
 		case Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE:
-		abfrageZeitraum = standardZeitraum;
+		abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, max);
 		break;
 
 		case Zeitraum.BERICHTSZEITRAUM_LETZTE_ZWOELF_MONATE:

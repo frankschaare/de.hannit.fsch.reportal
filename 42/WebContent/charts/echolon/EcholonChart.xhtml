@@ -2,88 +2,94 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+<f:view contentType="text/html">
 <h:head>
-	<title>HannIT Reportal</title>
-	<h:outputStylesheet library="css" name="default.css" target="head" />
-	<h:outputStylesheet library="css" name="menu.css" target="head" />
-	<h:outputScript library="js" name="jquery.min.js" target="head" />
-	<h:outputScript library="js" name="highcharts.js" target="head" />
-	<h:outputScript library="js" name="exporting.js" target="head" />	
+	<f:facet name="last">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>HannIT Reportal</title>
+		<h:outputStylesheet library="css" name="default.css" target="head" />
+		<h:outputScript library="js" name="highcharts.js" target="head" />
+		<h:outputScript library="js" name="modules/exporting.js" target="head" />
+		<h:outputScript library="js" name="jquery-1.11.3.min.js" target="head" />
+		
+		<script type="text/javascript">
+		$(function () {
+		    Highcharts.chart('container', {
+		        chart: {
+		            type: 'column'
+		        },
+		        title: {
+		            text: 'Gesamtaufträge'
+		        },
+		        subtitle: {
+		            text: #{echolonMonatsChart.subtitle}
+		        },
+		        xAxis: {
+		            categories: #{echolonMonatsChart.ticks},
+		            crosshair: true
+		        },
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: 'Anzahl Vorgänge'
+		            }
+		        },
+		        tooltip: {
+		            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+		            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+		                '<td style="padding:0"><b>{point.y} </b></td></tr>',
+		            footerFormat: '</table>',
+		            shared: true,
+		            useHTML: true
+		        },
+		        plotOptions: {
+		            column: {
+		                pointPadding: 0,
+		                borderWidth: 0
+		            }
+		        },
+		        series: [{
+		            name: 'Anzahl Vorgänge Gesamt',
+		            color: '#00b0f0',
+		            data: #{echolonMonatsChart.seriesGesamt},
+		            valueSuffix: ' Vorgänge'
 
-	<script type="text/javascript">
-	$(function () {
-	    $('#chart').highcharts({
-	        chart: {
-	            type: 'column'
-	        },
-	        title: {
-	            text: 'Gesamtaufträge'
-	        },
-	        subtitle: {
-	            text: #{echolonMonatsChart.subtitle}
-	        },
-	        xAxis: {
-	            categories: #{echolonMonatsChart.ticks},
-	            crosshair: true
-	        },
-	        yAxis: {
-	            min: 0,
-	            title: {
-	                text: 'Anzahl Vorgänge'
-	            }
-	        },
-	        tooltip: {
-	            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-	            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-	                '<td style="padding:0"><b>{point.y} </b></td></tr>',
-	            footerFormat: '</table>',
-	            shared: true,
-	            useHTML: true
-	        },
-	        plotOptions: {
-	            column: {
-	                pointPadding: 0,
-	                borderWidth: 0
-	            }
-	        },
-	        series: [{
-	            name: 'Anzahl Vorgänge Gesamt',
-	            color: '#00b0f0',
-	            data: #{echolonMonatsChart.seriesGesamt},
-	            valueSuffix: ' Vorgänge'
+		        }, {
+		            name: 'Anzahl Incidents',
+		            color: '#1f497d',
+		            data: #{echolonMonatsChart.seriesIncidents},
+		            valueSuffix: ' Incidents'
 
-	        }, {
-	            name: 'Anzahl Incidents',
-	            color: '#1f497d',
-	            data: #{echolonMonatsChart.seriesIncidents},
-	            valueSuffix: ' Incidents'
+		        }, {
+		            name: '&#216; Dauer Incident (Minuten)',
+		            color: '#bebebe',
+		            data: #{echolonMonatsChart.seriesAVGWartezeit},
+		            valueSuffix: ' Minuten'
 
-	        }, {
-	            name: '&#216; Dauer Incident (Minuten)',
-	            color: '#bebebe',
-	            data: #{echolonMonatsChart.seriesAVGWartezeit},
-	            valueSuffix: ' Minuten'
-
-	        }]
-	    });
-	});
-	</script>
+		        }]
+		    });
+		});	
+		</script>		
+	</f:facet>
 </h:head>
-<body>
+<h:body>
 	<div id="logo">
-		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
-			styleClass="logo" />
-
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
 	</div>
-	<div id="title">Echolon Chart</div>
+	<div id="title">Reportal</div>
 	<div id="menubar">
-		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 	</div>
 
-	<div id="chart" class="chartContainer"></div>
-</body>
+	<div id="container" class="chartContainer">
+		
+	</div>
+</h:body>
+</f:view>
 </html>
