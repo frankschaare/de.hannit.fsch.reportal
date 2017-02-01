@@ -2,79 +2,81 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+<f:view contentType="text/html">
 <h:head>
-	<title>HannIT Reportal</title>
-	<h:outputStylesheet library="css" name="default.css" target="head" />
-	<h:outputStylesheet library="css" name="menu.css" target="head" />
-	<h:outputScript library="js" name="jquery.min.js" target="head" />
-	<h:outputScript library="js" name="highcharts.js" target="head" />
-	<h:outputScript library="js" name="exporting.js" target="head" />	
+	<f:facet name="last">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>HannIT Reportal</title>
+		<h:outputStylesheet library="css" name="default.css" target="head" />
+		<h:outputScript library="js" name="highcharts.js" target="head" />
+		<h:outputScript library="js" name="modules/exporting.js" target="head" />
+		<h:outputScript library="js" name="jquery-1.11.3.min.js" target="head" />
+		
+		<script type="text/javascript">
+		$(function () {
+		    Highcharts.chart('container', {
+		        chart: {
+		            type: 'column'
+		        },
+		        title: {
+		            text: 'Gesamtaufträge nach Kategorien'
+		        },
+		        subtitle: {
+		            text: #{echolonMonatsChart.subtitle}
+		        },		        
+		        xAxis: {
+		            categories: #{echolonMonatsChart.ticks}
+		        },
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: 'Anzahl Vorgänge'
+		            },
+		            stackLabels: {
+		                enabled: true,
+		                style: {
+		                    fontWeight: 'bold',
+		                    color: 'gray'
+		                }
+		            }
+		        },
+		        legend: {
+		            align: 'center',
 
-	<script type="text/javascript">
-	$(function () {
-	    $('#chart').highcharts({
-	        chart: {
-	            type: 'column'
-	        },
-	        title: {
-	            text: 'Gesamtaufträge nach Kategorien'
-	        },
-	        subtitle: {
-	            text: #{echolonMonatsChart.subtitle}
-	        },
-	        xAxis: {
-	            categories: #{echolonMonatsChart.ticks}
-	        },
-	        yAxis: {
-	            min: 0,
-	            title: {
-	                text: 'Anzahl Vorgänge'
-	            },
-	            stackLabels: {
-	                enabled: true,
-	                style: {
-	                    fontWeight: 'bold',
-	                    color: 'gray'
-	                }
-	            }
-	        },
-	        legend: {
-	            align: 'center',
-
-	            verticalAlign: 'top',
-	            y: 55,
-	            floating: true,
-	            backgroundColor: 'white',
-	            borderColor: '#CCC',
-	            borderWidth: 0,
-	            shadow: false
-	        },
-	        tooltip: {
-	            formatter: function () {
-	                return '<b>' + this.x + '</b><br/>' +
-	                    this.series.name + ': ' + this.y + '<br/>' +
-	                    'Total: ' + this.point.stackTotal;
-	            }
-	        },
-	        plotOptions: {
-	            column: {
-	                stacking: 'normal',
-	                dataLabels: {
-	                    enabled: true,
-	                    color: 'white',
-	                    style: {
-	                        textShadow: '0 0 3px black'
-	                    }
-	                }
-	            }
-	        },
-	        series: [
+		            verticalAlign: 'top',
+		            y: 55,
+		            floating: true,
+		            backgroundColor: 'white',
+		            borderColor: '#CCC',
+		            borderWidth: 0,
+		            shadow: false
+		        },
+		        tooltip: {
+		            formatter: function () {
+		                return '<b>' + this.x + '</b><br/>' +
+		                    this.series.name + ': ' + this.y + '<br/>' +
+		                    'Total: ' + this.point.stackTotal;
+		            }
+		        },
+		        plotOptions: {
+		            column: {
+		                stacking: 'normal',
+		                dataLabels: {
+		                    enabled: true,
+		                    color: 'white',
+		                    style: {
+		                        textShadow: '0 0 3px black'
+		                    }
+		                }
+		            }
+		        },
+		        series: [
 			        {
 					name: 'Customer Requests',
 					color: '#32cd32',
@@ -115,21 +117,22 @@
 	            	color: '#ff0000',
 	            	data: #{echolonMonatsChart.seriesBeschwerden}
 	        		}]
-	    });
-	});
-	</script>
+		    });
+		});		</script>		
+	</f:facet>
 </h:head>
-<body>
+<h:body>
 	<div id="logo">
-		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}"
-			styleClass="logo" />
-
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
 	</div>
-	<div id="title">Echolon Kategorien</div>
+	<div id="title">Reportal</div>
 	<div id="menubar">
-		<ui:include src="/WEB-INF/navigation/menu.xhtml" />
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 	</div>
 
-	<div id="chart" class="chartContainer"></div>
-</body>
+	<div id="container" class="chartContainer">
+		
+	</div>
+</h:body>
+</f:view>
 </html>
