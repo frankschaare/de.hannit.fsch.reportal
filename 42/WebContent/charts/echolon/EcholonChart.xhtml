@@ -14,68 +14,6 @@
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>HannIT Reportal</title>
 		<h:outputStylesheet library="css" name="default.css" target="head" />
-		<h:outputScript library="js" name="highcharts.js" target="head" />
-		<h:outputScript library="js" name="modules/exporting.js" target="head" />
-		<h:outputScript library="js" name="jquery-1.11.3.min.js" target="head" />
-		
-		<script type="text/javascript">
-		$(function () {
-		    Highcharts.chart('container', {
-		        chart: {
-		            type: 'column'
-		        },
-		        title: {
-		            text: 'Gesamtaufträge'
-		        },
-		        subtitle: {
-		            text: #{echolonMonatsChart.subtitle}
-		        },
-		        xAxis: {
-		            categories: #{echolonMonatsChart.ticks},
-		            crosshair: true
-		        },
-		        yAxis: {
-		            min: 0,
-		            title: {
-		                text: 'Anzahl Vorgänge'
-		            }
-		        },
-		        tooltip: {
-		            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-		            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-		                '<td style="padding:0"><b>{point.y} </b></td></tr>',
-		            footerFormat: '</table>',
-		            shared: true,
-		            useHTML: true
-		        },
-		        plotOptions: {
-		            column: {
-		                pointPadding: 0,
-		                borderWidth: 0
-		            }
-		        },
-		        series: [{
-		            name: 'Anzahl Vorgänge Gesamt',
-		            color: '#00b0f0',
-		            data: #{echolonMonatsChart.seriesGesamt},
-		            valueSuffix: ' Vorgänge'
-
-		        }, {
-		            name: 'Anzahl Incidents',
-		            color: '#1f497d',
-		            data: #{echolonMonatsChart.seriesIncidents},
-		            valueSuffix: ' Incidents'
-
-		        }, {
-		            name: '&#216; Dauer Incident (Minuten)',
-		            color: '#bebebe',
-		            data: #{echolonMonatsChart.seriesAVGWartezeit},
-		            valueSuffix: ' Minuten'
-
-		        }]
-		    });
-		});	
-		</script>		
 	</f:facet>
 </h:head>
 <h:body>
@@ -87,8 +25,8 @@
 		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 	</div>
 
-	<div id="container" class="chartContainer">
-		
+	<div id="monatsChartContainer" class="chartContainer">
+		<p:chart type="bar" model="#{echolonMonatsChart.monatsChartModel}" style="height:800px" responsive="true"/>
 	</div>
 </h:body>
 </f:view>

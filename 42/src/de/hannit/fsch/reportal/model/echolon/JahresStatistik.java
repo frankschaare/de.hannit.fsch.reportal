@@ -226,7 +226,7 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 	public ArrayList<Vorgang> getVorgaenge() {return vorgaenge;}
 	
 	public ArrayList<Vorgang> getIncidents() {return incidents;}
-	public ArrayList<Vorgang> getServiceabrufe() {return serviceAbrufe;}
+	public ArrayList<Vorgang> getServiceAbrufe() {return serviceAbrufe;}
 	public ArrayList<Vorgang> getBeschwerden() {return beschwerden;}
 	public ArrayList<Vorgang> getServiceanfragen() {return serviceAnfrage;}
 	public ArrayList<Vorgang> getServiceinfos() {return serviceInfo;}

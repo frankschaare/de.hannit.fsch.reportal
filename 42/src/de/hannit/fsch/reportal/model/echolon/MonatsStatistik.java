@@ -50,7 +50,7 @@ private Stream<Vorgang> si = null;
 	}
 	
 	public ArrayList<Vorgang> getIncidents() {return incidents;}
-	public ArrayList<Vorgang> getServiceabrufe() {return serviceAbrufe;}
+	public ArrayList<Vorgang> getServiceAbrufe() {return serviceAbrufe;}
 	public ArrayList<Vorgang> getBeschwerden() {return beschwerden;}
 	public ArrayList<Vorgang> getServiceanfragen() {return serviceAnfrage;}
 	public ArrayList<Vorgang> getServiceinfos() {return serviceInfo;}
@@ -206,8 +206,7 @@ private Stream<Vorgang> si = null;
 	
 	public String getBerichtsMonatAsString()
 	{
-	return "Monatsstatisik#getBerichtsMonatAsString muss noch gemacht wertden ! ";	
-	//return berichtsZeitraum.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());	
+	return berichtsZeitraum.getBerichtsMonat();	
 	}
 	
 	public int getAnzahlVorgaengeBerichtszeitraum() 
