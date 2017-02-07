@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import de.hannit.fsch.reportal.model.Zeitraum;
+
 public class Vorgang 
 {
 private String id = null;	
@@ -25,7 +27,8 @@ private int prioritaet = 0;
 private boolean reaktionszeitEingehalten = false;
 private boolean zielzeitEingehalten = false;
 private int loesungszeitMinuten = 0;
-
+private DateTimeFormatter dfUhrzeit =  DateTimeFormatter.ofPattern("HH:ss").withLocale(Locale.GERMAN);
+private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMAN);
 
 
 	public Vorgang() 
@@ -37,8 +40,10 @@ private int loesungszeitMinuten = 0;
 
 	public void setId(String id) {this.id = id;}
 
-	public LocalDate getErstellDatum() {
-		return erstellDatum;
+	public LocalDate getErstellDatum() {return erstellDatum;}
+	public String getErstellDatumAsString() 
+	{
+	return erstellDatum != null ? dfDatum.format(erstellDatum) : "-";
 	}
 
 	public void setErstellDatum(String dbValue) 
@@ -91,8 +96,10 @@ private int loesungszeitMinuten = 0;
 		}
 	}
 
-	public LocalTime getErstellZeit() {
-		return erstellZeit;
+	public LocalTime getErstellZeit() {return erstellZeit;}
+	public String getErstellZeitAsString() 
+	{
+	return erstellZeit != null ? dfUhrzeit.format(erstellZeit) + " Uhr" : "-";
 	}
 
 	public int getBerichtsJahr() {
@@ -109,7 +116,7 @@ private int loesungszeitMinuten = 0;
 
 	public void setErstellZeit(String dbValue) 
 	{
-	this.erstellZeit = LocalTime.parse(dbValue, DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.GERMAN));
+	this.erstellZeit = LocalTime.parse(dbValue, Zeitraum.dfUhrzeit);
 	}
 
 	public String getVorgangsNummer() {

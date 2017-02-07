@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.TreeMap;
 
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
@@ -26,6 +27,10 @@ private LocalDateTime startDatumUhrzeit = null;
 private LocalDateTime endDatumUhrzeit = null;
 private static String datumsFormat = "dd.MM.yyyy";
 public static DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
+public static DateTimeFormatter dfDatumUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss");
+public static DateTimeFormatter dfDatumUhrzeitMax = DateTimeFormatter.ofPattern("EEEE', 'dd. MMMM yyyy hh:mm");
+public static DateTimeFormatter dfUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
+
 private String berichtsZeitraum = "unbekannt";
 
 private KalenderWoche kw = null;

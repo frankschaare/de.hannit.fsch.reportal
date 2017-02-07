@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<f:view contentType="text/html">
+<h:head>
+	<f:facet name="last">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>HannIT Reportal</title>
+		<h:outputStylesheet library="css" name="default.css" target="head" />
+		<h:outputScript library="js" name="highcharts.js" target="head" />
+		<h:outputScript library="js" name="modules/exporting.js" target="head" />
+		<h:outputScript library="js" name="jquery-1.11.3.min.js" target="head" />
+		
+		<script type="text/javascript">
+		$(function () {
+		    Highcharts.chart('monatsChartContainer', {
+		        chart: {
+		            type: 'column'
+		        },
+		        title: {
+		            text: 'Gesamtaufträge'
+		        },
+		        subtitle: {
+		            text: #{echolonMonatsChart.subtitle}
+		        },
+		        xAxis: {
+		            categories: #{echolonMonatsChart.ticks},
+		            crosshair: true
+		        },
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: 'Anzahl Vorgänge'
+		            }
+		        },
+		        tooltip: {
+		            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+		            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+		                '<td style="padding:0"><b>{point.y} </b></td></tr>',
+		            footerFormat: '</table>',
+		            shared: true,
+		            useHTML: true
+		        },
+		        plotOptions: {
+		            column: {
+		                pointPadding: 0,
+		                borderWidth: 0
+		            }
+		        },
+		        series: [{
+		            name: 'Anzahl Vorgänge Gesamt',
+		            color: '#00b0f0',
+		            data: #{echolonMonatsChart.seriesGesamt},
+		            valueSuffix: ' Vorgänge'
+
+		        }, {
+		            name: 'Anzahl Incidents',
+		            color: '#1f497d',
+		            data: #{echolonMonatsChart.seriesIncidents},
+		            valueSuffix: ' Incidents'
+
+		        }, {
+		            name: '&#216; Dauer Incident (Minuten)',
+		            color: '#bebebe',
+		            data: #{echolonMonatsChart.seriesAVGWartezeit},
+		            valueSuffix: ' Minuten'
+
+		        }]
+		    });
+		});	
+		</script>		
+	</f:facet>
+</h:head>
+<h:body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+
+	<div id="monatsChartContainer" class="chartContainer">
+		
+	</div>
+</h:body>
+</f:view>
+</html>

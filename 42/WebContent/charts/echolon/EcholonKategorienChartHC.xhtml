@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<f:view contentType="text/html">
+<h:head>
+	<f:facet name="last">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>HannIT Reportal</title>
+		<h:outputStylesheet library="css" name="default.css" target="head" />
+		<h:outputScript library="js" name="highcharts.js" target="head" />
+		<h:outputScript library="js" name="modules/exporting.js" target="head" />
+		<h:outputScript library="js" name="jquery-1.11.3.min.js" target="head" />
+		
+		<script type="text/javascript">
+		$(function () {
+		    Highcharts.chart('kategorienChartContainer', {
+		        chart: {
+		            type: 'column'
+		        },
+		        title: {
+		            text: 'Gesamtaufträge nach Kategorien'
+		        },
+		        subtitle: {
+		            text: #{echolonMonatsChart.subtitle}
+		        },		        
+		        xAxis: {
+		            categories: #{echolonMonatsChart.ticks}
+		        },
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: 'Anzahl Vorgänge'
+		            },
+		            stackLabels: {
+		                enabled: true,
+		                style: {
+		                    fontWeight: 'bold',
+		                    color: 'gray'
+		                }
+		            }
+		        },
+		        legend: {
+		            align: 'center',
+
+		            verticalAlign: 'top',
+		            y: 55,
+		            floating: true,
+		            backgroundColor: 'white',
+		            borderColor: '#CCC',
+		            borderWidth: 0,
+		            shadow: false
+		        },
+		        tooltip: {
+		            formatter: function () {
+		                return '<b>' + this.x + '</b><br/>' +
+		                    this.series.name + ': ' + this.y + '<br/>' +
+		                    'Total: ' + this.point.stackTotal;
+		            }
+		        },
+		        plotOptions: {
+		            column: {
+		                stacking: 'normal',
+		                dataLabels: {
+		                    enabled: true,
+		                    color: 'white',
+		                    style: {
+		                        textShadow: '0 0 3px black'
+		                    }
+		                }
+		            }
+		        },
+		        series: [
+			        {
+					name: 'Customer Requests',
+					color: '#32cd32',
+					data: #{echolonMonatsChart.seriesCustomerRequests}
+					},	                 
+		            {
+			        name: 'Work Orders',
+			        color: '#698b22',
+			        data: #{echolonMonatsChart.seriesWorkOrders}
+			        },	
+		            {
+			        name: 'Short Calls',
+			        color: '#00cd66',
+			        data: #{echolonMonatsChart.seriesShortCalls}
+			        },	
+		            {
+			        name: 'Serviceinfos',
+			        color: '#008b8b',
+			        data: #{echolonMonatsChart.seriesServiceInfos}
+			        },	                 
+	            	{
+	            	name: 'Serviceanfragen',
+	            	color: '#0000ff',
+	            	data: #{echolonMonatsChart.seriesServiceAnfragen}
+	        		},
+	        		{
+	            	name: 'Serviceabrufe',
+	            	color: '#00008b',
+	            	data: #{echolonMonatsChart.seriesServiceabrufe}
+	        		},
+	            	{
+	            	name: 'Incidents',
+	            	color: '#ee7600',
+	            	data: #{echolonMonatsChart.seriesIncidents}
+	        		},
+	        		{
+	            	name: 'Beschwerden',
+	            	color: '#ff0000',
+	            	data: #{echolonMonatsChart.seriesBeschwerden}
+	        		}]
+		    });
+		});		</script>		
+	</f:facet>
+</h:head>
+<h:body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+
+	<div id="kategorienChartContainer" class="chartContainer">
+		
+	</div>
+</h:body>
+</f:view>
+</html>

@@ -28,7 +28,7 @@ import de.hannit.fsch.reportal.model.echolon.EcholonStatistik;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
-@ManagedBean(name = "edb", eager = true)
+@ManagedBean(name = "edb")
 @ApplicationScoped
 public class EcholonDBManager 
 {

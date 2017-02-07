@@ -8,9 +8,9 @@
 	 
 	    <p:menubar style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
-	            <p:menuitem value="Zusammenfassung" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
+	            <p:menuitem value="Zusammenfassung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
 	            <p:menuitem value="HRG Auswertung" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table" disabled="true"/>
-	            <p:menuitem value="Echolon Daten" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
+	            <p:menuitem value="Echolon Daten" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
 	        </p:submenu>
 	 
 	        <p:submenu label="Echolon Charts" icon="fa fa-signal">
@@ -45,8 +45,7 @@
 	        </p:submenu>	 
 	 
 	        <f:facet name="options">
-	            <p:inputText style="margin-right:10px" placeholder="Search"/>
-	            <p:commandButton type="button" url="/" value="Home" icon="fa fa-home" ajax="false"/>
+	        	<p:button outcome="/index" value="Home" icon="fa fa-home" ajax="false"/>
 	        </f:facet>
 	    </p:menubar>
 	</h:form>

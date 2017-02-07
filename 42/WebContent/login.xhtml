@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<f:view contentType="text/html">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>HannIT Reportal</title>
+	<h:outputStylesheet library="css" name="default.css" target="head" />
+</h:head>
+<h:body>
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+	</div>
+	<div id="title">Reportal</div>
+	<div id="menubar">
+		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+	</div>
+	<div id="loginForm">
+		<h1 class="title">Willkommen beim HannIT Reportal</h1>
+		
+			<h:form id="login" onsubmit="action='j_security_check';" prependId="false">	
+				<p:panel id="panelLogin" header="Bitte melden Sie sich an:" footer="Zugriff auf die Daten ist nur für angemeldete Benutzer möglich.">
+					<p:panelGrid id="panelGridLogin" columns="2" styleClass="loginPanel">
+				        <p:outputLabel for="j_username" value="Benutzer:" />
+				        <p:inputText id="j_username" />            
+				        <p:outputLabel for="j_password" value="Passwort:" />
+				        <p:password id="j_password" />
+				        <p:commandButton id="submit" value="Anmelden" ajax="false"/>
+				        <p:commandButton id="reset" value="Reset" ajax="false"/>
+					</p:panelGrid>
+				</p:panel>	
+			</h:form>
+	</div>
+</h:body>
+</f:view>
+</html>

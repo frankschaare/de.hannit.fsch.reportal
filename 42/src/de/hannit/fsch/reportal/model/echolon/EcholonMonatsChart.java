@@ -13,24 +13,20 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
-import org.primefaces.model.chart.Axis;
-import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
-import de.hannit.fsch.reportal.db.DataBaseThread;
+import de.hannit.fsch.reportal.db.Cache;
 import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
@@ -42,11 +38,11 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 @SessionScoped
 public class EcholonMonatsChart 
 {
+@ManagedProperty (value = "#{cache}")
+private Cache cache;	
+
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());
 private Stream<Vorgang> si = null;
-private DataBaseThread echolonAbfrage = null;
-private Future<HashMap<String, Vorgang>> result = null;
-private ExecutorService executor = Executors.newCachedThreadPool();
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private ArrayList<Vorgang> vorgaengeBerichtszeitraum = null;
 private TreeMap<LocalDate, MonatsStatistik> monatsStatistiken = new TreeMap<LocalDate, MonatsStatistik>();
@@ -72,18 +68,18 @@ private Vorgang max = null;
 	 */
 	public EcholonMonatsChart() 
 	{
-	// Standardmässig werden die Echolon Daten der vergangenen vier Quartale abgefragt.
-	echolonAbfrage = new DataBaseThread();
-	result = executor.submit(echolonAbfrage);
 		try 
 		{
-		distinctCases = result.get();
-		setMinMaxVorgang();
+		distinctCases = cache.getDistinctCases();
 		} 
-		catch (InterruptedException | ExecutionException e) 
+		catch (NullPointerException e) 
 		{
-		e.printStackTrace();
-		}		
+		FacesContext fc = FacesContext.getCurrentInstance();
+		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
+		distinctCases = cache.getDistinctCases();
+		}
+		
+	setMinMaxVorgang();
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
 	
 	LocalDate start = abfrageZeitraum.getStartDatum();
@@ -269,6 +265,14 @@ private Vorgang max = null;
     return model;
     }	
 
+	public Cache getCache() {
+		return cache;
+	}
+	
+	public void setCache(Cache cache) {
+		this.cache = cache;
+	}
+	
 	public int getAnzahlVorgaengeGesamt()
 	{
 	return distinctCases.size();	

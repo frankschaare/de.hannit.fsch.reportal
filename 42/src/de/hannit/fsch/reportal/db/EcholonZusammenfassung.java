@@ -10,16 +10,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.hannit.fsch.reportal.db.Cache;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -45,72 +43,71 @@ import de.hannit.fsch.reportal.model.echolon.Vorgang;
 @SessionScoped
 public class EcholonZusammenfassung 
 {
+@ManagedProperty (value = "#{cache}")
+private Cache cache;
+
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());		
 private String thema = "Zusammenfassung";
 private Zeitraum abfrageZeitraum = null;
 private String datumsFormat = "dd.MM.yyyy";
 private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 
-private ExecutorService executor = Executors.newCachedThreadPool();
-private DataBaseThread dbThread = null;
-private Future<HashMap<String, Vorgang>> result = null;
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();	
-private ArrayList<Vorgang> vorgaenge = null;
 private TreeMap<Integer, QuartalsStatistik> quartale = new TreeMap<Integer, QuartalsStatistik>();
 private ArrayList<String> lines = null;
 private Stream<Vorgang> si = null;
 private ArrayList<Vorgang> vorgaengeBerichtszeitraum;
 private Vorgang max = null;
-private Vorgang min = null;
 
 	/**
 	 * 
 	 */
 	public EcholonZusammenfassung() 
 	{
-	
-	dbThread =  new DataBaseThread();
-	log.log(Level.INFO, "Lade Daten aus der Datenbank");	
-
-		// DB-Abfrage starten:
 		try 
 		{
-		result = executor.submit(dbThread);			
-		distinctCases = result.get();
-		setMinMaxVorgang();
+		distinctCases = cache.getDistinctCases();
+		} 
+		catch (NullPointerException e) 
+		{
+		FacesContext fc = FacesContext.getCurrentInstance();
+		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
+		distinctCases = cache.getDistinctCases();
+		}
+	setMinMaxVorgang();
 
-		// Standardabfragezeitraum über die letzen vier Quartale:
-		abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, max);
-		LocalDate start = abfrageZeitraum.getStartDatum();
-		LocalDate end = abfrageZeitraum.getEndDatum();
+	// Standardabfragezeitraum über die letzen vier Quartale:
+	abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE, max);
+	LocalDate start = abfrageZeitraum.getStartDatum();
+	LocalDate end = abfrageZeitraum.getEndDatum();
 	
-		log.log(Level.INFO, this.getClass().getName() + ": Filtere Daten für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
-		si = distinctCases.values().parallelStream(); 
-		vorgaengeBerichtszeitraum = si.filter(v -> (v.getErstellDatum().isAfter(start) || v.getErstellDatum().isEqual(start)) && (v.getErstellDatum().isBefore(end) || v.getErstellDatum().isEqual(end))).collect(Collectors.toCollection(ArrayList::new ));
-		log.log(Level.INFO, this.getClass().getName() + ": Für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " wurden " + vorgaengeBerichtszeitraum.size() + " Vorgänge gefiltert.");
+	log.log(Level.INFO, this.getClass().getName() + ": Filtere Daten für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
+	si = distinctCases.values().parallelStream(); 
+	vorgaengeBerichtszeitraum = si.filter(v -> (v.getErstellDatum().isAfter(start) || v.getErstellDatum().isEqual(start)) && (v.getErstellDatum().isBefore(end) || v.getErstellDatum().isEqual(end))).collect(Collectors.toCollection(ArrayList::new ));
+	log.log(Level.INFO, this.getClass().getName() + ": Für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " wurden " + vorgaengeBerichtszeitraum.size() + " Vorgänge gefiltert.");
 		
-		log.log(Level.INFO, this.getClass().getName() + ": Verarbeite Monatsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
-		TreeMap<LocalDate, MonatsStatistik> monatsstatistiken = new TreeMap<>();
-		LocalDate berichtsMonat = null;
-		MonatsStatistik aktuell = null;
+	log.log(Level.INFO, this.getClass().getName() + ": Verarbeite Monatsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
+	TreeMap<LocalDate, MonatsStatistik> monatsstatistiken = new TreeMap<>();
+	LocalDate berichtsMonat = null;
+	MonatsStatistik aktuell = null;
 		
-			for (Vorgang vorgang : vorgaengeBerichtszeitraum) 
+		for (Vorgang vorgang : vorgaengeBerichtszeitraum) 
+		{
+		berichtsMonat = LocalDate.of(vorgang.getErstellDatum().getYear(), vorgang.getErstellDatum().getMonthValue(), 1);
+			if (monatsstatistiken.containsKey(berichtsMonat)) 
 			{
-			berichtsMonat = LocalDate.of(vorgang.getErstellDatum().getYear(), vorgang.getErstellDatum().getMonthValue(), 1);
-				if (monatsstatistiken.containsKey(berichtsMonat)) 
-				{
-				monatsstatistiken.get(berichtsMonat).addVorgang(vorgang);	
-				} 
-				else 
-				{
-				aktuell = new MonatsStatistik(berichtsMonat);	
-				aktuell.addVorgang(vorgang);
-				monatsstatistiken.put(berichtsMonat, aktuell);
-				}
+			monatsstatistiken.get(berichtsMonat).addVorgang(vorgang);	
+			} 
+			else 
+			{
+			aktuell = new MonatsStatistik(berichtsMonat);	
+			aktuell.addVorgang(vorgang);
+			monatsstatistiken.put(berichtsMonat, aktuell);
 			}
-			log.log(Level.INFO, this.getClass().getName() + ": Es wurden " + monatsstatistiken.size() + " Monatsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " erstellt.");			
+		}
+		log.log(Level.INFO, this.getClass().getName() + ": Es wurden " + monatsstatistiken.size() + " Monatsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " erstellt.");			
 		
-			log.log(Level.INFO, this.getClass().getName() + ": Erstelle Quartalsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
+		log.log(Level.INFO, this.getClass().getName() + ": Erstelle Quartalsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end));
 			for (Quartal q : abfrageZeitraum.getQuartale().values()) 
 			{
 			QuartalsStatistik qs = new QuartalsStatistik(q);
@@ -203,17 +200,22 @@ private Vorgang min = null;
 			lines.add(lineDauerServiceabrufeStunden);
 			lines.add(lineDauerServiceabrufeTage);
 
-		ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-		String dateiName = "EcholonZusammenfassung.csv";
-		String dateiPfad = servletContext.getRealPath("/downloads");
-		EcholonZusammenfassungCSV csv = new EcholonZusammenfassungCSV(dateiPfad);
-		csv.setLines(lines);
-		csv.createCSVDatei(dateiPfad, dateiName);
-		} 
-		catch (InterruptedException | ExecutionException e) 
-		{
-		e.printStackTrace();
-		}
+	ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	String dateiName = "EcholonZusammenfassung.csv";
+	String dateiPfad = servletContext.getRealPath("/downloads");
+	EcholonZusammenfassungCSV csv = new EcholonZusammenfassungCSV(dateiPfad);
+	csv.setLines(lines);
+	csv.createCSVDatei(dateiPfad, dateiName);
+	}
+	
+	public Cache getCache() 
+	{
+	return cache;
+	}
+
+	public void setCache(Cache incoming) 
+	{
+	this.cache = incoming;
 	}
 	
 	/*
@@ -223,7 +225,6 @@ private Vorgang min = null;
     private void setMinMaxVorgang() 
     {
 	max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
-	min = distinctCases.values().stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
 	}
 	
 	public StreamedContent getFile() 

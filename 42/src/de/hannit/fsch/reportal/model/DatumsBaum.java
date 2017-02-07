@@ -3,21 +3,18 @@ package de.hannit.fsch.reportal.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
-import de.hannit.fsch.reportal.db.DataBaseThread;
+import de.hannit.fsch.reportal.db.Cache;
 import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.echolon.EcholonNode;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
@@ -29,12 +26,12 @@ import de.hannit.fsch.reportal.model.echolon.Vorgang;
 @SessionScoped
 public class DatumsBaum 
 {
+@ManagedProperty (value = "#{cache}")
+private Cache cache;
+
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());		
 private TreeNode root;
 private HashMap<String, EcholonNode> jahresNodes = new HashMap<String, EcholonNode>();
-private ExecutorService executor = Executors.newCachedThreadPool();
-private DataBaseThread dbThread = null;
-private Future<HashMap<String, Vorgang>> result = null;
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private ArrayList<Vorgang> vorgaenge = null;
 private Vorgang max = null;
@@ -42,25 +39,26 @@ private Vorgang min = null;
 
 	public DatumsBaum() 
 	{
-	dbThread =  new DataBaseThread();
-	log.log(Level.INFO, "Lade Daten aus der Datenbank");	
-	result = executor.submit(dbThread);	
+	// setQuartalsNodes();
+	}
+
+	@PostConstruct
+	public void init() 
+	{
 		try 
 		{
-		distinctCases = result.get();
+		distinctCases = cache.getDistinctCases();
 		} 
-		catch (InterruptedException e) 
+		catch (NullPointerException e) 
 		{
-		e.printStackTrace();
-		} 
-		catch (ExecutionException e) 
-		{
-		e.printStackTrace();
+		FacesContext fc = FacesContext.getCurrentInstance();
+		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
+		distinctCases = cache.getDistinctCases();
 		}
+	
 	root = new DefaultTreeNode("Root", null);
 	setMinMaxNode();
 	setJahresNodes();
-	// setQuartalsNodes();
 	}
 	
 	/*
@@ -73,14 +71,16 @@ private Vorgang min = null;
 	min = distinctCases.values().stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
 	}
 
-	@PostConstruct
-    public void init() 
-    {
-     
-    
-    }
+	public Cache getCache() 
+	{
+	return cache;
+	}
 
-	
+	public void setCache(Cache cache) 
+	{
+	this.cache = cache;
+	}
+
 	private void setJahresNodes() 
 	{
 	String berichtsJahr = null;

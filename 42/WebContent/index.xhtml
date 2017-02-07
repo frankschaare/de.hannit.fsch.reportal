@@ -19,15 +19,27 @@
 		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
 	</div>
 	<div id="title">Reportal</div>
-	<div id="menubar">
-		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
-	</div>
 
-	<div id="content">
-		<h1 class="title">Willkommen beim HannIT Reportal</h1>
-		<h1 class="subtitle"><h:outputText value="//TODO: Tomcat Login und Rollen definieren" /></h1>		
-		
-		
+	<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+
+
+	<div id="infoPanel">
+		<p:panel id="panelInfo" header="Willkommen beim HannIT Reportal" footer="Letzte Aktualisierung der Echolon Daten: #{cache.lastExecution} Uhr">
+			<p:panelGrid id="panelGridInfo" columns="2" styleClass="infoPanel">
+		        <p:outputLabel value="Daten:" />
+		        <p:outputLabel value="Daten werden für das letzte vollständig vorliegende Quartal visualisiert." />
+		        <p:outputLabel value="Cache:" />
+		        <p:outputLabel value="Um den direkten Zugriff auf die Echolon-Datenbank zu verhindern, werden die Daten täglich um 05:00 Uhr auf einen SQL-Cluster kopiert. Um 06:30 Uhr lädt dann der Reportal Dienst die Daten vom Cluster in den Datenbank-Cache dieser Applikation." />
+		        <p:outputLabel value="Anzahl:" />
+		        <p:outputLabel value="Derzeit stehen #{cache.anzahlDatensaetzeGesamt} Datensätze für die Auswertung zur Verfügung." />
+		        <p:outputLabel value="Stand:" />
+		        <p:outputLabel value="#{cache.maxDate} Uhr." />
+		        <p:outputLabel value="Status:" />
+		        <p:outputLabel value="Sie sind angemeldet als #{request.remoteUser}." />
+		       	<p:outputLabel value="DMS:" />
+		        <p:outputLabel value="Infos und Dokumentation befinden sich im Schrank Reportal 16." />
+			</p:panelGrid>
+		</p:panel>			
 	</div>
 </h:body>
 </f:view>
