@@ -27,8 +27,8 @@ private LocalDateTime startDatumUhrzeit = null;
 private LocalDateTime endDatumUhrzeit = null;
 private static String datumsFormat = "dd.MM.yyyy";
 public static DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
-public static DateTimeFormatter dfDatumUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss");
-public static DateTimeFormatter dfDatumUhrzeitMax = DateTimeFormatter.ofPattern("EEEE', 'dd. MMMM yyyy hh:mm");
+public static DateTimeFormatter dfDatumUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
+public static DateTimeFormatter dfDatumUhrzeitMax = DateTimeFormatter.ofPattern("EEEE', 'dd. MMMM yyyy HH:mm").withLocale(Locale.GERMAN);
 public static DateTimeFormatter dfUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
 
 private String berichtsZeitraum = "unbekannt";

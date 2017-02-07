@@ -16,12 +16,13 @@
 </h:head>
 <h:body>
 	<div id="logo">
-		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+		<p:commandLink action="#{sessionController.home}">
+			<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
+		</p:commandLink>
 	</div>
 	<div id="title">Reportal</div>
 
 	<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
-
 
 	<div id="infoPanel">
 		<p:panel id="panelInfo" header="Willkommen beim HannIT Reportal" footer="Letzte Aktualisierung der Echolon Daten: #{cache.lastExecution} Uhr">
