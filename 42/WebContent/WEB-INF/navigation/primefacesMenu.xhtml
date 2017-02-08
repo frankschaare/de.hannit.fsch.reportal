@@ -19,6 +19,10 @@
 	                <p:menuitem value="Gesamtaufträge" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonChart" icon="fa fa-bar-chart"/>
 	                <p:menuitem value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonKategorienChart" icon="fa fa-bar-chart-o"/>
 	            </p:submenu>
+	            <p:submenu label="Jahresstatistiken" icon="fa fa-calendar-o">
+	                <p:menuitem value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonJahresKategorienChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem value="Top 10" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenChart" icon="fa fa-bar-chart-o"/>
+	            </p:submenu>	            
 	        </p:submenu>
 	 
 	        <p:submenu label="Callcenter Daten" icon="fa fa-phone">

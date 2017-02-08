@@ -3,18 +3,24 @@ package de.hannit.fsch.reportal.model.echolon;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.primefaces.model.chart.PieChartModel;
 
+import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.Quartal;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 public class JahresStatistik extends EcholonStatistik
 {
+private final static Logger log = Logger.getLogger(JahresStatistik.class.getSimpleName());
+
 private int anzahlIncidents = 0;
 private int anzahlServiceabrufe = 0;
 
@@ -35,6 +41,7 @@ private String berichtsJahr = null;
 private String quartal = null;
 private HashMap<Integer, QuartalsStatistik> quartalsStatistiken = new HashMap<Integer, QuartalsStatistik>();
 private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Integer, MonatsStatistik>();
+private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 
 
 	/**
@@ -44,6 +51,7 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 	 */
 	public JahresStatistik(ArrayList<Vorgang> alleVorgaenge, String berichtsJahr) 
 	{
+	this.berichtsJahr = berichtsJahr;	
 	berichtsZeitraum = new Zeitraum(berichtsJahr);
 	setLabel(berichtsJahr);
 	int iBerichtsJahr = Integer.parseInt(berichtsJahr);
@@ -58,7 +66,37 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 		split(vorgaengeBerichtszeitraum);
 		setQuartale(iBerichtsJahr);	
 		}
+	setTagesStatistiken();	
+	}
 
+	/*
+	 * Erstellt Tagesstatistiken für das Berichtsjahr
+	 */
+	private void setTagesStatistiken() 
+	{
+	LocalDate tagesDatum = null;
+	tagesStatistiken = new TreeMap<LocalDate, TagesStatistik>();
+	TagesStatistik ts = null;
+	
+		for (Vorgang vorgang : vorgaengeBerichtszeitraum) 
+		{
+		tagesDatum = vorgang.getErstellDatum();	
+			if (tagesStatistiken.containsKey(tagesDatum)) 
+			{
+			tagesStatistiken.get(tagesDatum).addVorgang(vorgang);	
+			} 
+			else 
+			{
+			ts = new TagesStatistik(tagesDatum);
+			ts.addVorgang(vorgang);
+			tagesStatistiken.put(tagesDatum, ts);
+			}
+		}
+		for (TagesStatistik t : tagesStatistiken.values()) 
+		{
+		t.setStatistik();	
+		}
+	log.log(Level.INFO, this.getClass().getCanonicalName() + ": Es wurden " + tagesStatistiken.size() + " Tagesstatistiken erstellt.");	
 	}
 
 	private void setQuartale(int iBerichtsJahr) 
@@ -104,6 +142,11 @@ private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Intege
 	public HashMap<Integer, QuartalsStatistik> getQuartalsStatistiken() 
 	{
 	return quartalsStatistiken;
+	}
+
+	public TreeMap<LocalDate, TagesStatistik> getTagesStatistiken() 
+	{
+	return tagesStatistiken;
 	}
 
 	public JahresStatistik(ArrayList<Vorgang> vorgaenge, Zeitraum berichtsZeitraum) 

@@ -6,22 +6,31 @@ package de.hannit.fsch.reportal.db;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
+import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.Zeitraum;
+import de.hannit.fsch.reportal.model.echolon.EcholonNode;
+import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
+import de.hannit.fsch.reportal.model.echolon.MonatsStatistik;
+import de.hannit.fsch.reportal.model.echolon.QuartalsStatistik;
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
 /**
@@ -40,6 +49,10 @@ private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private LocalDateTime lastExecution = LocalDateTime.now();
 private int anzahlDatensaetzeGesamt = 0;
 private Vorgang max = null;
+
+private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
+private ArrayList<Vorgang> vorgaengeBerichtszeitraum;
+private Stream<Vorgang> si = null;
 
 
 	/**
@@ -71,6 +84,7 @@ private Vorgang max = null;
 		distinctCases = result.get();
 		anzahlDatensaetzeGesamt = distinctCases.size();
 		max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+		setJahresStatistiken();
 		} 
 		catch (InterruptedException e) 
 		{
@@ -82,6 +96,36 @@ private Vorgang max = null;
 		}
 	lastExecution = LocalDateTime.now();
 	log.log(Level.INFO, this.getClass().getCanonicalName() + ": Letzte Cache Aktualisierung ist vom " + getLastExecution());	
+	}
+	
+	/*
+	 * Sortiert alle Vorgänge ab 2010 nach Jahren
+	 */
+	private void setJahresStatistiken() 
+	{
+	int aktuellesBerichtsJahr = max.getBerichtsJahr();
+	int erstesBerichtsJahr = 2009;
+	JahresStatistik js = null;
+	jahresStatistiken = new TreeMap<>();
+		
+		// Erstelle Jahresstatistiken bis 2010:
+		while (aktuellesBerichtsJahr > erstesBerichtsJahr) 
+		{
+		js = new JahresStatistik(getVorgaengeBerichtsJahr(aktuellesBerichtsJahr), String.valueOf(aktuellesBerichtsJahr));
+		js.setStatistik();
+		jahresStatistiken.put(aktuellesBerichtsJahr, js);
+			
+		aktuellesBerichtsJahr--;	
+		}
+	}  	
+	
+	private ArrayList<Vorgang> getVorgaengeBerichtsJahr(int incoming)
+	{
+	vorgaengeBerichtszeitraum = new ArrayList<>();
+	si = distinctCases.values().stream(); 
+	vorgaengeBerichtszeitraum = si.filter(v -> v.getBerichtsJahr() == incoming).collect(Collectors.toCollection(ArrayList::new ));
+	
+	return vorgaengeBerichtszeitraum;	
 	}
 
 	public String getLastExecution() 
@@ -123,7 +167,8 @@ private Vorgang max = null;
 	{
 	return max != null ? "Aktuellster Vorgang im Cache (" + max.getVorgangsNummer() + ") ist vom " + Zeitraum.dfDatumUhrzeitMax.format(max.getErstellDatumZeit()) : null;	
 	}
-	
+
+	public TreeMap<Integer, JahresStatistik> getJahresStatistiken() {return jahresStatistiken;}
 	
 	
 }
