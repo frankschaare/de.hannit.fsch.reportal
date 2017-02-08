@@ -17,7 +17,6 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import de.hannit.fsch.reportal.db.Cache;
-import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -26,25 +25,23 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  */
 @ManagedBean
 @SessionScoped
-public class EcholonTopTenChart 
+public class EcholonTopTenAktuellChart 
 {
 @ManagedProperty (value = "#{cache}")
 private Cache cache;	
 
-private final static Logger log = Logger.getLogger(EcholonTopTenChart.class.getSimpleName());
+private final static Logger log = Logger.getLogger(EcholonTopTenAktuellChart.class.getSimpleName());
 private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
 private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 private TreeMap<Integer, TagesStatistik> helperTree = null;
 private TreeMap<Integer, TagesStatistik> top10 = null;
-private TagesStatistik avgDummy = null;
 private Stream<TagesStatistik> si = null;
-private Integer vorJahr = 0;
 private String avgLabel = "";
 
 /**
 	 * Managed Bean für die Darstellung der Echolon-Daten im Chart 
 	 */
-	public EcholonTopTenChart() 
+	public EcholonTopTenAktuellChart() 
 	{
 		try 
 		{
@@ -57,10 +54,8 @@ private String avgLabel = "";
 		jahresStatistiken = cache.getJahresStatistiken();
 		}
 	
-	// Top 10 wird für das Vorjahr erstellt
-	// vorJahr = 2014;
-	int vorJahr = (LocalDate.now().minusYears(1)).getYear();
-	JahresStatistik auswertungsStatistik = jahresStatistiken.get(vorJahr); 
+	// Top 10 wird für das aktuell Jahr erstellt
+	JahresStatistik auswertungsStatistik = jahresStatistiken.pollLastEntry().getValue(); 
 	avgLabel = "Tagesdurchschnitt " + auswertungsStatistik.getBerichtsJahr();
 	tagesStatistiken = auswertungsStatistik.getTagesStatistiken();
 	setTop10();
@@ -156,7 +151,7 @@ private String avgLabel = "";
      model.addSeries(sIncidents);
      model.addSeries(sBeschwerden);
          
-    model.setTitle("Top 10 Eingänge im abgelaufenem Jahr");
+    model.setTitle("Top 10 Eingänge im laufendem Jahr");
     model.setLegendPosition("nw");
     model.setMouseoverHighlight(true);
     model.setShowDatatip(true);

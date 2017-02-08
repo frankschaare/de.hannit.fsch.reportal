@@ -10,7 +10,7 @@
 	    <p:menubar style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
 	            <p:menuitem value="Zusammenfassung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
-	            <p:menuitem value="HRG Auswertung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
+	            <p:menuitem value="HRG Auswertung" disabled="true" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
 	            <p:menuitem value="Echolon Daten" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
 	        </p:submenu>
 	 
@@ -21,7 +21,8 @@
 	            </p:submenu>
 	            <p:submenu label="Jahresstatistiken" icon="fa fa-calendar-o">
 	                <p:menuitem value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonJahresKategorienChart" icon="fa fa-bar-chart-o"/>
-	                <p:menuitem value="Top 10" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem value="Top 10 Vorjahr" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem value="Top 10 aktuell" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenAktuellChart" icon="fa fa-bar-chart-o"/>	                
 	            </p:submenu>	            
 	        </p:submenu>
 	 
