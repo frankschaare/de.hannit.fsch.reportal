@@ -251,6 +251,13 @@ min-height: 450px !important;
     border-color: white;
 }
 
+.userIcon {
+	height: 25px;
+	width: 18px;
+	float: left;
+	padding-right: 10px;
+}
+
 #loginForm {
     margin: auto;
     width: 30%;

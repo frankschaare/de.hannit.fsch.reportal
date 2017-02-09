@@ -45,12 +45,13 @@
 	       
 	        <p:submenu label="Hilfe" icon="fa fa-question">
 	            <p:menuitem value="Startseite" url="/" icon="fa fa-home"/>
-	            <p:menuitem value="#{dbs.echolonDBStatus}" url="/daten/echolon/dbStatus.xhtml" icon="fa fa-database" rendered="#{dbs.echolonDBConnected}"/>
-	            <p:menuitem value="#{dbs.echolonDBStatus}" action="/daten/echolon/dbError" icon="fa fa-warning" rendered="#{!dbs.echolonDBConnected}" style="color: red;"/>
+	            <p:menuitem value="#{dbs.echolonDBStatus}" disabled="true" url="/daten/echolon/dbStatus.xhtml" icon="fa fa-database" rendered="#{dbs.echolonDBConnected}"/>
+	            <p:menuitem value="#{dbs.echolonDBStatus}" disabled="true" action="/daten/echolon/dbError" icon="fa fa-warning" rendered="#{!dbs.echolonDBConnected}" style="color: red;"/>
 				<p:menuitem value="Info" url="/about.xhtml" icon="fa fa-info"/>
 	        </p:submenu>	 
-	 
+
 	        <f:facet name="options">
+	        	<p:graphicImage value="#{resource['icons:userEnabled.svg']}" styleClass="userIcon" rendered="#{request.remoteUser != null}" title="#{benutzer.info}"/>
 	        	<p:commandButton action="#{sessionController.signout}" value="Abmelden" disabled="#{request.remoteUser == null}" icon="fa fa-sign-out" ajax="false"/>
 	        </f:facet>
 	    </p:menubar>
@@ -88,7 +89,8 @@
 	    
 	    <p:menubar style="padding: 1px; padding-top: 2px;">  
  
-	        <f:facet name="options">   
+	        <f:facet name="options">
+	        	<p:graphicImage value="#{resource['icons:userDisabled.svg']}" styleClass="userIcon"/>   
 	        	<p:commandButton action="#{sessionController.signout}" value="Abmelden" disabled="#{request.remoteUser == null}" icon="fa fa-sign-out" ajax="false"/>
 	        </f:facet>
 	    </p:menubar>	  

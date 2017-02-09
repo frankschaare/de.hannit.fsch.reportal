@@ -23,16 +23,17 @@
 		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 	</div>
 	<div id="loginForm">
-		<h1 class="title">Willkommen beim HannIT Reportal</h1>
+		<h1 class="titleError">Anmeldung fehlgeschlagen ! Bitte versuchen Sie es erneut.</h1>
+		<h1 class="subtitle" style="color: red">Beachten Sie bei der Eingabe des Passwortes die Groß- und Kleinschreibung</h1>
 		<p:messages showDetail="true"/>
 		
 			<h:form id="login" onsubmit="action='j_security_check';" prependId="false">	
 				<p:panel id="panelLogin" header="Bitte melden Sie sich an:" footer="Zugriff auf die Daten ist nur für angemeldete Benutzer möglich.">
 					<p:panelGrid id="panelGridLogin" columns="2" styleClass="loginPanel">
 				        <p:outputLabel for="j_username" value="Benutzer:" />
-				        <p:inputText id="j_username" value="#{benutzer.loginName}"/>            
+				        <p:inputText id="j_username" />            
 				        <p:outputLabel for="j_password" value="Passwort:" />
-				        <p:password id="j_password" value="#{benutzer.loginPassword}"/>
+				        <p:password id="j_password" />
 				        <p:commandButton id="submit" value="Anmelden" ajax="false"/>
 				        <p:commandButton id="reset" value="Reset" ajax="false"/>
 					</p:panelGrid>

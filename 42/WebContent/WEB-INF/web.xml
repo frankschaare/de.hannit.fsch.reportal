@@ -44,6 +44,22 @@
 	<listener>
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
+	<listener>
+		<listener-class>de.hannit.fsch.util.SessionManager</listener-class>
+	</listener>	
+	<filter id="LoginFilter">
+		<description>Wird vor der formulabasierten Anmeldung ausgeführt</description>
+		<filter-name>Anmeldefilter</filter-name>
+		<filter-class>de.hannit.fsch.util.LoginFilter</filter-class>
+			<init-param>
+				<param-name>Beispielparameter</param-name>
+				<param-value>1</param-value>			
+			</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>Anmeldefilter</filter-name>
+		    <url-pattern>/index.xhtml</url-pattern>
+	</filter-mapping>	
     <security-constraint>
     	<display-name>Startseite</display-name>
         	<web-resource-collection>
@@ -81,7 +97,7 @@
     	<auth-method>FORM</auth-method>
         	<form-login-config>
             	<form-login-page>/login.xhtml</form-login-page>
-                <form-error-page>/login.xhtml</form-error-page>
+                <form-error-page>/loginError.xhtml</form-error-page>
           	</form-login-config>
      </login-config>
      <security-role>
