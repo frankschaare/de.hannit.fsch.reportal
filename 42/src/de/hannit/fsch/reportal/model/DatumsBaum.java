@@ -3,13 +3,18 @@ package de.hannit.fsch.reportal.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.ProjectStage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -29,13 +34,17 @@ public class DatumsBaum
 @ManagedProperty (value = "#{cache}")
 private Cache cache;
 
-private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());		
+private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());	
+private String logPrefix = this.getClass().getCanonicalName() + ": ";
+private FacesContext fc = FacesContext.getCurrentInstance();
+
 private TreeNode root;
 private HashMap<String, EcholonNode> jahresNodes = new HashMap<String, EcholonNode>();
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 private ArrayList<Vorgang> vorgaenge = null;
 private Vorgang max = null;
 private Vorgang min = null;
+private Stream<Vorgang> si = null;
 
 	public DatumsBaum() 
 	{
@@ -47,20 +56,42 @@ private Vorgang min = null;
 	{
 		try 
 		{
-		distinctCases = cache.getDistinctCases();
+		this.distinctCases = cache.getDistinctCases();
 		} 
 		catch (NullPointerException e) 
 		{
-		FacesContext fc = FacesContext.getCurrentInstance();
 		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
-		distinctCases = cache.getDistinctCases();
+		this.distinctCases = cache.getDistinctCases();
 		}
 	
+	filter();
 	root = new DefaultTreeNode("Root", null);
 	setMinMaxNode();
 	setJahresNodes();
 	}
 	
+	private void filter() 
+	{
+
+		if (fc.getExternalContext().isUserInRole(Benutzer.ROLE_HRG)) 
+		{
+		if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Filtere vorhandene Vorgänge für die HRG" );}	
+			
+		si = distinctCases.values().stream();
+		vorgaenge = si.filter(v -> v.getOrganisation().startsWith("HRG")).collect(Collectors.toCollection(ArrayList::new ));
+		if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Es wurden " + vorgaenge.size() + " Vorgänge gefiltert");}
+			
+		} 
+		else 
+		{
+		vorgaenge = new ArrayList<>();
+			for (Vorgang vorgang : distinctCases.values()) 
+			{
+			vorgaenge.add(vorgang);	
+			}			
+		}
+	}
+
 	/*
 	 * Ermittelt den jüngsten Vorgang und legt fest,
 	 * welches der oberste Node im Baum sein wird
@@ -100,11 +131,6 @@ private Vorgang min = null;
 		aktuellerJahresknoten.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_JAHR);
 		aktuellerJahresknoten.setBerichtsJahr(berichtsJahr);
 		
-			vorgaenge = new ArrayList<>();
-			for (Vorgang vorgang : distinctCases.values()) 
-			{
-			vorgaenge.add(vorgang);	
-			}
 		js = new JahresStatistik(vorgaenge, berichtsJahr);
 		aktuellerJahresknoten.setData(js);
 			

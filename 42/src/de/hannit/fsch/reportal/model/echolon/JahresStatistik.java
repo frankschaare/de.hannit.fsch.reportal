@@ -1,18 +1,20 @@
 package de.hannit.fsch.reportal.model.echolon;
 
 import java.time.LocalDate;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.faces.application.ProjectStage;
+import javax.faces.context.FacesContext;
+
 import org.primefaces.model.chart.PieChartModel;
 
-import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.Quartal;
 import de.hannit.fsch.reportal.model.Zeitraum;
@@ -20,6 +22,7 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 public class JahresStatistik extends EcholonStatistik
 {
 private final static Logger log = Logger.getLogger(JahresStatistik.class.getSimpleName());
+private FacesContext fc = null;
 
 private int anzahlIncidents = 0;
 private int anzahlServiceabrufe = 0;
@@ -51,6 +54,7 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	 */
 	public JahresStatistik(ArrayList<Vorgang> alleVorgaenge, String berichtsJahr) 
 	{
+	fc = FacesContext.getCurrentInstance();	
 	this.berichtsJahr = berichtsJahr;	
 	berichtsZeitraum = new Zeitraum(berichtsJahr);
 	setLabel(berichtsJahr);
@@ -96,7 +100,10 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 		{
 		t.setStatistik();	
 		}
-	log.log(Level.INFO, this.getClass().getCanonicalName() + ": Es wurden " + tagesStatistiken.size() + " Tagesstatistiken erstellt.");	
+		if (fc.isProjectStage(ProjectStage.Development)) 
+		{
+		log.log(Level.INFO, this.getClass().getCanonicalName() + ": Es wurden " + tagesStatistiken.size() + " Tagesstatistiken erstellt.");	
+		}	
 	}
 
 	private void setQuartale(int iBerichtsJahr) 

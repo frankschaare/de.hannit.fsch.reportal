@@ -3,11 +3,14 @@
  */
 package de.hannit.fsch.reportal.model.echolon;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -17,7 +20,7 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import de.hannit.fsch.reportal.db.Cache;
-import de.hannit.fsch.reportal.db.EcholonDBManager;
+import de.hannit.fsch.reportal.model.Benutzer;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -26,17 +29,21 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  */
 @ManagedBean
 @SessionScoped
-public class EcholonTopTenChart 
+public class EcholonTopTenChart implements Serializable
 {
+private static final long serialVersionUID = 1726331639816105369L;
 @ManagedProperty (value = "#{cache}")
 private Cache cache;	
+@ManagedProperty (value = "#{benutzer}")
+private Benutzer benutzer;
 
 private final static Logger log = Logger.getLogger(EcholonTopTenChart.class.getSimpleName());
+private String logPrefix = this.getClass().getCanonicalName() + ": ";
+private FacesContext fc = FacesContext.getCurrentInstance();
 private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
 private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 private TreeMap<Integer, TagesStatistik> helperTree = null;
 private TreeMap<Integer, TagesStatistik> top10 = null;
-private TagesStatistik avgDummy = null;
 private Stream<TagesStatistik> si = null;
 private Integer vorJahr = 0;
 private String avgLabel = "";
@@ -52,14 +59,15 @@ private String avgLabel = "";
 		} 
 		catch (NullPointerException e) 
 		{
-		FacesContext fc = FacesContext.getCurrentInstance();
 		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
 		jahresStatistiken = cache.getJahresStatistiken();
 		}
 	
 	// Top 10 wird für das Vorjahr erstellt
-	// vorJahr = 2014;
-	int vorJahr = (LocalDate.now().minusYears(1)).getYear();
+	benutzer = benutzer != null ? benutzer : fc.getApplication().evaluateExpressionGet(fc, "#{benutzer}", Benutzer.class);	
+	vorJahr = benutzer.getSystemUserDomain().equals("ENTHOO") ? 2014 : LocalDate.now().minusYears(1).getYear(); 
+		
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Erstelle Top10 Statistik für das Jahr " + vorJahr);}			
 	JahresStatistik auswertungsStatistik = jahresStatistiken.get(vorJahr); 
 	avgLabel = "Tagesdurchschnitt " + auswertungsStatistik.getBerichtsJahr();
 	tagesStatistiken = auswertungsStatistik.getTagesStatistiken();
@@ -168,12 +176,9 @@ private String avgLabel = "";
     return model;
     }	
 
-	public Cache getCache() {
-		return cache;
-	}
-	
-	public void setCache(Cache cache) {
-		this.cache = cache;
-	}
+	public Cache getCache() {return cache;}
+	public void setCache(Cache cache) {this.cache = cache;}
+	public Benutzer getBenutzer() {return benutzer;}
+	public void setBenutzer(Benutzer benutzer) {this.benutzer = benutzer;}
 
 }

@@ -25,12 +25,8 @@ import java.util.stream.Stream;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import de.hannit.fsch.reportal.model.Berichtszeitraum;
 import de.hannit.fsch.reportal.model.Zeitraum;
-import de.hannit.fsch.reportal.model.echolon.EcholonNode;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
-import de.hannit.fsch.reportal.model.echolon.MonatsStatistik;
-import de.hannit.fsch.reportal.model.echolon.QuartalsStatistik;
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
 /**
@@ -53,6 +49,7 @@ private Vorgang max = null;
 private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
 private ArrayList<Vorgang> vorgaengeBerichtszeitraum;
 private Stream<Vorgang> si = null;
+private String restrictedAccess = null;
 
 
 	/**
@@ -169,6 +166,8 @@ private Stream<Vorgang> si = null;
 	}
 
 	public TreeMap<Integer, JahresStatistik> getJahresStatistiken() {return jahresStatistiken;}
+	public String getRestrictedAccess() {return restrictedAccess;}
+	public void setRestrictedAccess(String restrictedAccess) {this.restrictedAccess = restrictedAccess;}
 	
 	
 }

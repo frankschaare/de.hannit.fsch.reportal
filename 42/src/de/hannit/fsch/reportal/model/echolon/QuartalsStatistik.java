@@ -277,8 +277,17 @@ private Stream<Vorgang> si = null;
 	
 	public int getDurchschnittlicheDauerMinutenIncidents() 
 	{
-	Double d =  incidents.stream().mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
-	return d.intValue();
+	int result = 0;	
+		try 
+		{
+		Double d = incidents.stream().mapToInt(v -> v.getLoesungszeitMinuten()).average().getAsDouble();
+		result = d.intValue();	
+		} 
+		catch (java.util.NoSuchElementException e) 
+		{
+		result = 0;
+		}
+	return result; 
 	}
 	
 	public int getDurchschnittlicheDauerMinutenServiceAbrufe() 
@@ -314,10 +323,9 @@ private Stream<Vorgang> si = null;
 	return monatsStatistiken;
 	}
 
-
 	public void addMonatsstatistik(MonatsStatistik incoming) 
 	{
 	monatsStatistiken.add(incoming);
-	}	
+	}
 
 }

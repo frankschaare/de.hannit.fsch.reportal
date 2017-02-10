@@ -4,16 +4,21 @@
 package de.hannit.fsch.reportal.db;
 
 import java.io.InputStream;
-import java.time.format.DateTimeFormatter;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -37,49 +42,64 @@ import de.hannit.fsch.reportal.model.echolon.Vorgang;
  */
 @ManagedBean(name = "hrg")
 @SessionScoped
-public class HRGZusammenfassung 
+public class HRGZusammenfassung implements Serializable
 {
+@ManagedProperty (value = "#{cache}")
+private Cache cache;	
+private static final long serialVersionUID = 1L;
+
+private final static Logger log = Logger.getLogger(HRGZusammenfassung.class.getSimpleName());
+private String logPrefix = this.getClass().getCanonicalName() + ": ";
+private FacesContext fc = FacesContext.getCurrentInstance();
+
 private String thema = "Zusammenfassung";
 private Zeitraum abfrageZeitraum = null;
-private String datumsFormat = "dd.MM.yyyy";
-private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
-
-private ExecutorService executor = Executors.newCachedThreadPool();
-private HRGDBThread dbThread = null;
-private Future<HashMap<String, Vorgang>> result = null;
 
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
+private ArrayList<Vorgang> vorgaengeBerichtszeitraum;
 private TreeMap<Integer, QuartalsStatistik> quartale = new TreeMap<Integer, QuartalsStatistik>();
+private HashMap<Integer, MonatsStatistik> monatsStatistiken = null;
 private ArrayList<String> lines = null;
+private Vorgang max = null;
+
+private Stream<Vorgang> si = null;
 
 	/**
 	 * 
 	 */
 	public HRGZusammenfassung() 
 	{
-	// Standardabfragezeitraum über die letzen drei Monate:
-	abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL, null);
-	
-	dbThread = new HRGDBThread();
-	dbThread.setAbfrageZeitraum(abfrageZeitraum);
-	
-		// DB-Abfrage starten:
+		if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Lade alle Vorgänge aus dem Cache.");}	
 		try 
 		{
-		result = executor.submit(dbThread);			
-		distinctCases = result.get();
-		
+		distinctCases = cache.getDistinctCases();
+		} 
+		catch (NullPointerException e) 
+		{
+		FacesContext fc = FacesContext.getCurrentInstance();
+		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
+		distinctCases = cache.getDistinctCases();
+		}
+	setMinMaxVorgang();
+	
+	// Standardabfragezeitraum über die letzen drei Monate:
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Setze AbfrageZeitraum auf 'Zeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL'.");}	
+	abfrageZeitraum = new Zeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTES_QUARTAL, max);
+			
+
 			for (Quartal q : abfrageZeitraum.getQuartale().values()) 
 			{
 			QuartalsStatistik qs = new QuartalsStatistik(q);
-			
-				for (Vorgang v : distinctCases.values()) 
+
+			vorgaengeBerichtszeitraum = filter(q);
+
+			setMonatsStatistiken(vorgaengeBerichtszeitraum); 
+
+				for (MonatsStatistik ms : monatsStatistiken.values()) 
 				{
-					if (v.getErstellDatumZeit().isAfter(q.getStartDatumUhrzeit()) && v.getErstellDatumZeit().isBefore(q.getEndDatumUhrzeit())) 
-					{
-					// qs.addVorgang(v);	
-					}
-				}
+				ms.setStatistik();	
+				qs.addMonatsstatistik(ms);
+				}			
 			qs.setStatistik();	
 			quartale.put(q.getIndex(), qs);	
 			}
@@ -162,13 +182,62 @@ private ArrayList<String> lines = null;
 		EcholonZusammenfassungCSV csv = new EcholonZusammenfassungCSV(dateiPfad);
 		csv.setLines(lines);
 		csv.createCSVDatei(dateiPfad, dateiName);
-		} 
-		catch (InterruptedException | ExecutionException e) 
-		{
-		e.printStackTrace();
-		}
 	}
 	
+	/*
+	 * Aufteilung der gesamten Vorgänge nach Monaten	
+	 */
+	private void setMonatsStatistiken(ArrayList<Vorgang> incoming) 
+	{
+	monatsStatistiken =	new HashMap<Integer, MonatsStatistik>();
+	int berichtsMonat = 0;
+	
+		for (Vorgang vorgang : incoming) 
+		{
+			berichtsMonat = vorgang.getBerichtsMonat();
+			if (monatsStatistiken.containsKey(berichtsMonat)) 
+			{
+			monatsStatistiken.get(berichtsMonat).addVorgang(vorgang);	
+			} 
+			else 
+			{
+			MonatsStatistik m = new MonatsStatistik(LocalDate.of(vorgang.getBerichtsJahr(), berichtsMonat, 1));
+			m.addVorgang(vorgang);
+			monatsStatistiken.put(berichtsMonat, m);
+			}		
+			
+		}
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Es wurden " + monatsStatistiken.size() + " Monatsstatisken erstellt.");}				
+	}
+
+	/*
+	 * Filtert die Vorgänge deren Organisation mit HRG beginnt und die im Berichtszeitraum liegen
+	 */
+	private ArrayList<Vorgang> filter(Quartal incoming) 
+	{
+	vorgaengeBerichtszeitraum = new ArrayList<>();
+	final LocalDateTime start = incoming.getStartDatumUhrzeit();
+	final LocalDateTime ende = incoming.getEndDatumUhrzeit();
+	
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Verarbeite Quartal " + incoming.getBezeichnungLang() + " für die Zeit vom " + Zeitraum.dfDatumUhrzeit.format(start) + " bis " + Zeitraum.dfDatumUhrzeit.format(ende));}	
+	
+	si = distinctCases.values().stream();
+	vorgaengeBerichtszeitraum = si.filter(v -> v.getOrganisation().startsWith("HRG") && v.getErstellDatumZeit().isAfter(start) && v.getErstellDatumZeit().isBefore(ende)).collect(Collectors.toCollection(ArrayList::new ));
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Es wurden " + vorgaengeBerichtszeitraum.size() + " Vorgänge für die Zeit vom " + Zeitraum.dfDatumUhrzeit.format(start) + " bis " + Zeitraum.dfDatumUhrzeit.format(ende) + " gefiltert");}
+	
+	return vorgaengeBerichtszeitraum;
+	}
+
+
+	/*
+	 * Ermittelt den jüngsten Vorgang und legt fest,
+	 * welches der oberste Node im Baum sein wird
+	 */
+    private void setMinMaxVorgang() 
+    {
+	max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+	}
+    
 	public StreamedContent getFile() 
 	{
 	StreamedContent file = null;	
@@ -177,6 +246,9 @@ private ArrayList<String> lines = null;
 	return file;
 	}	
 	
+	public Cache getCache() {return cache;}
+	public void setCache(Cache cache) {this.cache = cache;}
+
 	public Object[] getQuartale()
 	{
 	return quartale.values().toArray();	
@@ -188,7 +260,7 @@ private ArrayList<String> lines = null;
 
 	public String getSubtitle() 
 	{
-	return "AuswertungsZeitraum: " + df.format(abfrageZeitraum.getStartDatum()) + " bis " + df.format(abfrageZeitraum.getEndDatum());
+	return "AuswertungsZeitraum: " + Zeitraum.df.format(abfrageZeitraum.getStartDatum()) + " bis " + Zeitraum.df.format(abfrageZeitraum.getEndDatum());
 	}
 
 }

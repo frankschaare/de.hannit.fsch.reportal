@@ -19,8 +19,7 @@ table {
 
 th
 	{
-	font-size: 7px;
-	font-weight: bold;
+	font-size: 14px;
 	padding-bottom: 1%;
 	}
 	
@@ -42,18 +41,18 @@ tr.serviceAbrufe
 	}	
 
 td 	{
-	font-size: 11px;	
+	font-size: 15px;	
+	font-weight: bold;
 	text-align: right;
 	padding-top: 10px;
-	padding-right: 75px;
+	padding-right: 115px;
 	padding-bottom: 10px;
 	width: 5%;
 }
 
 td.label
  	{
- 	padding-left: 20px;
+ 	padding-left: 100px;
 	text-align: left;
-	font-weight: bold;
 	width: 20%;	
 }

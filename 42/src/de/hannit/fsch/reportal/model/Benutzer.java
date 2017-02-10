@@ -12,7 +12,7 @@ private String systemDNSDomain = null;
 private String systemUserDomain = null;
 private String loginName = null;
 private String loginPassword = null;
-
+public static final String ROLE_HRG = "hrg";
 
 	public Benutzer() 
 	{

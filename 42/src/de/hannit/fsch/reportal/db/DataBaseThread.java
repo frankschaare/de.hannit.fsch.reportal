@@ -77,6 +77,7 @@ private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();
 			v.setStatus(rs.getString("Status"));
 			v.setKategorie(rs.getString("Kategorie"));
 			v.setPrioritaet(rs.getString("Priorität"));
+			v.setOrganisation((rs.getString("OrganizationName") != null ? rs.getString("OrganizationName") : "unbekannt"));
 			v.setLoesungszeitMinuten((int) rs.getDouble("LösungszeitMinuten"));
 			v.setReaktionszeitEingehalten(rs.getString("Reaktionszeit_eingehalten").equalsIgnoreCase("Reaktionszeit eingehalten") ? true : false);
 			v.setZielzeitEingehalten(rs.getString("Zielzeit_eingehalten").equalsIgnoreCase("Zielzeit eingehalten") ? true : false);

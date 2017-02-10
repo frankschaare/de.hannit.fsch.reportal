@@ -37,7 +37,13 @@
   		<param-name>javax.faces.FACELETS_BUFFER_SIZE</param-name>
   		<param-value>65535</param-value>
   	</context-param>  	
+	<context-param>
+		<description>Wird benutzt, um die SEVERITY für den Logger zu definieren. Gültige Werte sind 'Production' oder 'Development' </description>
+	    <param-name>javax.faces.PROJECT_STAGE</param-name>   
+	    <param-value>Development</param-value>
+	</context-param>  	
    	<context-param>
+   		<description>Notwendiger Parameter für die Icons im Primefaces Menü</description>
 		<param-name>primefaces.FONT_AWESOME</param-name>
 		<param-value>true</param-value>
 	</context-param>	
@@ -47,17 +53,17 @@
 	<listener>
 		<listener-class>de.hannit.fsch.util.SessionManager</listener-class>
 	</listener>	
-	<filter id="LoginFilter">
-		<description>Wird vor der formulabasierten Anmeldung ausgeführt</description>
-		<filter-name>Anmeldefilter</filter-name>
-		<filter-class>de.hannit.fsch.util.LoginFilter</filter-class>
+	<filter id="EcholonDatenFilter">
+		<description>Wird vor dem Aufruf der echolonDaten.xhtml ausgeführt</description>
+		<filter-name>Datenfilter</filter-name>
+		<filter-class>de.hannit.fsch.util.EcholonDatenFilter</filter-class>
 			<init-param>
-				<param-name>Beispielparameter</param-name>
-				<param-value>1</param-value>			
+				<param-name>filterValue</param-name>
+				<param-value>HRG</param-value>			
 			</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>Anmeldefilter</filter-name>
+		<filter-name>Datenfilter</filter-name>
 		    <url-pattern>/index.xhtml</url-pattern>
 	</filter-mapping>	
     <security-constraint>
@@ -69,6 +75,7 @@
             <auth-constraint>
                   <role-name>admin</role-name>
                   <role-name>team16</role-name>
+                  <role-name>hrg</role-name>                  
             </auth-constraint>
     </security-constraint>	
     <security-constraint>
@@ -90,7 +97,8 @@
          	</web-resource-collection>
             <auth-constraint>
                   <role-name>admin</role-name>
-                  <role-name>team16</role-name>                  
+                  <role-name>team16</role-name> 
+                  <role-name>hrg</role-name>
             </auth-constraint>
     </security-constraint>    
     <login-config>

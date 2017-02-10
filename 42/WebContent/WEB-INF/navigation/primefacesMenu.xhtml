@@ -10,7 +10,7 @@
 	    <p:menubar style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
 	            <p:menuitem value="Zusammenfassung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
-	            <p:menuitem value="HRG Auswertung" disabled="true" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
+	            <p:menuitem value="HRG Auswertung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
 	            <p:menuitem value="Echolon Daten" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
 	        </p:submenu>
 	 
@@ -76,6 +76,33 @@
 	            <p:menuitem value="Startseite" url="/" icon="fa fa-home"/>
 	            <p:menuitem value="#{dbs.echolonDBStatus}" url="/daten/echolon/dbStatus.xhtml" icon="fa fa-database" rendered="#{dbs.echolonDBConnected}"/>
 	            <p:menuitem value="#{dbs.echolonDBStatus}" action="/daten/echolon/dbError" icon="fa fa-warning" rendered="#{!dbs.echolonDBConnected}" style="color: red;"/>
+				<p:menuitem value="Info" url="/about.xhtml" icon="fa fa-info"/>
+	        </p:submenu>	 
+	 
+	        <f:facet name="options">
+	        	<p:commandButton action="#{sessionController.signout}" value="Abmelden" disabled="#{request.remoteUser == null}" icon="fa fa-sign-out" ajax="false"/>
+	        </f:facet>
+	    </p:menubar>	  
+	</h:form>
+
+	<h:form id="formHRG" rendered="#{request.isUserInRole('hrg')}">
+	    <p:menubar style="padding: 1px; padding-top: 2px;">
+	        <p:submenu label="Echolon Daten" icon="fa fa-database">
+	            <p:menuitem value="HRG Auswertung" disabled="#{!request.isUserInRole('hrg')}" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
+	            <p:menuitem value="Echolon Daten" disabled="#{!request.isUserInRole('hrg')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
+	        </p:submenu>
+	 
+	        <p:submenu label="Echolon Charts" icon="fa fa-signal">
+	            <p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
+	                <p:menuitem value="Gesamtaufträge" disabled="true" action="/charts/echolon/EcholonChart" icon="fa fa-bar-chart"/>
+	                <p:menuitem value="Kategorien" disabled="true" action="/charts/echolon/EcholonKategorienChart" icon="fa fa-bar-chart-o"/>
+	            </p:submenu>
+	        </p:submenu>
+       
+	        <p:submenu label="Hilfe" icon="fa fa-question">
+	            <p:menuitem value="Startseite" url="/" icon="fa fa-home"/>
+	            <p:menuitem value="#{dbs.echolonDBStatus}" disabled="true" url="/daten/echolon/dbStatus.xhtml" icon="fa fa-database" rendered="#{dbs.echolonDBConnected}"/>
+	            <p:menuitem value="#{dbs.echolonDBStatus}" disabled="true" action="/daten/echolon/dbError" icon="fa fa-warning" rendered="#{!dbs.echolonDBConnected}" style="color: red;"/>
 				<p:menuitem value="Info" url="/about.xhtml" icon="fa fa-info"/>
 	        </p:submenu>	 
 	 

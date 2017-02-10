@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import de.hannit.fsch.reportal.model.Zeitraum;
 
@@ -27,8 +26,8 @@ private int prioritaet = 0;
 private boolean reaktionszeitEingehalten = false;
 private boolean zielzeitEingehalten = false;
 private int loesungszeitMinuten = 0;
-private DateTimeFormatter dfUhrzeit =  DateTimeFormatter.ofPattern("HH:ss").withLocale(Locale.GERMAN);
-private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMAN);
+private DateTimeFormatter dfUhrzeit =  DateTimeFormatter.ofPattern("HH:ss");
+private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 
 	public Vorgang() 
@@ -48,7 +47,7 @@ private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy").w
 
 	public void setErstellDatum(String dbValue) 
 	{
-	this.erstellDatum = LocalDate.parse(dbValue, DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMAN));
+	this.erstellDatum = LocalDate.parse(dbValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 	this.berichtsJahr = erstellDatum.getYear();
 	this.berichtsMonat = erstellDatum.getMonthValue();
 	
