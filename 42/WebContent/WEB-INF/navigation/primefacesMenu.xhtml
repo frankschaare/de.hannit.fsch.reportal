@@ -5,28 +5,42 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core">
 	
+
 	<h:form rendered="#{request.isUserInRole('admin')}">  
-	 
-	    <p:menubar style="padding: 1px; padding-top: 2px;">
+ 	
+ 	<p:tooltip id="btnZusammenfassungToolTip" for="btnZusammenfassung" value="Eine Übersicht der gesamten Echolon Werte für die letzten vier abgeschlossenen Quartale" position="right"/>
+ 	<p:tooltip id="btnHRGAuswertungToolTip" for="btnHRGAuswertung" value="Eine Übersicht der gesamten Echolon Werte für die letzten vier abgeschlossenen Quartale, gefiltert nach Organisation = HRG" position="right"/>
+ 	<p:tooltip id="btnEcholonDatenToolTip" for="btnEcholonDaten" value="Gewährt detaillierten Zugriff auf alle #{cache.anzahlDatensaetzeGesamt} verfügbaren Echolon Datensätze" position="right"/>
+ 	<p:tooltip id="btnChartGesamtaufträgeToolTip" for="btnChartGesamtaufträge" value="Ein BarChart der Echolon Werte für die letzten vier abgeschlossenen Quartale für die SLAs abgeschlossen worden" position="right"/>
+ 	<p:tooltip id="btnChartKategorienToolTip" for="btnChartKategorien" value="Eine Quartalsstatistik aller Echolon Vorgänge für die letzten vier abgeschlossenen Quartale" position="right"/>
+	<p:tooltip id="btnChartJahresstatistikenKategorienToolTip" for="btnChartJahresstatistikenKategorien" value="Eine Jahresstatistik aller Echolon Vorgänge seit 2010" position="right"/>
+	<p:tooltip id="btnChartJahresstatistikenTop10VorjahrToolTip" for="btnChartJahresstatistikenTop10Vorjahr" value="Eine Jahresstatistik aller Echolon Vorgänge des Vorjahres mit den 10 Tagen, an denen die meisten Vorgänge erfasst wurden. Zum Vergleich werden die Jahresdurchschnittswerte dargestellt." position="right"/>
+	<p:tooltip id="btnChartJahresstatistikenTop10AktuellToolTip" for="btnChartJahresstatistikenTop10Aktuell" value="Eine Jahresstatistik aller Echolon Vorgänge des aktuellen Jahres mit den 10 Tagen, an denen die meisten Vorgänge erfasst wurden. Zum Vergleich werden die Jahresdurchschnittswerte dargestellt." position="right"/>	
+	<p:tooltip id="menuitemCallcenterDatenToolTip" for="menuitemCallcenterDaten" value="Callcenter Daten stehen derzeit nicht zur Verfügung" position="right"/>	
+	<p:tooltip id="menuitemCallcenterChartsToolTip" for="menuitemCallcenterCharts" value="Callcenter Charts stehen derzeit nicht zur Verfügung" position="right"/>	
+	<p:tooltip id="btnStartseiteToolTip" for="btnStartseite" value="Klicken Sie hier, um zur Startseite zurück zu gelangen" position="right"/>
+	<p:tooltip id="btnInfoToolTip" for="btnInfo" value="Eine Übersicht der eingesetzten Technologien" position="right"/>
+	
+	    <p:menubar id="menubarAdmin" style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
-	            <p:menuitem value="Zusammenfassung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
-	            <p:menuitem value="HRG Auswertung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
-	            <p:menuitem value="Echolon Daten" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
+	            <p:menuitem id="btnZusammenfassung" value="Zusammenfassung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
+	            <p:menuitem id="btnHRGAuswertung" value="HRG Auswertung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
+	            <p:menuitem id="btnEcholonDaten" value="Echolon Daten" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
 	        </p:submenu>
 	 
 	        <p:submenu label="Echolon Charts" icon="fa fa-signal">
 	            <p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
-	                <p:menuitem value="Gesamtaufträge" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonChart" icon="fa fa-bar-chart"/>
-	                <p:menuitem value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonKategorienChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem id="btnChartGesamtaufträge" value="Gesamtaufträge" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonChart" icon="fa fa-bar-chart"/>
+	                <p:menuitem id="btnChartKategorien" value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonKategorienChart" icon="fa fa-bar-chart-o"/>
 	            </p:submenu>
 	            <p:submenu label="Jahresstatistiken" icon="fa fa-calendar-o">
-	                <p:menuitem value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonJahresKategorienChart" icon="fa fa-bar-chart-o"/>
-	                <p:menuitem value="Top 10 Vorjahr" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenChart" icon="fa fa-bar-chart-o"/>
-	                <p:menuitem value="Top 10 aktuell" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenAktuellChart" icon="fa fa-bar-chart-o"/>	                
+	                <p:menuitem id="btnChartJahresstatistikenKategorien" value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonJahresKategorienChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem id="btnChartJahresstatistikenTop10Vorjahr" value="Top 10 Vorjahr" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem id="btnChartJahresstatistikenTop10Aktuell" value="Top 10 aktuell" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenAktuellChart" icon="fa fa-bar-chart-o"/>	                
 	            </p:submenu>	            
 	        </p:submenu>
 	 
-	        <p:submenu label="Callcenter Daten" icon="fa fa-phone">
+	        <p:submenu id="menuitemCallcenterDaten" label="Callcenter Daten" icon="fa fa-phone">
 				<p:menuitem value="Callcenter Daten" action="/daten/callcenter/callcenterDaten" icon="fa fa-database" disabled="true"/>
 		 			<p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
 	                	<p:menuitem value="Wartezeit / KW" action="/daten/callcenter/wartezeitKW" icon="fa fa-table" disabled="true"/>
@@ -35,7 +49,7 @@
 	            	</p:submenu>
 	        </p:submenu>
 
-	        <p:submenu label="Callcenter Charts" icon="fa fa-signal">
+	        <p:submenu id="menuitemCallcenterCharts" label="Callcenter Charts" icon="fa fa-signal">
 	            <p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
 	                <p:menuitem value="nach Monaten" action="/charts/callcenter/ccm" icon="fa fa-line-chart" disabled="true"/>
 	                <p:menuitem value="nach KW" action="/charts/callcenter/cckw" icon="fa fa-line-chart" disabled="true"/>
@@ -44,15 +58,17 @@
 	        </p:submenu>
 	       
 	        <p:submenu label="Hilfe" icon="fa fa-question">
-	            <p:menuitem value="Startseite" url="/" icon="fa fa-home"/>
+	            <p:menuitem id="btnStartseite" value="Startseite" url="/" icon="fa fa-home"/>
 	            <p:menuitem value="#{dbs.echolonDBStatus}" disabled="true" url="/daten/echolon/dbStatus.xhtml" icon="fa fa-database" rendered="#{dbs.echolonDBConnected}"/>
 	            <p:menuitem value="#{dbs.echolonDBStatus}" disabled="true" action="/daten/echolon/dbError" icon="fa fa-warning" rendered="#{!dbs.echolonDBConnected}" style="color: red;"/>
-				<p:menuitem value="Info" url="/about.xhtml" icon="fa fa-info"/>
+				<p:menuitem id="btnInfo" value="Info" url="/about.xhtml" icon="fa fa-info"/>
 	        </p:submenu>	 
 
 	        <f:facet name="options">
-	        	<p:graphicImage value="#{resource['icons:userEnabled.svg']}" styleClass="userIcon" rendered="#{request.remoteUser != null}" title="#{benutzer.info}"/>
-	        	<p:commandButton action="#{sessionController.signout}" value="Abmelden" disabled="#{request.remoteUser == null}" icon="fa fa-sign-out" ajax="false"/>
+	        	<p:graphicImage id="benutzerInfo" value="#{resource['icons:userEnabled.svg']}" styleClass="userIcon" rendered="#{request.remoteUser != null}" title="#{benutzer.info}"/>
+	        	 <p:tooltip id="benutzerInfoToolTip" for="benutzerInfo" value="#{benutzer.info}" position="left"/>
+	        	<p:commandButton id="btnAbmelden" action="#{sessionController.signout}" value="Abmelden" disabled="#{request.remoteUser == null}" icon="fa fa-sign-out" ajax="false"/>
+	        	<p:tooltip id="btnAbmeldenToolTip" for="btnAbmelden" value="Klicken Sie hier, um sich abzumelden oder erneut anzumelden" position="left"/>
 	        </f:facet>
 	    </p:menubar>
 	    
