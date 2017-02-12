@@ -51,7 +51,7 @@
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class>de.hannit.fsch.util.SessionManager</listener-class>
+		<listener-class>de.hannit.fsch.util.SessionController</listener-class>
 	</listener>	
 	<filter id="EcholonDatenFilter">
 		<description>Wird vor dem Aufruf der echolonDaten.xhtml ausgeführt</description>
@@ -117,4 +117,11 @@
          <security-role>
      	<role-name>hrg</role-name>
     </security-role>	   
+    <session-config>
+      <session-timeout>1</session-timeout>
+    </session-config>    
+	<error-page>
+	    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+	    <location>/index.xhtml</location>
+	</error-page>    
 </web-app>

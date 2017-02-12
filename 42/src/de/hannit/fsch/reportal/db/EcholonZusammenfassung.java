@@ -4,6 +4,7 @@
 package de.hannit.fsch.reportal.db;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.hannit.fsch.reportal.db.Cache;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -41,8 +41,10 @@ import de.hannit.fsch.reportal.model.echolon.Vorgang;
  */
 @ManagedBean(name = "ez")
 @SessionScoped
-public class EcholonZusammenfassung 
+public class EcholonZusammenfassung implements Serializable
 {
+private static final long serialVersionUID = 6594816868399803344L;
+
 @ManagedProperty (value = "#{cache}")
 private Cache cache;
 
