@@ -22,8 +22,6 @@ private int anzahlserviceAbrufe = 0;
 private long anzahlServiceAbrufeServicezeitNichtEingehalten = 0;
 
 private String bezeichnungLang = "unbekannt";
-private String bezeichnungkurz = "unbekannt";
-
 private ArrayList<Vorgang> incidents = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> workOrder = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> serviceInfo = new ArrayList<Vorgang>();

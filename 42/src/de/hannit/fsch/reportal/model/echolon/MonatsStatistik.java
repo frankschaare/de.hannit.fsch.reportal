@@ -21,8 +21,6 @@ private int anzahlserviceAbrufe = 0;
 private long anzahlServiceAbrufeServicezeitNichtEingehalten = 0;
 
 private String bezeichnungLang = "unbekannt";
-private String bezeichnungkurz = "unbekannt";
-
 private ArrayList<Vorgang> incidents = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> workOrder = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> serviceInfo = new ArrayList<Vorgang>();
@@ -257,6 +255,11 @@ private Stream<Vorgang> si = null;
 	prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / ((float)incidents.size()));	
 	return df.format(prozentanteilIncidentsServicezeitNichtEingehalten);
 	}
+
+	public float getProzentanteilIncidentsServicezeitNichtEingehaltenAsFloat() 
+	{
+	return prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / ((float)incidents.size()));	
+	}
 	
 	public int getDurchschnittlicheDauerMinutenIncidents() 
 	{
@@ -316,6 +319,11 @@ private Stream<Vorgang> si = null;
 	return df.format(prozentanteilServiceAbrufeServicezeitNichtEingehalten);
 	}
 
+	public float getProzentanteilServiceAbrufeServicezeitNichtEingehaltenAsFloat() 
+	{
+	return prozentanteilServiceAbrufeServicezeitNichtEingehalten = (anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / ((float)serviceAbrufe.size());	
+	}
+	
 	public String getBezeichnungLang() {
 	return bezeichnungLang;
 	}

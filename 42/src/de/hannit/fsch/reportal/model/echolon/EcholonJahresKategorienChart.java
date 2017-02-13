@@ -3,6 +3,7 @@
  */
 package de.hannit.fsch.reportal.model.echolon;
 
+import java.io.Serializable;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -16,6 +17,7 @@ import org.primefaces.model.chart.ChartSeries;
 
 import de.hannit.fsch.reportal.db.Cache;
 import de.hannit.fsch.reportal.db.EcholonDBManager;
+import de.hannit.fsch.reportal.model.Chart;
 
 /**
  * @author fsch
@@ -23,10 +25,15 @@ import de.hannit.fsch.reportal.db.EcholonDBManager;
  */
 @ManagedBean
 @SessionScoped
-public class EcholonJahresKategorienChart 
+public class EcholonJahresKategorienChart implements Serializable
 {
+private static final long serialVersionUID = 2732509156820031564L;
 @ManagedProperty (value = "#{cache}")
 private Cache cache;	
+@ManagedProperty (value = "#{chart}")
+private Chart chart;	
+
+private FacesContext fc = null;
 
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());
 private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
@@ -36,16 +43,18 @@ private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
 	 */
 	public EcholonJahresKategorienChart() 
 	{
+	fc = FacesContext.getCurrentInstance();
+		
 		try 
 		{
 		jahresStatistiken = cache.getJahresStatistiken();
 		} 
 		catch (NullPointerException e) 
 		{
-		FacesContext fc = FacesContext.getCurrentInstance();
 		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
 		jahresStatistiken = cache.getJahresStatistiken();
 		}
+	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);	
 	}
 
 	public BarChartModel getKategorienChartModel() 
@@ -99,17 +108,13 @@ private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
     model.setShowPointLabels(true);
     model.setAnimate(true);
     model.setBarMargin(50);
-	model.setSeriesColors("32cd32, 698b22, 008b8b, 0000ff, 00008b, ee7600, ff0000");
+	model.setSeriesColors(chart.getTopTenBarColors());
     
     return model;
     }	
-
-	public Cache getCache() {
-		return cache;
-	}
 	
-	public void setCache(Cache cache) {
-		this.cache = cache;
-	}
-
+	public Cache getCache() {return cache;}
+	public void setCache(Cache cache) {this.cache = cache;}
+	public Chart getChart() {return chart;}
+	public void setChart(Chart chart) {this.chart = chart;}
 }

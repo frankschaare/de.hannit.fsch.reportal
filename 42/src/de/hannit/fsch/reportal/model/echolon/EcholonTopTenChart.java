@@ -21,6 +21,7 @@ import org.primefaces.model.chart.ChartSeries;
 
 import de.hannit.fsch.reportal.db.Cache;
 import de.hannit.fsch.reportal.model.Benutzer;
+import de.hannit.fsch.reportal.model.Chart;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -36,6 +37,8 @@ private static final long serialVersionUID = 1726331639816105369L;
 private Cache cache;	
 @ManagedProperty (value = "#{benutzer}")
 private Benutzer benutzer;
+@ManagedProperty (value = "#{chart}")
+private Chart chart;	
 
 private final static Logger log = Logger.getLogger(EcholonTopTenChart.class.getSimpleName());
 private String logPrefix = this.getClass().getCanonicalName() + ": ";
@@ -65,6 +68,8 @@ private String avgLabel = "";
 	
 	// Top 10 wird für das Vorjahr erstellt
 	benutzer = benutzer != null ? benutzer : fc.getApplication().evaluateExpressionGet(fc, "#{benutzer}", Benutzer.class);	
+	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);	
+
 	vorJahr = benutzer.getSystemUserDomain().equals("ENTHOO") ? 2014 : LocalDate.now().minusYears(1).getYear(); 
 		
 	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Erstelle Top10 Statistik für das Jahr " + vorJahr);}			
@@ -171,7 +176,7 @@ private String avgLabel = "";
     model.setShowPointLabels(true);
     model.setAnimate(true);
     model.setBarMargin(5);
-	model.setSeriesColors("32cd32, 698b22, 008b8b, 0000ff, 00008b, ee7600, ff0000");
+	model.setSeriesColors(chart.getTopTenBarColors());
     
     return model;
     }	
@@ -180,5 +185,8 @@ private String avgLabel = "";
 	public void setCache(Cache cache) {this.cache = cache;}
 	public Benutzer getBenutzer() {return benutzer;}
 	public void setBenutzer(Benutzer benutzer) {this.benutzer = benutzer;}
+	public Chart getChart() {return chart;}
+	public void setChart(Chart chart) {this.chart = chart;}
+	
 
 }

@@ -47,6 +47,46 @@
 		<param-name>primefaces.FONT_AWESOME</param-name>
 		<param-value>true</param-value>
 	</context-param>	
+   	<context-param>
+   		<description>Farbwert für die Chartserie ShortCalls</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_SHORTCALLS</param-name>
+		<param-value>00ffff</param-value>
+	</context-param>	
+   	<context-param>
+   		<description>Farbwert für die Chartserie Customer Requests</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_CUSTOMERREQUESTS</param-name>
+		<param-value>32cd32</param-value>
+	</context-param>
+   	<context-param>
+   		<description>Farbwert für die Chartserie Work Orders</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_WORKORDERS</param-name>
+		<param-value>698b22</param-value>
+	</context-param>	
+	<context-param>
+   		<description>Farbwert für die Chartserie Service Infos</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_SERVICEINFOS</param-name>
+		<param-value>008b8b</param-value>
+	</context-param>
+	<context-param>
+   		<description>Farbwert für die Chartserie Service Anfragen</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_SERVICEANFRAGEN</param-name>
+		<param-value>0000ff</param-value>
+	</context-param>
+	<context-param>
+   		<description>Farbwert für die Chartserie Service Abrufe</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_SERVICEABRUFE</param-name>
+		<param-value>003c72</param-value>
+	</context-param>
+	<context-param>
+   		<description>Farbwert für die Chartserie Incidents</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_INCIDENTS</param-name>
+		<param-value>ee7600</param-value>
+	</context-param>
+	<context-param>
+   		<description>Farbwert für die Chartserie Beschwerden</description>
+		<param-name>de.hannit.fsch.reportal.COLOR_BESCHWERDEN</param-name>
+		<param-value>ff0000</param-value>
+	</context-param>	
 	<listener>
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
@@ -118,7 +158,7 @@
      	<role-name>hrg</role-name>
     </security-role>	   
     <session-config>
-      <session-timeout>1</session-timeout>
+      <session-timeout>120</session-timeout>
     </session-config>    
 	<error-page>
 	    <exception-type>javax.faces.application.ViewExpiredException</exception-type>

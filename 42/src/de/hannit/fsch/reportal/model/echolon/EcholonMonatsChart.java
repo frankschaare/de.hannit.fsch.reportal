@@ -3,6 +3,7 @@
  */
 package de.hannit.fsch.reportal.model.echolon;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,11 +24,17 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 
 import de.hannit.fsch.reportal.db.Cache;
 import de.hannit.fsch.reportal.db.EcholonDBManager;
+import de.hannit.fsch.reportal.model.Chart;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -36,10 +43,16 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  */
 @ManagedBean
 @SessionScoped
-public class EcholonMonatsChart 
+public class EcholonMonatsChart implements Serializable
 {
+private static final long serialVersionUID = -7758525667371440750L;
+
 @ManagedProperty (value = "#{cache}")
 private Cache cache;	
+@ManagedProperty (value = "#{chart}")
+private Chart chart;	
+
+private FacesContext fc = null;
 
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());
 private Stream<Vorgang> si = null;
@@ -68,16 +81,18 @@ private Vorgang max = null;
 	 */
 	public EcholonMonatsChart() 
 	{
+	fc = FacesContext.getCurrentInstance();
 		try 
 		{
 		distinctCases = cache.getDistinctCases();
 		} 
 		catch (NullPointerException e) 
 		{
-		FacesContext fc = FacesContext.getCurrentInstance();
 		cache = fc.getApplication().evaluateExpressionGet(fc, "#{cache}", Cache.class);
 		distinctCases = cache.getDistinctCases();
 		}
+		
+	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);	
 		
 	setMinMaxVorgang();
 	setSelectedZeitraum(Zeitraum.BERICHTSZEITRAUM_LETZTE_VIER_QUARTALE);
@@ -161,40 +176,37 @@ private Vorgang max = null;
 
 	public long getMaxValue() {return maxValue;}
 	
-	public BarChartModel getMonatsChartModel() 
+	public LineChartModel getSLAStatusChartModel() 
 	{
-	BarChartModel model = new BarChartModel();
-	model.setSeriesColors("00b0f0, 1f497d, bebebe");
+	LineChartModel model = new LineChartModel();
+	model.setSeriesColors(chart.getColorIncidents() + "," + chart.getColorServiceAbrufe());
 	model.setAnimate(true);
 	
-    ChartSeries sVorgaengeGesamt = new ChartSeries();
-    sVorgaengeGesamt.setLabel("Anzahl Vorgänge Gesamt");
+	LineChartSeries sIncidents = new LineChartSeries();
+	sIncidents.setLabel("Incidents");
     
-    ChartSeries sAnzahlIncidents = new ChartSeries();
-    sAnzahlIncidents.setLabel("Anzahl Incidents");
-    
-    ChartSeries sAVGDauer = new ChartSeries();
-    sAVGDauer.setLabel("&#216; Dauer Incident");
-    
+	LineChartSeries sServiceAbrufe = new LineChartSeries();
+	sServiceAbrufe.setLabel("ServiceAbrufe");
+
     	for (MonatsStatistik m : monatsStatistiken.values()) 
     	{
-    	sVorgaengeGesamt.set(m.getBerichtsMonatAsString(), m.getAnzahlVorgaengeBerichtszeitraum());	
-    	sAnzahlIncidents.set(m.getBerichtsMonatAsString(), m.getAnzahlIncidents());
-    	sAVGDauer.set(m.getBerichtsMonatAsString(), m.getDurchschnittlicheDauerMinutenIncidents());
+    	sIncidents.set(m.getBerichtsMonatAsString(), m.getProzentanteilIncidentsServicezeitNichtEingehaltenAsFloat());	
+    	sServiceAbrufe.set(m.getBerichtsMonatAsString(), m.getProzentanteilServiceAbrufeServicezeitNichtEingehaltenAsFloat());
 		}
  
-     model.addSeries(sVorgaengeGesamt);
-     model.addSeries(sAnzahlIncidents);
-     model.addSeries(sAVGDauer);
+    model.addSeries(sIncidents);
+    model.addSeries(sServiceAbrufe);
          
-    model.setTitle("Gesamtaufträge " + getPrimeFacesSubtitle());
+    model.setTitle(getPrimeFacesSubtitle());
     model.setLegendPosition("ne");
     model.setMouseoverHighlight(true);
     model.setShowDatatip(true);
     model.setShowPointLabels(true);
-    //Axis yAxis = model.getAxis(AxisType.Y);
-    //yAxis.setMin(0);
-    // yAxis.setMax(200);
+    
+    Axis xAxis = new CategoryAxis("Berichtmonat");
+    model.getAxes().put(AxisType.X, xAxis);
+    Axis yAxis = model.getAxis(AxisType.Y);
+    yAxis.setLabel("Prozentanteil Servicezeit nicht eingehalten");
     
     return model;
     }
@@ -256,7 +268,7 @@ private Vorgang max = null;
     model.setShowPointLabels(true);
     model.setAnimate(true);
     model.setBarMargin(50);
-	model.setSeriesColors("32cd32, 698b22, 00cd66, 008b8b, 0000ff, 00008b, ee7600, ff0000");
+	model.setSeriesColors(chart.getDefaultBarColors());
 
     //Axis yAxis = model.getAxis(AxisType.Y);
     //yAxis.setMin(0);
@@ -265,14 +277,11 @@ private Vorgang max = null;
     return model;
     }	
 
-	public Cache getCache() {
-		return cache;
-	}
-	
-	public void setCache(Cache cache) {
-		this.cache = cache;
-	}
-	
+	public Cache getCache() {return cache;}	
+	public void setCache(Cache cache) {this.cache = cache;}
+	public Chart getChart() {return chart;}
+	public void setChart(Chart chart) {this.chart = chart;}
+
 	public int getAnzahlVorgaengeGesamt()
 	{
 	return distinctCases.size();	
@@ -418,6 +427,44 @@ private Vorgang max = null;
 	public String getSubtitle() 
 	{
 	return "'Auswertungszeitraum: " + df.format(abfrageZeitraum.getStartDatum()) + " bis " + df.format(abfrageZeitraum.getEndDatum()) + "'";
+	}
+
+	public BarChartModel getMonatsChartModel() 
+	{
+	BarChartModel model = new BarChartModel();
+	model.setSeriesColors("00b0f0, 1f497d, bebebe");
+	model.setAnimate(true);
+	
+	ChartSeries sVorgaengeGesamt = new ChartSeries();
+	sVorgaengeGesamt.setLabel("Anzahl Vorgänge Gesamt");
+	
+	ChartSeries sAnzahlIncidents = new ChartSeries();
+	sAnzahlIncidents.setLabel("Anzahl Incidents");
+	
+	ChartSeries sAVGDauer = new ChartSeries();
+	sAVGDauer.setLabel("&#216; Dauer Incident");
+	
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		sVorgaengeGesamt.set(m.getBerichtsMonatAsString(), m.getAnzahlVorgaengeBerichtszeitraum());	
+		sAnzahlIncidents.set(m.getBerichtsMonatAsString(), m.getAnzahlIncidents());
+		sAVGDauer.set(m.getBerichtsMonatAsString(), m.getDurchschnittlicheDauerMinutenIncidents());
+		}
+	
+	 model.addSeries(sVorgaengeGesamt);
+	 model.addSeries(sAnzahlIncidents);
+	 model.addSeries(sAVGDauer);
+	     
+	model.setTitle("Gesamtaufträge " + getPrimeFacesSubtitle());
+	model.setLegendPosition("ne");
+	model.setMouseoverHighlight(true);
+	model.setShowDatatip(true);
+	model.setShowPointLabels(true);
+	//Axis yAxis = model.getAxis(AxisType.Y);
+	//yAxis.setMin(0);
+	// yAxis.setMax(200);
+	
+	return model;
 	}
 
 }
