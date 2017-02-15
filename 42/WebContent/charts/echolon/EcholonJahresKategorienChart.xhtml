@@ -20,7 +20,7 @@
 		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
 
 	<div id="kategorienChartContainer" class="chartContainer">
-		<p:chart type="bar" model="#{echolonJahresKategorienChart.kategorienChartModel}" style="height:800px" responsive="true"/>
+		<p:chart type="bar" model="#{echolonJahresKategorienChart.kategorienChartModel}" style="height:#{benutzer.chartHeight}px" responsive="true"/>
 	</div>
 </h:body>
 </f:view>

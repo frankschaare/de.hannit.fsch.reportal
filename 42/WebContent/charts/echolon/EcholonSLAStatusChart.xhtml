@@ -22,7 +22,7 @@
 
 
 	<div id="monatsChartContainer" class="chartContainer">
-		<p:chart id="chartGesamt" type="line" model="#{echolonMonatsChart.SLAStatusChartModel}" style="height:800px" responsive="true"/>
+		<p:chart id="chartGesamt" type="line" model="#{echolonMonatsChart.SLAStatusChartModel}" style="height:#{benutzer.chartHeight}px" responsive="true"/>
 	</div>
 </h:body>
 </f:view>

@@ -11,7 +11,7 @@
 <h:head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>HannIT Reportal</title>
+	<title>#{benutzer.title}</title>
 	<h:outputStylesheet library="css" name="default.css" target="head" />
 </h:head>
 <h:body>
@@ -31,7 +31,7 @@
 				        <p:password id="j_password" value="#{benutzer.loginPassword}"/>
 				        <p:commandButton id="submit" value="Anmelden" ajax="false"/>
 				        <p:commandButton id="reset" value="Reset" ajax="false"/>
-					</p:panelGrid>
+				  	</p:panelGrid>
 				</p:panel>	
 			</h:form>
 	</div>
