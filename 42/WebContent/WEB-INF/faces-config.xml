@@ -4,4 +4,17 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
 	version="2.2">
 
+   <application>
+      <!-- Application Startup -->
+      <system-event-listener>
+         <system-event-listener-class>de.hannit.fsch.util.ReportalSystemEventListener</system-event-listener-class>
+         <system-event-class>javax.faces.event.PostConstructApplicationEvent</system-event-class>    					
+      </system-event-listener> 
+      <!-- Before Application is to shut down -->
+      <system-event-listener>
+         <system-event-listener-class>de.hannit.fsch.util.ReportalSystemEventListener</system-event-listener-class>
+         <system-event-class>javax.faces.event.PreDestroyApplicationEvent</system-event-class>    					
+      </system-event-listener>
+   </application>
+
 </faces-config>

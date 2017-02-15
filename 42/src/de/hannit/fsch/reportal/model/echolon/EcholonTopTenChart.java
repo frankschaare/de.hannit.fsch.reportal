@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import javax.faces.application.ProjectStage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.model.chart.BarChartModel;
@@ -29,7 +29,7 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  *
  */
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class EcholonTopTenChart implements Serializable
 {
 private static final long serialVersionUID = 1726331639816105369L;
@@ -48,7 +48,8 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 private TreeMap<Integer, TagesStatistik> helperTree = null;
 private TreeMap<Integer, TagesStatistik> top10 = null;
 private Stream<TagesStatistik> si = null;
-private Integer vorJahr = 0;
+private JahresStatistik auswertungsStatistik = null;
+private int vorJahr = 0;
 private String avgLabel = "";
 
 /**
@@ -71,12 +72,21 @@ private String avgLabel = "";
 	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);	
 
 	vorJahr = benutzer.getSystemUserDomain().equals("ENTHOO") ? 2014 : LocalDate.now().minusYears(1).getYear(); 
-		
 	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Erstelle Top10 Statistik für das Jahr " + vorJahr);}			
-	JahresStatistik auswertungsStatistik = jahresStatistiken.get(vorJahr); 
-	avgLabel = "Tagesdurchschnitt " + auswertungsStatistik.getBerichtsJahr();
-	tagesStatistiken = auswertungsStatistik.getTagesStatistiken();
-	setTop10();
+
+		try 
+		{
+		auswertungsStatistik = jahresStatistiken.get(vorJahr); 
+		if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "AuswertungsStatistik für das Jahr " + vorJahr + " wurde gefunden.");}		
+		avgLabel = "Tagesdurchschnitt " + auswertungsStatistik.getBerichtsJahr();
+		tagesStatistiken = auswertungsStatistik.getTagesStatistiken();
+		setTop10();
+		} 
+		catch (NullPointerException e) 
+		{
+		log.log(Level.SEVERE, logPrefix + "AuswertungsStatistik für das Jahr " + vorJahr + " wurde NICHT gefunden !");	
+		e.printStackTrace();
+		}
 	}
 
 	/*

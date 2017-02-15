@@ -3,6 +3,7 @@
  */
 package de.hannit.fsch.reportal.model.echolon;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -26,8 +27,9 @@ import de.hannit.fsch.reportal.model.Zeitraum;
  */
 @ManagedBean
 @SessionScoped
-public class EcholonTopTenAktuellChart 
+public class EcholonTopTenAktuellChart implements Serializable
 {
+private static final long serialVersionUID = -6120548678412607005L;
 @ManagedProperty (value = "#{cache}")
 private Cache cache;	
 @ManagedProperty (value = "#{chart}")

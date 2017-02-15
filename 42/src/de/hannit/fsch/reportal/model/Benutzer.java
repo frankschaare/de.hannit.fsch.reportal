@@ -2,14 +2,16 @@ package de.hannit.fsch.reportal.model;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class Benutzer 
+public class Benutzer implements Serializable
 {
+private static final long serialVersionUID = 7041864354727039773L;
 private String systemUser = null;	
 private String systemDNSDomain = null;
 private String systemUserDomain = null;
@@ -17,6 +19,7 @@ private String loginName = null;
 private String loginPassword = null;
 private int screenHeight = 0;
 private int screenWidth  = 0;
+private int initialChartHeight = 0;
 
 public static final String ROLE_HRG = "hrg";
 
@@ -43,7 +46,21 @@ public static final String ROLE_HRG = "hrg";
 	
 	public int getChartHeight()
 	{
-	return (getScreenHeight() - 280);	
+		switch (screenHeight) 
+		{
+		// Wahrscheinlich VM oder virtueller Desktop
+		case 768:
+		initialChartHeight = 800;	
+		break;
+		case 1080:
+		initialChartHeight = 800;	
+		break;		
+
+		default:
+		initialChartHeight = (getScreenHeight() - 280);	
+		break;
+		}
+	return initialChartHeight;	
 	}
 
 	public String getLoginName() {return loginName;}

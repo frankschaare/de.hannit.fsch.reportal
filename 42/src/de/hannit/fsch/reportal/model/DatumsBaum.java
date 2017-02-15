@@ -1,5 +1,6 @@
 package de.hannit.fsch.reportal.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,8 +29,10 @@ import de.hannit.fsch.reportal.model.echolon.Vorgang;
 
 @ManagedBean(name = "baumModel")
 @SessionScoped
-public class DatumsBaum 
+public class DatumsBaum implements Serializable
 {
+private static final long serialVersionUID = 7061901031997038228L;
+
 @ManagedProperty (value = "#{cache}")
 private Cache cache;
 
