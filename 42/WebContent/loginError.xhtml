@@ -15,13 +15,9 @@
 	<h:outputStylesheet library="css" name="default.css" target="head" />
 </h:head>
 <h:body>
-	<div id="logo">
-		<h:graphicImage value="#{resource['images:WordBildlogoHannIT.jpg']}" styleClass="logo" />
-	</div>
-	<div id="title">Reportal</div>
-	<div id="menubar">
-		<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
-	</div>
+
+	<ui:include src="/WEB-INF/navigation/primefacesMenu.xhtml" />
+
 	<div id="loginForm">
 		<h1 class="titleError">Anmeldung fehlgeschlagen ! Bitte versuchen Sie es erneut.</h1>
 		<h1 class="subtitle" style="color: red">Beachten Sie bei der Eingabe des Passwortes die Groß- und Kleinschreibung</h1>

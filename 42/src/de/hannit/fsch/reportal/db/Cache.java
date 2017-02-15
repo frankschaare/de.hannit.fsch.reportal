@@ -82,6 +82,8 @@ private String restrictedAccess = null;
 		anzahlDatensaetzeGesamt = distinctCases.size();
 		max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
 		setJahresStatistiken();
+		lastExecution = LocalDateTime.now();
+		log.log(Level.INFO, this.getClass().getCanonicalName() + ": Letzte Cache Aktualisierung ist vom " + getLastExecution());	
 		} 
 		catch (InterruptedException e) 
 		{
@@ -91,8 +93,6 @@ private String restrictedAccess = null;
 		{
 		e.printStackTrace();
 		}
-	lastExecution = LocalDateTime.now();
-	log.log(Level.INFO, this.getClass().getCanonicalName() + ": Letzte Cache Aktualisierung ist vom " + getLastExecution());	
 	}
 	
 	/*
