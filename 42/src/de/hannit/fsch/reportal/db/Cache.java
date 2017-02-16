@@ -107,7 +107,7 @@ private String restrictedAccess = null;
 
 	public String getLastExecution() 
 	{
-	return lastExecution;
+	return timer.getLastExecution() != null ? timer.getLastExecution() : lastExecution;
 	}
 
 	public HashMap<String, Vorgang> getDistinctCases() 
