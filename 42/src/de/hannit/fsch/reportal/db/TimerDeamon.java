@@ -44,6 +44,7 @@ private HashMap<String, Vorgang> distinctCases = null;
 	long test = System.currentTimeMillis() - lastExecution.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();	
 		if (test > 1000) 
 		{
+		if (distinctCases != null) {distinctCases.clear();}	
 		loadData();
 		}
 		else 

@@ -67,7 +67,17 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 
 		if (vorgaengeBerichtszeitraum.size() > 0) 
 		{
-		split(vorgaengeBerichtszeitraum);
+			split(vorgaengeBerichtszeitraum);
+			/*
+			 *  Nachdem Split ausgeführt wurde stehen auch alle Monatsstatistiken zur Verfügung
+			 *  Es wird nun für jede Monatsstatistik die Methode setStatistik() aufgerufen.
+			 *  Dadurch werden u.a. alle Tagesstatistiken erstellt und jede Tagesstatistik erstellt wiederum 
+			 *  die Stundenstatistiken des Tages
+			 */
+			for (MonatsStatistik ms : monatsStatistiken.values()) 
+			{
+			ms.setStatistik();	
+			}
 		setQuartale(iBerichtsJahr);	
 		}
 	setTagesStatistiken();	

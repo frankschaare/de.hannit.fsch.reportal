@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.primefaces.model.chart.PieChartModel;
@@ -29,6 +30,7 @@ private ArrayList<Vorgang> serviceAnfrage = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> beschwerden = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> customerRequest = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> shortCall = new ArrayList<Vorgang>();
+private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 
 private Stream<Vorgang> si = null;
 
@@ -134,6 +136,11 @@ private Stream<Vorgang> si = null;
 	
 	split();
 		
+		for (TagesStatistik ts : tagesStatistiken.values()) 
+		{
+		ts.setStatistik();	
+		}
+		
 	this.anzahlIncidents = incidents.size();
 	si = incidents.stream();
 	this.anzahlIncidentsServicezeitNichtEingehalten = si.filter(v -> !v.isZielzeitEingehalten()).count();
@@ -150,6 +157,9 @@ private Stream<Vorgang> si = null;
 
 	private void split() 
 	{
+	LocalDate berichtsTag = null;
+	tagesStatistiken = new TreeMap<>();
+	
 	beschwerden.clear();	
 	incidents.clear();
 	serviceAbrufe.clear();
@@ -197,6 +207,18 @@ private Stream<Vorgang> si = null;
 			
 			default:
 			break;
+			}
+			
+		berichtsTag = v.getErstellDatum();	
+			if (tagesStatistiken.containsKey(berichtsTag)) 
+			{
+			tagesStatistiken.get(berichtsTag).addVorgang(v);	
+			} 
+			else 
+			{
+			TagesStatistik ts = new TagesStatistik(berichtsTag);
+			ts.addVorgang(v);
+			tagesStatistiken.put(berichtsTag, ts);
 			}	
 		}
 		

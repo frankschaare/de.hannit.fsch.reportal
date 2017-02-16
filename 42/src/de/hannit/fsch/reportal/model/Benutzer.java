@@ -5,10 +5,10 @@ import java.awt.Toolkit;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class Benutzer implements Serializable
 {
 private static final long serialVersionUID = 7041864354727039773L;
@@ -29,9 +29,17 @@ public static final String ROLE_HRG = "hrg";
 	systemDNSDomain = System.getenv("USERDNSDOMAIN");
 	systemUserDomain = System.getenv("USERDOMAIN");
 	
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	screenHeight = screenSize.height;
-	screenWidth = screenSize.width;
+		try 
+		{
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		screenHeight = screenSize.height;
+		screenWidth = screenSize.width;
+		} 
+		catch (Exception e) 
+		{
+		screenHeight = 768;
+		screenWidth = 1024;
+		}
 	}
 
 	public String getInfo() 

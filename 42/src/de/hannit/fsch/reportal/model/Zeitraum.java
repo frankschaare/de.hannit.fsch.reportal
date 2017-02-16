@@ -30,6 +30,7 @@ public static DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 public static DateTimeFormatter dfDatumUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
 public static DateTimeFormatter dfDatumUhrzeitMax = DateTimeFormatter.ofPattern("EEEE', 'dd. MMMM yyyy HH:mm").withLocale(Locale.GERMAN);
 public static DateTimeFormatter dfUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
+public static DateTimeFormatter dfStunde = DateTimeFormatter.ofPattern("HH").withLocale(Locale.GERMAN);
 
 private String berichtsZeitraum = "unbekannt";
 

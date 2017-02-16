@@ -1,10 +1,10 @@
 package de.hannit.fsch.reportal.model.echolon;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.primefaces.model.chart.PieChartModel;
@@ -30,18 +30,14 @@ private ArrayList<Vorgang> serviceAnfrage = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> beschwerden = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> customerRequest = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> shortCall = new ArrayList<Vorgang>();
-
+private TreeMap<Integer, StundenStatistik> stundenStatistiken = null;
 private Stream<Vorgang> si = null;
 
 	public TagesStatistik(LocalDate incoming) 
 	{
 	vorgaengeBerichtszeitraum = new ArrayList<Vorgang>();
 	this.berichtsTag = incoming;
-	
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-	this.bezeichnungLang = formatter.format(incoming);
-	formatter = DateTimeFormatter.ofPattern("MMMM");
-	setLabel(formatter.format(incoming));
+	setLabel(Zeitraum.df.format(incoming));
 	}
 	
 	public void addVorgang(Vorgang incoming) 
@@ -135,6 +131,11 @@ private Stream<Vorgang> si = null;
 	berichtsZeitraum = new Zeitraum(min.getErstellDatumZeit(), max.getErstellDatumZeit());	
 	
 	split();
+	
+		for (StundenStatistik ss : stundenStatistiken.values()) 
+		{
+		ss.setStatistik();	
+		}
 		
 	this.anzahlIncidents = incidents.size();
 	si = incidents.stream();
@@ -152,6 +153,9 @@ private Stream<Vorgang> si = null;
 
 	private void split() 
 	{
+	Integer berichtsStunde = 0;
+	stundenStatistiken = new TreeMap<>();
+	
 	beschwerden.clear();	
 	incidents.clear();
 	serviceAbrufe.clear();
@@ -199,6 +203,18 @@ private Stream<Vorgang> si = null;
 			
 			default:
 			break;
+			}
+		
+		berichtsStunde = v.getErstellZeit().getHour();
+			if (stundenStatistiken.containsKey(berichtsStunde)) 
+			{
+			stundenStatistiken.get(berichtsStunde).addVorgang(v);	
+			} 
+			else 
+			{
+			StundenStatistik ss = new StundenStatistik(v.getErstellDatumZeit());
+			ss.addVorgang(v);
+			stundenStatistiken.put(berichtsStunde, ss);
 			}	
 		}
 		

@@ -1,6 +1,6 @@
 package de.hannit.fsch.reportal.model.echolon;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 
 public class StundenStatistik extends EcholonStatistik
 {
-private LocalDate berichtsTag = null;	
+private LocalDateTime berichtsStunde = null;	
 private int anzahlVorgaengeGesamt = 0;
 private int anzahlIncidents = 0;
 private long anzahlIncidentsServicezeitNichtEingehalten = 0;
@@ -33,15 +33,12 @@ private ArrayList<Vorgang> shortCall = new ArrayList<Vorgang>();
 
 private Stream<Vorgang> si = null;
 
-	public StundenStatistik(LocalDate incoming) 
+	public StundenStatistik(LocalDateTime incoming) 
 	{
 	vorgaengeBerichtszeitraum = new ArrayList<Vorgang>();
-	this.berichtsTag = incoming;
-	
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-	this.bezeichnungLang = formatter.format(incoming);
-	formatter = DateTimeFormatter.ofPattern("MMMM");
-	setLabel(formatter.format(incoming));
+	this.berichtsStunde = incoming;
+
+	setLabel(Zeitraum.dfStunde.format(incoming) + ":00 - " + Zeitraum.dfStunde.format(incoming.plusHours(1)) + ":00 Uhr" );
 	}
 	
 	public void addVorgang(Vorgang incoming) 
@@ -325,8 +322,8 @@ private Stream<Vorgang> si = null;
 		return berichtsZeitraum;
 	}
 
-	public LocalDate getBerichtsTag() {
-		return berichtsTag;
+	public LocalDateTime getBerichtsStunde() {
+		return berichtsStunde;
 	}	
 
 }
