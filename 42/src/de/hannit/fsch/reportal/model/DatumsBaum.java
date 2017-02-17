@@ -20,7 +20,6 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
 import de.hannit.fsch.reportal.db.Cache;
-import de.hannit.fsch.reportal.db.EcholonDBManager;
 import de.hannit.fsch.reportal.model.echolon.EcholonNode;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
 import de.hannit.fsch.reportal.model.echolon.MonatsStatistik;
@@ -36,7 +35,7 @@ private static final long serialVersionUID = 7061901031997038228L;
 @ManagedProperty (value = "#{cache}")
 private Cache cache;
 
-private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());	
+private final static Logger log = Logger.getLogger(DatumsBaum.class.getSimpleName());	
 private String logPrefix = this.getClass().getCanonicalName() + ": ";
 private FacesContext fc = FacesContext.getCurrentInstance();
 
