@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.TreeMap;
 
@@ -28,9 +30,14 @@ private LocalDateTime endDatumUhrzeit = null;
 private static String datumsFormat = "dd.MM.yyyy";
 public static DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
 public static DateTimeFormatter dfDatumUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
+public static DateTimeFormatter DF_MONAT = DateTimeFormatter.ofPattern("MMMM");
+public static DateTimeFormatter DF_JAHR = DateTimeFormatter.ofPattern("yyyy");
+public static DateTimeFormatter DF_JAHR_KURZ = DateTimeFormatter.ofPattern("yy");
 public static DateTimeFormatter dfDatumUhrzeitMax = DateTimeFormatter.ofPattern("EEEE', 'dd. MMMM yyyy HH:mm").withLocale(Locale.GERMAN);
 public static DateTimeFormatter dfUhrzeit = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss").withLocale(Locale.GERMAN);
 public static DateTimeFormatter dfStunde = DateTimeFormatter.ofPattern("HH").withLocale(Locale.GERMAN);
+public static DateTimeFormatter dfStundeMinute = DateTimeFormatter.ofPattern("HH:ss").withLocale(Locale.GERMAN);
+public static TemporalField TEMPORAL_KW = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear(); 
 
 private String berichtsZeitraum = "unbekannt";
 

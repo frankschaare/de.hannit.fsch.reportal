@@ -14,6 +14,7 @@
  	<p:tooltip id="btnEcholonDatenToolTip" for="btnEcholonDaten" value="Gewährt detaillierten Zugriff auf alle #{cache.anzahlDatensaetzeGesamt} verfügbaren Echolon Datensätze" position="right"/>
  	<p:tooltip id="btnChartGesamtaufträgeToolTip" for="btnChartGesamtaufträge" value="Ein BarChart der Echolon Werte für die letzten vier abgeschlossenen Quartale für die SLAs abgeschlossen worden" position="right"/>
  	<p:tooltip id="btnChartKategorienToolTip" for="btnChartKategorien" value="Eine Quartalsstatistik aller Echolon Vorgänge für die letzten vier abgeschlossenen Quartale" position="right"/>
+ 	<p:tooltip id="btnChartKategorienKWToolTip" for="btnChartKategorienKW" value="Eine Quartalsstatistik aller Echolon Vorgänge nach Kalenderwoche für die letzten vier abgeschlossenen Quartale" position="right"/>
 	<p:tooltip id="btnChartTageszeitToolTip" for="btnChartTageszeit" value="Eine Quartalsstatistik aller Vorgänge nach Tageszeit für die letzten vier abgeschlossenen Quartale" position="right"/>
 	<p:tooltip id="btnChartCombinedTageszeitToolTip" for="btnChartCombinedTageszeit" value="Eine Quartalsstatistik aller Vorgänge nach Tageszeit verglichen mit der durschnittlichen Lösungsdauer für die letzten vier abgeschlossenen Quartale" position="right"/>
 	<p:tooltip id="btnChartSLAStatusToolTip" for="btnChartSLAStatus" value="Eine Quartalsstatistik des SLA Status für die letzten vier abgeschlossenen Quartale" position="right"/>
@@ -36,6 +37,7 @@
 	            <p:submenu label="letzte 4 Quartale" icon="fa fa-calendar-o">
 	                <p:menuitem id="btnChartGesamtaufträge" value="Gesamtaufträge" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonChart" icon="fa fa-bar-chart"/>
 	                <p:menuitem id="btnChartKategorien" value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonKategorienChart" icon="fa fa-bar-chart-o"/>
+	                <p:menuitem id="btnChartKategorienKW" value="Kategorien nach KW" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonKategorienKWChart" icon="fa fa-bar-chart-o"/>
 					<p:menuitem id="btnChartTageszeit" value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTageszeitChart" icon="fa fa-clock-o"/>
 					<p:menuitem id="btnChartCombinedTageszeit" value="Lösungsdauer" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTageszeitCombinedChart" icon="fa fa-clock-o"/>
 					<p:menuitem id="btnChartSLAStatus" value="SLAStatus" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonSLAStatusChart" icon="fa fa-area-chart"/>	                

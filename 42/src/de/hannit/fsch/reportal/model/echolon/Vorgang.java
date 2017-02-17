@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import de.hannit.fsch.reportal.model.KalenderWoche;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 public class Vorgang 
@@ -16,6 +17,7 @@ private LocalDateTime erstellDatumZeit = null;
 private int berichtsJahr = 0;
 private int berichtsMonat = 0;
 private int berichtsQuartal = 0;
+private KalenderWoche kw = null;
 private LocalTime erstellZeit = null;
 private String vorgangsNummer = null;
 private String status = null;
@@ -26,8 +28,6 @@ private int prioritaet = 0;
 private boolean reaktionszeitEingehalten = false;
 private boolean zielzeitEingehalten = false;
 private int loesungszeitMinuten = 0;
-private DateTimeFormatter dfUhrzeit =  DateTimeFormatter.ofPattern("HH:ss");
-private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 
 	public Vorgang() 
@@ -42,7 +42,7 @@ private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	public LocalDate getErstellDatum() {return erstellDatum;}
 	public String getErstellDatumAsString() 
 	{
-	return erstellDatum != null ? dfDatum.format(erstellDatum) : "-";
+	return erstellDatum != null ? Zeitraum.df.format(erstellDatum) : "-";
 	}
 
 	public void setErstellDatum(String dbValue) 
@@ -76,9 +76,11 @@ private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	{
 	this.erstellDatumZeit = dbValue.toLocalDateTime();
 	this.erstellDatum = LocalDate.of(erstellDatumZeit.getYear(), erstellDatumZeit.getMonthValue(), erstellDatumZeit.getDayOfMonth());
+	this.kw = new KalenderWoche(erstellDatumZeit);
 	this.erstellZeit = LocalTime.of(erstellDatumZeit.getHour(), erstellDatumZeit.getMinute());
 	this.berichtsJahr = erstellDatumZeit.getYear();
 	this.berichtsMonat = erstellDatumZeit.getMonthValue();
+
 		switch (this.berichtsMonat) 
 		{
 		case 1: this.berichtsQuartal = 1; break;
@@ -98,7 +100,7 @@ private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	public LocalTime getErstellZeit() {return erstellZeit;}
 	public String getErstellZeitAsString() 
 	{
-	return erstellZeit != null ? dfUhrzeit.format(erstellZeit) + " Uhr" : "-";
+	return erstellZeit != null ? Zeitraum.dfStundeMinute.format(erstellZeit) + " Uhr" : "-";
 	}
 
 	public int getBerichtsJahr() {
@@ -241,14 +243,10 @@ private DateTimeFormatter dfDatum =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	return zielzeitEingehalten ? "Zielzeit eingehalten" : "Zielzeit nicht eingehalten";
 	}
 
-	public int getLoesungszeitMinuten() {
-		return loesungszeitMinuten;
-	}
-
-
-
-	public void setLoesungszeitMinuten(int loesungszeitMinuten) {
-		this.loesungszeitMinuten = loesungszeitMinuten;
-	}
+	public int getLoesungszeitMinuten() {return loesungszeitMinuten;}
+	public void setLoesungszeitMinuten(int loesungszeitMinuten) {this.loesungszeitMinuten = loesungszeitMinuten;}
+	public KalenderWoche getKw() {return kw;}
+	
+	
 
 }

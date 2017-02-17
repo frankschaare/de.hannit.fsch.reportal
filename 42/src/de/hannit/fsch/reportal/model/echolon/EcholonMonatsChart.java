@@ -7,12 +7,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -129,12 +126,10 @@ private Vorgang max = null;
 	{
 	LocalDateTime erstellDatum;
 	LocalDate monat;	
-	TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear(); 
 	
 		for (Vorgang v : vorgaengeBerichtszeitraum) 
 		{
 		erstellDatum = v.getErstellDatumZeit();
-		int weekNumber = erstellDatum.get(woy);
 		monat = LocalDate.of(erstellDatum.getYear(), erstellDatum.getMonthValue(), 1);
 			if (monatsStatistiken.containsKey(monat)) 
 			{
@@ -293,14 +288,14 @@ private Vorgang max = null;
     Axis yAxis = model.getAxis(AxisType.Y);
     yAxis.setMin(0);
     yAxis.setMax((maxY + 200));
-    
+
     return model;
     }	
 	
-	public BarChartModel getKategorienChartTageszeitModel() 
+	public BarChartModel getKategorienChartKWModel() 
 	{
-	TreeMap<Integer, StundenStatistik> stundenStatistiken = new TreeMap<>();
-	Integer berichtsStunde = 0;
+	TreeMap<String, KWStatistik> kwStatistiken = new TreeMap<>();
+	String kwIndex = null;
 	int anzahlSortierterVorgaenge = 0;
 	
 	BarChartModel model = new BarChartModel();
@@ -329,46 +324,41 @@ private Vorgang max = null;
     ChartSeries sBeschwerden = new ChartSeries();
     sBeschwerden.setLabel("Beschwerden");
     
-    	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Starte Sortierung der vorhandenen " +  monatsStatistiken.size() + " Monatsstatistiken nach Uhrzeit");}
+    	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Starte Sortierung der vorhandenen " +  monatsStatistiken.size() + " Monatsstatistiken nach Kalenderwoche");}
     	for (MonatsStatistik m : monatsStatistiken.values()) 
     	{
     	anzahlSortierterVorgaenge += m.getVorgaengeBerichtszeitraum().size();	
     	
     		for (Vorgang vorgang : m.getVorgaengeBerichtszeitraum()) 
     		{
-			berichtsStunde = vorgang.getErstellZeit().getHour();
+			kwIndex = vorgang.getKw().getIndex();
 			
-				if (stundenStatistiken.containsKey(berichtsStunde)) 
+				if (kwStatistiken.containsKey(kwIndex)) 
 				{
-				stundenStatistiken.get(berichtsStunde).addVorgang(vorgang);	
+				kwStatistiken.get(kwIndex).addVorgang(vorgang);	
 				} 
 				else 
 				{
-					// Es werden nur Stundenstatistiken zwischen 06:00 und 18:00 Uhr erstellt
-					if (berichtsStunde > 5 && berichtsStunde < 19) 
-					{
-					StundenStatistik ss = new StundenStatistik(vorgang.getErstellDatumZeit());
-					ss.addVorgang(vorgang);
-					stundenStatistiken.put(berichtsStunde, ss);
-						
-					}
+				KWStatistik ks = new KWStatistik(vorgang.getErstellDatum(), vorgang.getKw());
+				ks.addVorgang(vorgang);
+				kwStatistiken.put(kwIndex, ks);
 				}	
 			}
 		}
-       	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Sortierung abgeschlossen. Es wurden " +  anzahlSortierterVorgaenge + " Vorgänge in " + stundenStatistiken.size() + " Stundenstatistiken sortiert.");}    	
+       	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Sortierung abgeschlossen. Es wurden " +  anzahlSortierterVorgaenge + " Vorgänge in " + kwStatistiken.size() + " KWstatistiken sortiert.");}    	
     	
-       	for (StundenStatistik ss : stundenStatistiken.values()) 
+       	for (KWStatistik ks : kwStatistiken.values()) 
        	{
-		ss.setStatistik();
+		ks.setStatistik();
 		
-		sCustomerRequests.set(ss.getLabel(), ss.getAnzahlCustomerRequests());	
-		sWorkOrders.set(ss.getLabel(), ss.getAnzahlWorkorders());
-		sShortCalls.set(ss.getLabel(), ss.getAnzahlShortCalls());
-		sServiceInfos.set(ss.getLabel(), ss.getAnzahlServiceinfos());
-		sServiceAnfragen.set(ss.getLabel(), ss.getAnzahlServiceanfragen());
-		sServiceAbrufe.set(ss.getLabel(), ss.getAnzahlServiceAbrufe());
-		sIncidents.set(ss.getLabel(), ss.getAnzahlIncidents());
-		sBeschwerden.set(ss.getLabel(), ss.getAnzahlBeschwerden());
+		sCustomerRequests.set(ks.getLabel(), ks.getAnzahlCustomerRequests());	
+		sWorkOrders.set(ks.getLabel(), ks.getAnzahlWorkorders());
+		sShortCalls.set(ks.getLabel(), ks.getAnzahlShortCalls());
+		sServiceInfos.set(ks.getLabel(), ks.getAnzahlServiceinfos());
+		sServiceAnfragen.set(ks.getLabel(), ks.getAnzahlServiceanfragen());
+		sServiceAbrufe.set(ks.getLabel(), ks.getAnzahlServiceAbrufe());
+		sIncidents.set(ks.getLabel(), ks.getAnzahlIncidents());
+		sBeschwerden.set(ks.getLabel(), ks.getAnzahlBeschwerden());
 		}
  
      model.addSeries(sCustomerRequests);
@@ -380,17 +370,17 @@ private Vorgang max = null;
      model.addSeries(sIncidents);
      model.addSeries(sBeschwerden);
          
-    model.setTitle("Gesamtaufträge nach Tageszeit " + getPrimeFacesSubtitle() + " (" + anzahlSortierterVorgaenge + " Vorgänge)");
+    model.setTitle("Gesamtaufträge nach Kalenderwoche " + getPrimeFacesSubtitle() + " (" + anzahlSortierterVorgaenge + " Vorgänge)");
     model.setStacked(true);
     model.setLegendPosition("ne");
     model.setMouseoverHighlight(true);
     model.setShowDatatip(true);
     model.setShowPointLabels(true);
     model.setAnimate(true);
-    model.setBarMargin(50);
+    model.setBarMargin(10);
 	model.setSeriesColors(chart.getDefaultBarColors());
-
-    //Axis yAxis = model.getAxis(AxisType.Y);
+	Axis xAxis = model.getAxis(AxisType.X);
+	xAxis.setTickAngle(-90);
     //yAxis.setMin(0);
     // yAxis.setMax(200);
     
@@ -646,6 +636,106 @@ private Vorgang max = null;
 	model.setMouseoverHighlight(true);
 	model.setShowDatatip(true);
 	model.setShowPointLabels(true);
+	//Axis yAxis = model.getAxis(AxisType.Y);
+	//yAxis.setMin(0);
+	// yAxis.setMax(200);
+	
+	return model;
+	}
+
+	public BarChartModel getKategorienChartTageszeitModel() 
+	{
+	TreeMap<Integer, StundenStatistik> stundenStatistiken = new TreeMap<>();
+	Integer berichtsStunde = 0;
+	int anzahlSortierterVorgaenge = 0;
+	
+	BarChartModel model = new BarChartModel();
+	
+	ChartSeries sCustomerRequests = new ChartSeries();
+	sCustomerRequests.setLabel("Customer Requests");
+	
+	ChartSeries sWorkOrders = new ChartSeries();
+	sWorkOrders.setLabel("Work Orders");
+	
+	ChartSeries sShortCalls = new ChartSeries();
+	sShortCalls.setLabel("Short Calls");
+	
+	ChartSeries sServiceInfos = new ChartSeries();
+	sServiceInfos.setLabel("Service Infos");
+	
+	ChartSeries sServiceAnfragen = new ChartSeries();
+	sServiceAnfragen.setLabel("Service Anfragen");
+	
+	ChartSeries sServiceAbrufe = new ChartSeries();
+	sServiceAbrufe.setLabel("Service Abrufe");
+	
+	ChartSeries sIncidents = new ChartSeries();
+	sIncidents.setLabel("Incidents");
+	
+	ChartSeries sBeschwerden = new ChartSeries();
+	sBeschwerden.setLabel("Beschwerden");
+	
+		if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Starte Sortierung der vorhandenen " +  monatsStatistiken.size() + " Monatsstatistiken nach Uhrzeit");}
+		for (MonatsStatistik m : monatsStatistiken.values()) 
+		{
+		anzahlSortierterVorgaenge += m.getVorgaengeBerichtszeitraum().size();	
+		
+			for (Vorgang vorgang : m.getVorgaengeBerichtszeitraum()) 
+			{
+			berichtsStunde = vorgang.getErstellZeit().getHour();
+			
+				if (stundenStatistiken.containsKey(berichtsStunde)) 
+				{
+				stundenStatistiken.get(berichtsStunde).addVorgang(vorgang);	
+				} 
+				else 
+				{
+					// Es werden nur Stundenstatistiken zwischen 06:00 und 18:00 Uhr erstellt
+					if (berichtsStunde > 5 && berichtsStunde < 19) 
+					{
+					StundenStatistik ss = new StundenStatistik(vorgang.getErstellDatumZeit());
+					ss.addVorgang(vorgang);
+					stundenStatistiken.put(berichtsStunde, ss);
+						
+					}
+				}	
+			}
+		}
+	   	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Sortierung abgeschlossen. Es wurden " +  anzahlSortierterVorgaenge + " Vorgänge in " + stundenStatistiken.size() + " Stundenstatistiken sortiert.");}    	
+		
+	   	for (StundenStatistik ss : stundenStatistiken.values()) 
+	   	{
+		ss.setStatistik();
+		
+		sCustomerRequests.set(ss.getLabel(), ss.getAnzahlCustomerRequests());	
+		sWorkOrders.set(ss.getLabel(), ss.getAnzahlWorkorders());
+		sShortCalls.set(ss.getLabel(), ss.getAnzahlShortCalls());
+		sServiceInfos.set(ss.getLabel(), ss.getAnzahlServiceinfos());
+		sServiceAnfragen.set(ss.getLabel(), ss.getAnzahlServiceanfragen());
+		sServiceAbrufe.set(ss.getLabel(), ss.getAnzahlServiceAbrufe());
+		sIncidents.set(ss.getLabel(), ss.getAnzahlIncidents());
+		sBeschwerden.set(ss.getLabel(), ss.getAnzahlBeschwerden());
+		}
+	
+	 model.addSeries(sCustomerRequests);
+	 model.addSeries(sWorkOrders);
+	 model.addSeries(sShortCalls);
+	 model.addSeries(sServiceInfos);
+	 model.addSeries(sServiceAnfragen);
+	 model.addSeries(sServiceAbrufe);
+	 model.addSeries(sIncidents);
+	 model.addSeries(sBeschwerden);
+	     
+	model.setTitle("Gesamtaufträge nach Tageszeit " + getPrimeFacesSubtitle() + " (" + anzahlSortierterVorgaenge + " Vorgänge)");
+	model.setStacked(true);
+	model.setLegendPosition("ne");
+	model.setMouseoverHighlight(true);
+	model.setShowDatatip(true);
+	model.setShowPointLabels(true);
+	model.setAnimate(true);
+	model.setBarMargin(50);
+	model.setSeriesColors(chart.getDefaultBarColors());
+	
 	//Axis yAxis = model.getAxis(AxisType.Y);
 	//yAxis.setMin(0);
 	// yAxis.setMax(200);
