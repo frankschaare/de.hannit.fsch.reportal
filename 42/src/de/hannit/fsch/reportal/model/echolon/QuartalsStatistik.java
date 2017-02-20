@@ -49,7 +49,7 @@ private Stream<Vorgang> si = null;
 	{
 	this.berichtsQuartal = incoming;	
 	this.bezeichnungLang = berichtsQuartal.getBezeichnungLang();
-	this.label = berichtsQuartal.getBezeichnung();
+	this.label = berichtsQuartal.getBezeichnungkurz();
 	}
 
 	@Override
@@ -63,9 +63,13 @@ private Stream<Vorgang> si = null;
 		{
 		vorgaengeBerichtszeitraum = new ArrayList<>();
 		}
-	
+
 		for (MonatsStatistik ms : monatsStatistiken) 
 		{
+			if (vorgaengeBerichtszeitraum == null || ms.getVorgaengeBerichtszeitraum() == null) 
+			{
+			System.out.println("STOP");	
+			}
 		vorgaengeBerichtszeitraum.addAll(ms.getVorgaengeBerichtszeitraum());	
 		}
 	
@@ -275,6 +279,11 @@ private Stream<Vorgang> si = null;
 	return df.format(prozentanteilIncidentsServicezeitNichtEingehalten);
 	}	
 	
+	public float getProzentanteilIncidentsServicezeitNichtEingehaltenAsFloat() 
+	{
+	return prozentanteilIncidentsServicezeitNichtEingehalten = ((anzahlIncidentsServicezeitNichtEingehalten * 100) / ((float)incidents.size()));	
+	}	
+	
 	public int getDurchschnittlicheDauerMinutenIncidents() 
 	{
 	int result = 0;	
@@ -312,6 +321,11 @@ private Stream<Vorgang> si = null;
 	prozentanteilServiceAbrufeServicezeitNichtEingehalten = (anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / ((float)serviceAbrufe.size());	
 	return df.format(prozentanteilServiceAbrufeServicezeitNichtEingehalten);
 	}
+	
+	public float getProzentanteilServiceAbrufeServicezeitNichtEingehaltenAsFloat() 
+	{
+	return prozentanteilServiceAbrufeServicezeitNichtEingehalten = (anzahlServiceAbrufeServicezeitNichtEingehalten * 100) / ((float)serviceAbrufe.size());	
+	}	
 	
 	public Object[] getMonate()
 	{

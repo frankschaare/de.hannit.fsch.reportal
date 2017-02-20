@@ -5,15 +5,22 @@ package de.hannit.fsch.reportal.model.echolon;
 
 import java.io.Serializable;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 
 import de.hannit.fsch.reportal.db.Cache;
 import de.hannit.fsch.reportal.db.EcholonDBManager;
@@ -24,7 +31,7 @@ import de.hannit.fsch.reportal.model.Chart;
  *
  */
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class EcholonJahresKategorienChart implements Serializable
 {
 private static final long serialVersionUID = 2732509156820031564L;
@@ -36,6 +43,7 @@ private Chart chart;
 private FacesContext fc = null;
 
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());
+private String logPrefix = null;
 private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
 
 /**
@@ -56,7 +64,7 @@ private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
 		}
 	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);	
 	}
-
+	
 	public BarChartModel getKategorienChartModel() 
 	{
 	BarChartModel model = new BarChartModel();
@@ -110,6 +118,60 @@ private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
     model.setBarMargin(50);
 	model.setSeriesColors(chart.getTopTenBarColors());
     
+    return model;
+    }		
+
+	public LineChartModel getKategorienChartQuartalsModel() 
+	{
+	logPrefix = this.getClass().getCanonicalName() + ".getKategorienChartQuartalsModel(): ";	
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Generiere LineChartModel für alle Quartale seit 2010..." );}	
+
+	LineChartModel model = new LineChartModel();
+	model.setSeriesColors(chart.getColorIncidents() + "," + chart.getColorServiceAbrufe());
+	model.setAnimate(true);
+		
+	LineChartSeries sIncidents = new LineChartSeries();
+	sIncidents.setLabel("Incidents");
+	    
+	LineChartSeries sServiceAbrufe = new LineChartSeries();
+	sServiceAbrufe.setLabel("ServiceAbrufe");
+
+	    	for (JahresStatistik js : jahresStatistiken.values()) 
+	    	{
+    		if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Verarbeite Jahresstatistik für das Berichtsjahr " + js.getBerichtsJahr());}	
+    			
+    			try 
+    			{
+    				if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Jahresstatistik " + js.getBerichtsJahr() + " enthält " + js.getQuartalsStatistiken().size() + " Quartalsstatistiken.");}
+    				for (QuartalsStatistik qs : js.getQuartalsStatistiken().values()) 
+    				{
+   					if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Verarbeite Quartalsstatistik für das " + qs.getBezeichnungLang());}	
+					qs.setStatistik();	
+					sIncidents.set(qs.getLabel(), qs.getProzentanteilIncidentsServicezeitNichtEingehaltenAsFloat());	
+					sServiceAbrufe.set(qs.getLabel(), qs.getProzentanteilServiceAbrufeServicezeitNichtEingehaltenAsFloat());
+    				}
+					
+				} 
+    			catch (NullPointerException e) 
+    			{
+				log.log(Level.WARNING, logPrefix + "Jahresstatistik für das Berichtsjahr " + js.getBerichtsJahr() + " enthält keine Quartalsstatistiken und wird nicht verarbeitet !");	
+				}
+			}
+	 
+    model.addSeries(sIncidents);
+    model.addSeries(sServiceAbrufe);
+	         
+    model.setTitle("SLA Status nach Quartalen seit 2010");
+    model.setLegendPosition("ne");
+    model.setMouseoverHighlight(true);
+    model.setShowDatatip(true);
+    model.setShowPointLabels(true);
+	    
+    Axis xAxis = new CategoryAxis("Berichtmonat");
+    model.getAxes().put(AxisType.X, xAxis);
+    Axis yAxis = model.getAxis(AxisType.Y);
+    yAxis.setLabel("Prozentanteil Servicezeit nicht eingehalten");
+	    
     return model;
     }	
 	

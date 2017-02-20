@@ -19,6 +19,7 @@
 	<p:tooltip id="btnChartCombinedTageszeitToolTip" for="btnChartCombinedTageszeit" value="Eine Quartalsstatistik aller Vorgänge nach Tageszeit verglichen mit der durschnittlichen Lösungsdauer für die letzten vier abgeschlossenen Quartale" position="right"/>
 	<p:tooltip id="btnChartSLAStatusToolTip" for="btnChartSLAStatus" value="Eine Quartalsstatistik des SLA Status für die letzten vier abgeschlossenen Quartale" position="right"/>
 	<p:tooltip id="btnChartJahresstatistikenKategorienToolTip" for="btnChartJahresstatistikenKategorien" value="Eine Jahresstatistik aller Echolon Vorgänge seit 2010" position="right"/>
+	<p:tooltip id="btnChartSLAQuartalsStatusToolTip" for="btnChartSLAQuartalsStatus" value="Eine Quartalsstatistik des SLA Status aller Echolon Vorgänge seit 2010" position="right"/>
 	<p:tooltip id="btnChartJahresstatistikenTop10VorjahrToolTip" for="btnChartJahresstatistikenTop10Vorjahr" value="Eine Jahresstatistik aller Echolon Vorgänge des Vorjahres mit den 10 Tagen, an denen die meisten Vorgänge erfasst wurden. Zum Vergleich werden die Jahresdurchschnittswerte dargestellt." position="right"/>
 	<p:tooltip id="btnChartJahresstatistikenTop10AktuellToolTip" for="btnChartJahresstatistikenTop10Aktuell" value="Eine Jahresstatistik aller Echolon Vorgänge des aktuellen Jahres mit den 10 Tagen, an denen die meisten Vorgänge erfasst wurden. Zum Vergleich werden die Jahresdurchschnittswerte dargestellt." position="right"/>	
 	<p:tooltip id="menuitemCallcenterDatenToolTip" for="menuitemCallcenterDaten" value="Callcenter Daten stehen derzeit nicht zur Verfügung" position="right"/>	
@@ -44,6 +45,7 @@
 	            </p:submenu>
 	            <p:submenu label="Jahresstatistiken" icon="fa fa-calendar-o">
 	                <p:menuitem id="btnChartJahresstatistikenKategorien" value="Kategorien" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonJahresKategorienChart" icon="fa fa-bar-chart-o"/>
+					<p:menuitem id="btnChartSLAQuartalsStatus" value="SLAStatus Quartal" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonSLAStatusQuartalsChart" icon="fa fa-area-chart"/>	                
 	                <p:menuitem id="btnChartJahresstatistikenTop10Vorjahr" value="Top 10 Vorjahr" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenChart" icon="fa fa-bar-chart-o"/>
 	                <p:menuitem id="btnChartJahresstatistikenTop10Aktuell" value="Top 10 aktuell" disabled="#{!request.isUserInRole('admin')}" action="/charts/echolon/EcholonTopTenAktuellChart" icon="fa fa-bar-chart-o"/>	                
 	            </p:submenu>	            

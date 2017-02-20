@@ -3,6 +3,7 @@ package de.hannit.fsch.reportal.model.echolon;
 import java.time.LocalDate;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -22,12 +23,14 @@ import de.hannit.fsch.reportal.model.Zeitraum;
 public class JahresStatistik extends EcholonStatistik
 {
 private final static Logger log = Logger.getLogger(JahresStatistik.class.getSimpleName());
+private String logPrefix = null;
+
 private FacesContext fc = null;
 
 private int anzahlIncidents = 0;
 private int anzahlServiceabrufe = 0;
 
-private ArrayList<Quartal> quartale = new ArrayList<Quartal>();
+private ArrayList<Quartal> quartale = null;
 private ArrayList<Vorgang> vorgaenge = null;
 private ArrayList<Vorgang> incidents = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> workOrder = new ArrayList<Vorgang>();
@@ -38,11 +41,11 @@ private ArrayList<Vorgang> beschwerden = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> customerRequest = new ArrayList<Vorgang>();
 private ArrayList<Vorgang> shortCall = new ArrayList<Vorgang>();
 private Stream<Vorgang> si = null;
-
+private Vorgang max = null;
 
 private String berichtsJahr = null;
 private String quartal = null;
-private HashMap<Integer, QuartalsStatistik> quartalsStatistiken = new HashMap<Integer, QuartalsStatistik>();
+private HashMap<Integer, QuartalsStatistik> quartalsStatistiken = null;
 private HashMap<Integer, MonatsStatistik> monatsStatistiken = new HashMap<Integer, MonatsStatistik>();
 private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 
@@ -78,6 +81,7 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 			{
 			ms.setStatistik();	
 			}
+		setMax(vorgaengeBerichtszeitraum.stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get());	
 		setQuartale(iBerichtsJahr);	
 		}
 	setTagesStatistiken();	
@@ -117,42 +121,130 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	}
 
 	private void setQuartale(int iBerichtsJahr) 
-	{
-	quartale.add(new Quartal(1,iBerichtsJahr));
-	quartale.add(new Quartal(4,iBerichtsJahr));
-	quartale.add(new Quartal(7,iBerichtsJahr));
-	quartale.add(new Quartal(10,iBerichtsJahr));
+	{	
+	int maxErstellMonat = getMax().getBerichtsMonat();
+	int maxErstellTag = getMax().getErstellDatum().getDayOfMonth();
 	
-		for (Quartal quartal : quartale) 
+		switch (maxErstellMonat) 
 		{
-		QuartalsStatistik qs =	new QuartalsStatistik(quartal);	
-				
-			switch (quartal.getQuartalsNummer()) 
+		case 1: break;
+		case 2: break;
+		case 3: 
+			if (maxErstellTag >= 29) 
 			{
-			case 1:
-			qs.addMonatsstatistik(monatsStatistiken.get(1));
-			qs.addMonatsstatistik(monatsStatistiken.get(2));
-			qs.addMonatsstatistik(monatsStatistiken.get(3));
-			break;
-			case 2:
-			qs.addMonatsstatistik(monatsStatistiken.get(4));
-			qs.addMonatsstatistik(monatsStatistiken.get(5));
-			qs.addMonatsstatistik(monatsStatistiken.get(6));
-			break;
-			case 3:
-			qs.addMonatsstatistik(monatsStatistiken.get(7));
-			qs.addMonatsstatistik(monatsStatistiken.get(8));
-			qs.addMonatsstatistik(monatsStatistiken.get(9));
-			break;
-			case 4:
-			qs.addMonatsstatistik(monatsStatistiken.get(10));
-			qs.addMonatsstatistik(monatsStatistiken.get(11));
-			qs.addMonatsstatistik(monatsStatistiken.get(12));
-			break;
-			default:
-			break;
+			quartale = new ArrayList<Quartal>();				
+			quartale.add(new Quartal(1,iBerichtsJahr));				
 			}
-		quartalsStatistiken.put(quartal.getQuartalsNummer(), qs);	
+		break;
+		case 4:
+		quartale = new ArrayList<Quartal>();			
+		quartale.add(new Quartal(1,iBerichtsJahr));		
+		break;
+		case 5: 
+		quartale = new ArrayList<Quartal>();		
+		quartale.add(new Quartal(1,iBerichtsJahr));		
+		break;
+		case 6:
+		quartale = new ArrayList<Quartal>();
+			if (maxErstellTag >= 28) 
+			{
+			quartale.add(new Quartal(1,iBerichtsJahr));
+			quartale.add(new Quartal(4,iBerichtsJahr));			
+			}
+			else 
+			{
+			quartale.add(new Quartal(1,iBerichtsJahr));				
+			}
+		break;
+		case 7: 
+		quartale = new ArrayList<Quartal>();			
+		quartale.add(new Quartal(1,iBerichtsJahr));		
+		quartale.add(new Quartal(4,iBerichtsJahr));		
+		break;
+		case 8: 
+		quartale = new ArrayList<Quartal>();
+		quartale.add(new Quartal(1,iBerichtsJahr));		
+		quartale.add(new Quartal(4,iBerichtsJahr));		
+		break;
+		case 9:
+		quartale = new ArrayList<Quartal>();			
+			if (maxErstellTag >= 28) 
+			{
+			quartale.add(new Quartal(1,iBerichtsJahr));
+			quartale.add(new Quartal(4,iBerichtsJahr));
+			quartale.add(new Quartal(7,iBerichtsJahr));			
+			}
+			else 
+			{
+			quartale.add(new Quartal(1,iBerichtsJahr));
+			quartale.add(new Quartal(4,iBerichtsJahr));
+			}
+				
+		break;
+		case 10:
+		quartale = new ArrayList<Quartal>();			
+		quartale.add(new Quartal(1,iBerichtsJahr));		
+		quartale.add(new Quartal(4,iBerichtsJahr));		
+		quartale.add(new Quartal(7,iBerichtsJahr));		
+		break;
+		case 11:
+		quartale = new ArrayList<Quartal>();			
+		quartale.add(new Quartal(1,iBerichtsJahr));		
+		quartale.add(new Quartal(4,iBerichtsJahr));		
+		quartale.add(new Quartal(7,iBerichtsJahr));		
+		break;				
+		default:
+		quartale = new ArrayList<Quartal>();			
+			if (maxErstellTag >= 28) 
+			{
+			quartale.add(new Quartal(1,iBerichtsJahr));
+			quartale.add(new Quartal(4,iBerichtsJahr));
+			quartale.add(new Quartal(7,iBerichtsJahr));
+			quartale.add(new Quartal(10,iBerichtsJahr));			
+			}
+			else 
+			{
+			quartale.add(new Quartal(1,iBerichtsJahr));
+			quartale.add(new Quartal(4,iBerichtsJahr));
+			quartale.add(new Quartal(7,iBerichtsJahr));
+			}
+		break;
+		}
+		
+		if (quartale != null) 
+		{
+		quartalsStatistiken = new HashMap<Integer, QuartalsStatistik>();	
+			for (Quartal quartal : quartale) 
+			{
+				QuartalsStatistik qs =	new QuartalsStatistik(quartal);	
+				
+				switch (quartal.getQuartalsNummer()) 
+				{
+				case 1:
+					qs.addMonatsstatistik(monatsStatistiken.get(1));
+					qs.addMonatsstatistik(monatsStatistiken.get(2));
+					qs.addMonatsstatistik(monatsStatistiken.get(3));
+					break;
+				case 2:
+					qs.addMonatsstatistik(monatsStatistiken.get(4));
+					qs.addMonatsstatistik(monatsStatistiken.get(5));
+					qs.addMonatsstatistik(monatsStatistiken.get(6));
+					break;
+				case 3:
+					qs.addMonatsstatistik(monatsStatistiken.get(7));
+					qs.addMonatsstatistik(monatsStatistiken.get(8));
+					qs.addMonatsstatistik(monatsStatistiken.get(9));
+					break;
+				case 4:
+					qs.addMonatsstatistik(monatsStatistiken.get(10));
+					qs.addMonatsstatistik(monatsStatistiken.get(11));
+					qs.addMonatsstatistik(monatsStatistiken.get(12));
+					break;
+				default:
+					break;
+				}
+				quartalsStatistiken.put(quartal.getQuartalsNummer(), qs);	
+			}
 		}
 	}
 	
@@ -482,6 +574,20 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	{
 	this.anzahlServiceabrufe = anzahlServiceabrufe;
 	}
+
+	/*
+	 * Setzt den letzten Vorgang, für den Daten in der Datenbank vorhanden sind.
+	 * Wird benutzt, um zu prüfen, ob die Quartale vollständig sind.
+	 */
+	public void setMax(Vorgang incoming) 
+	{
+	logPrefix = this.getClass().getCanonicalName() + ".setMax(Vorgang incoming): ";	
+		
+	this.max = incoming;
+	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "MaxVorgang wurde gesetzt. Jahresstatistik " + getBerichtsJahr() + " enthält Daten bis " + max.getErstellDatumAsString() );}	
+	}
+	public Vorgang getMax() {return max;}
+
 
 
 

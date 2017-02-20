@@ -25,7 +25,6 @@ private static final long serialVersionUID = 1844105425140520039L;
 private InitialContext ic;
 private DataSource ds = null;
 private Connection con = null;
-private DataSource dsLocal = null;
 private Exception exception = null;
 private String version = "Release Candidate 1.2";
 
@@ -38,10 +37,8 @@ private String version = "Release Candidate 1.2";
 		{
 		ic = new InitialContext();
 		ds = (DataSource) ic.lookup("java:comp/env/jdbc/echolonDB");			
-		dsLocal = (DataSource) ic.lookup("java:comp/env/jdbc/callcenterDB");
 		con = ds.getConnection();
-		dsLocal.getConnection();
-		
+				
 		// dumpEcholonDB();
 		} 
 		catch (NamingException | SQLException e) 
