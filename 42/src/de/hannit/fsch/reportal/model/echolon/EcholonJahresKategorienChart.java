@@ -167,9 +167,11 @@ private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
     model.setShowDatatip(true);
     model.setShowPointLabels(true);
 	    
-    Axis xAxis = new CategoryAxis("Berichtmonat");
+    Axis xAxis = new CategoryAxis("Berichtsquartal");
     model.getAxes().put(AxisType.X, xAxis);
     Axis yAxis = model.getAxis(AxisType.Y);
+    yAxis.setMin(0);
+    yAxis.setMax(100);
     yAxis.setLabel("Prozentanteil Servicezeit nicht eingehalten");
 	    
     return model;
