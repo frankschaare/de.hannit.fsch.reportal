@@ -115,6 +115,9 @@ private Stream<Vorgang> si = null;
 
 	private void setJahresNodes() 
 	{
+	fc = fc != null ? fc : FacesContext.getCurrentInstance(); 	
+	logPrefix = this.getClass().getCanonicalName() + ".setJahresNodes(): ";
+	
 	String berichtsJahr = null;
 	int aktuellesBerichtsJahr = max.getBerichtsJahr();
 	JahresStatistik js = null;
@@ -136,24 +139,49 @@ private Stream<Vorgang> si = null;
 		aktuellerJahresknoten.setData(js);
 			
 			// Jahresknoten/Quartalsknoten
-			for (QuartalsStatistik qs : js.getQuartalsStatistiken().values()) 
+			// Gibt es schon QuartalsStatistiken ?
+			if (js.getQuartalsStatistiken() != null && !js.getQuartalsStatistiken().isEmpty()) 
 			{
-				if (qs.getAnzahlVorgaengeBerichtszeitraum() > 0) 
-				{
-				qs.setStatistik();
-				aktuellerQuartalssknoten = new EcholonNode(qs,aktuellerJahresknoten);
-				aktuellerQuartalssknoten.setData(qs);
+			if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Jahresstatisik " + js.getBerichtsJahr() + " enthält "+ js.getQuartalsStatistiken().size() + " Quartalsstatistiken");	}
 				
-					// Jahresknoten/Quartalsknoten/Monatsknoten
-					for (MonatsStatistik ms : qs.getMonatsStatistiken()) 
+				for (QuartalsStatistik qs : js.getQuartalsStatistiken().values()) 
+				{
+					if (qs.getAnzahlVorgaengeBerichtszeitraum() > 0) 
+					{
+						qs.setStatistik();
+						aktuellerQuartalssknoten = new EcholonNode(qs,aktuellerJahresknoten);
+						aktuellerQuartalssknoten.setData(qs);
+						
+						// Jahresknoten/Quartalsknoten/Monatsknoten
+						for (MonatsStatistik ms : qs.getMonatsStatistiken()) 
+						{
+							if (ms.getAnzahlVorgaengeGesamt() > 0) 
+							{
+								ms.setStatistik();	
+								aktuellerMonatssknoten = new EcholonNode(ms, aktuellerQuartalssknoten);	
+								aktuellerMonatssknoten.setData(ms);
+							}
+						}
+					}
+				}
+			} 
+			else 
+			{
+			if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.WARNING, logPrefix + "Jahresstatisik " + js.getBerichtsJahr() + " enthält keine Quartalsstatistiken");}
+			
+				if (js.getMonatsStatistiken().size() > 0) 
+				{
+				if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.WARNING, logPrefix + "Jahresstatisik " + js.getBerichtsJahr() + " enthält " + js.getMonatsStatistiken().size() + " Monatsstatistiken. Diese werden dem Jahresknoten hinzugefügt.");}
+					for (MonatsStatistik ms : js.getMonatsStatistiken().values()) 
 					{
 						if (ms.getAnzahlVorgaengeGesamt() > 0) 
 						{
 						ms.setStatistik();	
-						aktuellerMonatssknoten = new EcholonNode(ms, aktuellerQuartalssknoten);	
+						aktuellerMonatssknoten = new EcholonNode(ms, aktuellerJahresknoten);	
 						aktuellerMonatssknoten.setData(ms);
 						}
-					}
+					}					
+					
 				}
 			}
 			

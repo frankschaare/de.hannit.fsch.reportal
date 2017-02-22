@@ -587,10 +587,6 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "MaxVorgang wurde gesetzt. Jahresstatistik " + getBerichtsJahr() + " enthält Daten bis " + max.getErstellDatumAsString() );}	
 	}
 	public Vorgang getMax() {return max;}
-
-
-
-
-
+	public HashMap<Integer, MonatsStatistik> getMonatsStatistiken() {return monatsStatistiken;}
 
 }
