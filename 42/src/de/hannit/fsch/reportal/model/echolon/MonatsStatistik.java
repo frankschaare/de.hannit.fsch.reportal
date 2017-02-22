@@ -8,13 +8,19 @@ import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
+
 import org.primefaces.model.chart.PieChartModel;
 
+import de.hannit.fsch.reportal.model.Chart;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 
 public class MonatsStatistik extends EcholonStatistik
 {
+@ManagedProperty (value = "#{chart}")
+private Chart chart;		
 private int anzahlVorgaengeGesamt = 0;
 private int anzahlIncidents = 0;
 private long anzahlIncidentsServicezeitNichtEingehalten = 0;
@@ -103,18 +109,22 @@ private Stream<Vorgang> si = null;
 	@Override
 	public PieChartModel getPieModel() 
 	{
+	FacesContext fc = FacesContext.getCurrentInstance();	
+	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);			
 	pieModel = new PieChartModel();
-	pieModel.set(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents());
-	pieModel.set(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe());
-	pieModel.set(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen());
-	pieModel.set(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos());
-	pieModel.set(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden());
-	pieModel.set(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls());
-	pieModel.set(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders());
 	pieModel.set(EcholonConstants.TYP_CUSTOMERREQUEST, getAnzahlCustomerRequests());
+	pieModel.set(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders());
+	pieModel.set(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls());
+	pieModel.set(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos());
+	pieModel.set(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen());
+	pieModel.set(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe());
+	pieModel.set(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents());
+	pieModel.set(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden());
+
 	
 	 pieModel.setTitle("Vorgangsübersicht");
      pieModel.setLegendPosition("w");
+     pieModel.setSeriesColors(chart.getDefaultBarColors());
 	
 	return pieModel;
 	}

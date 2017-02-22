@@ -12,10 +12,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.faces.application.ProjectStage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.model.chart.PieChartModel;
 
+import de.hannit.fsch.reportal.model.Chart;
 import de.hannit.fsch.reportal.model.DatumsConstants;
 import de.hannit.fsch.reportal.model.Quartal;
 import de.hannit.fsch.reportal.model.Zeitraum;
@@ -25,9 +27,14 @@ public class JahresStatistik extends EcholonStatistik
 private final static Logger log = Logger.getLogger(JahresStatistik.class.getSimpleName());
 private String logPrefix = null;
 
+@ManagedProperty (value = "#{chart}")
+private Chart chart;	
+
 private FacesContext fc = null;
 
+@SuppressWarnings("unused")
 private int anzahlIncidents = 0;
+@SuppressWarnings("unused")
 private int anzahlServiceabrufe = 0;
 
 private ArrayList<Quartal> quartale = null;
@@ -58,6 +65,8 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	public JahresStatistik(ArrayList<Vorgang> alleVorgaenge, String berichtsJahr) 
 	{
 	fc = FacesContext.getCurrentInstance();	
+	chart = chart != null ? chart : fc.getApplication().evaluateExpressionGet(fc, "#{chart}", Chart.class);	
+
 	this.berichtsJahr = berichtsJahr;	
 	berichtsZeitraum = new Zeitraum(berichtsJahr);
 	setLabel(berichtsJahr);
@@ -433,17 +442,18 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	public PieChartModel getPieModel() 
 	{
 	pieModel = new PieChartModel();
-	pieModel.set(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents());
-	pieModel.set(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe());
-	pieModel.set(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen());
-	pieModel.set(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos());
-	pieModel.set(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden());
-	pieModel.set(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls());
-	pieModel.set(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders());
 	pieModel.set(EcholonConstants.TYP_CUSTOMERREQUEST, getAnzahlCustomerRequests());
+	pieModel.set(EcholonConstants.TYP_WORKORDER, getAnzahlWorkorders());
+	pieModel.set(EcholonConstants.TYP_SHORTCALL, getAnzahlShortCalls());
+	pieModel.set(EcholonConstants.TYP_SERVICEINFO, getAnzahlServiceinfos());
+	pieModel.set(EcholonConstants.TYP_SERVICEANFRAGE, getAnzahlServiceanfragen());
+	pieModel.set(EcholonConstants.TYP_SERVICEABRUF, getAnzahlServiceAbrufe());
+	pieModel.set(EcholonConstants.TYP_INCIDENT, getAnzahlIncidents());
+	pieModel.set(EcholonConstants.TYP_BESCHWERDE, getAnzahlBeschwerden());
 	
-	 pieModel.setTitle("Vorgangsübersicht");
-     pieModel.setLegendPosition("w");
+	pieModel.setTitle("Vorgangsübersicht");
+    pieModel.setLegendPosition("w");
+    pieModel.setSeriesColors(chart.getDefaultBarColors());
 	
 	return pieModel;
 	}
