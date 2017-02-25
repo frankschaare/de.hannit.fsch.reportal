@@ -85,7 +85,10 @@ private Stream<Vorgang> si = null;
 	berichtsZeitraum = new Zeitraum(min.getErstellDatumZeit(), max.getErstellDatumZeit());	
 		
 	anzahlVorgaengeBerichtszeitraum = vorgaengeBerichtszeitraum.size();
-	
+		if (getMandant() != null) 
+		{
+		getMandant().setAnzahlVorgaengeBerichtszeitraum(anzahlVorgaengeBerichtszeitraum);	
+		} 	
 	split();
 	
 	this.anzahlIncidents = incidents.size();

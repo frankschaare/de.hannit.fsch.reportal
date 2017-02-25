@@ -139,7 +139,10 @@ private Stream<Vorgang> si = null;
 	public void setStatistik() 
 	{
 	this.anzahlVorgaengeGesamt = vorgaengeBerichtszeitraum.size();
-	
+		if (getMandant() != null) 
+		{
+		getMandant().setAnzahlVorgaengeBerichtszeitraum(anzahlVorgaengeGesamt);	
+		}	
 	Vorgang max	= vorgaengeBerichtszeitraum.stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
 	Vorgang min = vorgaengeBerichtszeitraum.stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();	
 	berichtsZeitraum = new Zeitraum(min.getErstellDatumZeit(), max.getErstellDatumZeit());	

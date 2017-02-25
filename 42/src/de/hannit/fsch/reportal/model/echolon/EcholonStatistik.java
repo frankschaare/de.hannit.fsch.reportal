@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.primefaces.model.chart.PieChartModel;
 
+import de.hannit.fsch.reportal.model.Mandant;
 import de.hannit.fsch.reportal.model.Zeitraum;
 
 /**
@@ -37,6 +38,7 @@ protected double avgDauerMinutenServiceAbrufe = 0;
 protected double avgDauerStundenServiceAbrufe = 0;
 protected double avgDauerTageServiceAbrufe = 0;
 protected String label = null;
+protected Mandant mandant = null;
 
 protected PieChartModel pieModel;
 
@@ -69,7 +71,7 @@ protected DecimalFormat df = new DecimalFormat( "###.##" );
 	{
 	return anzahlVorgaengeBerichtszeitraum;
 	}
-
+	
 	public ArrayList<Vorgang> getVorgaengeBerichtszeitraum() 
 	{
 	return vorgaengeBerichtszeitraum;
@@ -179,4 +181,11 @@ protected DecimalFormat df = new DecimalFormat( "###.##" );
 	return null;
 	}
 
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	public void setMandant(Mandant mandant) {
+		this.mandant = mandant;
+	}
 }

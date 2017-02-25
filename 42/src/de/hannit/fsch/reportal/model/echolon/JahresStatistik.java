@@ -76,6 +76,11 @@ private TreeMap<LocalDate, TagesStatistik> tagesStatistiken = null;
 	vorgaengeBerichtszeitraum = si.filter(v -> v.getBerichtsJahr() == iBerichtsJahr).collect(Collectors.toCollection(ArrayList::new ));
 	filterDistinc(vorgaengeBerichtszeitraum);
 	anzahlVorgaengeBerichtszeitraum = vorgaengeBerichtszeitraum.size();
+		if (getMandant() != null) 
+		{
+		getMandant().setAnzahlVorgaengeBerichtszeitraum(anzahlVorgaengeBerichtszeitraum);	
+		} 
+		
 
 		if (vorgaengeBerichtszeitraum.size() > 0) 
 		{

@@ -22,7 +22,8 @@
 
 	<div id="content">
 		<h:form id="navForm">
-			<p:growl id="messages" showDetail="true" life="2000" autoUpdate="true" />
+			<p:growl id="messages" showDetail="true" life="8000" autoUpdate="true" />
+			
 			<p:layout styleClass="hit-layout-unit-content">
 				<p:layoutUnit position="west" resizable="true" size="200" minSize="100">
 					<p:tabView style="border:none !important; padding: 0px !important;">
@@ -46,16 +47,23 @@
 							</p:tree>
         				</p:tab>
 					    <p:tab title="HRG">
+							<p:tree value="#{cache.getRoot('HRG')}" var="node" dynamic="true" selectionMode="single" selection="#{edb.selectedNode}" styleClass="navTree">
+								<p:ajax event="expand" listener="#{edb.onNodeExpand}" />
+								<p:ajax event="select" update=":navForm:grid, :navForm:tabs" listener="#{edb.onNodeSelect}" />
+								<p:treeNode>
+									<h:outputText value="#{node.label}" />
+								</p:treeNode>
+							</p:tree>					    
         				</p:tab>        				        				
 					</p:tabView>
 				</p:layoutUnit>
 
 				<p:layoutUnit position="center">
-					<p:panelGrid id="grid" cellpadding="5" columns="4"
-						style="margin-bottom:10px" layout="grid">
+				
+					<p:panelGrid id="grid" cellpadding="5" columns="4" style="margin-bottom:10px" layout="grid">
 						<f:facet name="header">
 							<p:row>
-								<p:column colspan="4">Berichtszeitraum: <h:outputText value=" #{edb.jahresstatistik.berichtsZeitraum.berichtszeitraumStart} - #{edb.jahresstatistik.berichtsZeitraum.berichtszeitraumEnde}"/> (<h:outputText value="#{edb.jahresstatistik.anzahlVorgaengeBerichtszeitraum}" /> Vorgänge, Mandant: <h:outputText value="#{cache.mandant.bezeichnung}"/>)</p:column>
+								<p:column id="gridZusammenfassung" colspan="4">Berichtszeitraum: <h:outputText value=" #{edb.jahresstatistik.berichtsZeitraum.berichtszeitraumStart} - #{edb.jahresstatistik.berichtsZeitraum.berichtszeitraumEnde}"/> (<h:outputText value="#{edb.jahresstatistik.anzahlVorgaengeBerichtszeitraum}" /> Vorgänge, Mandant: <h:outputText value="#{edb.jahresstatistik.mandant.bezeichnung}"/>)</p:column>
 							</p:row>
 						</f:facet>
 						<p:column>
@@ -155,8 +163,7 @@
 						</p:column>
 
 					</p:panelGrid>
-
-					<p:fieldset legend="Details" toggleable="true" toggleSpeed="500" collapsed="true">
+					<p:fieldset id="fieldsetDetails" legend="Details" toggleable="true" toggleSpeed="500" collapsed="true">
 						<p:tabView id="tabs" effect="fade" effectDuration="fast" dynamic="true">
 							<p:ajax event="tabChange" update=":navForm:tabs" />
 							<p:tab title="Incidents (#{edb.jahresstatistik.anzahlIncidents})">

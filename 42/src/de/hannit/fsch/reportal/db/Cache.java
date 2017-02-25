@@ -114,6 +114,11 @@ private Mandant mandant = null;
    		return null;
     	}
     }
+    
+    public TreeNode getRoot(String mandant) 
+    {
+	return trees.get(mandant);
+    }
 	
 	/*
 	 * Cached die Baummodelle für alle vorhandenen Mandanten
@@ -153,6 +158,7 @@ private Mandant mandant = null;
 			aktuellerJahresknoten.setBerichtsJahr(berichtsJahr);
 			
 			js = new JahresStatistik(filteredCases.values().stream().collect(Collectors.toCollection(ArrayList<Vorgang>::new)), berichtsJahr);
+			js.setMandant(m);
 			aktuellerJahresknoten.setData(js);
 				
 				// Jahresknoten/Quartalsknoten
@@ -165,6 +171,7 @@ private Mandant mandant = null;
 					{
 						if (qs.getAnzahlVorgaengeBerichtszeitraum() > 0) 
 						{
+						qs.setMandant(m);	
 						qs.setStatistik();
 						aktuellerQuartalssknoten = new EcholonNode(qs,aktuellerJahresknoten);
 						aktuellerQuartalssknoten.setData(qs);
@@ -174,6 +181,7 @@ private Mandant mandant = null;
 							{
 								if (ms.getAnzahlVorgaengeGesamt() > 0) 
 								{
+								ms.setMandant(m);	
 								ms.setStatistik();	
 								aktuellerMonatssknoten = new EcholonNode(ms, aktuellerQuartalssknoten);	
 								aktuellerMonatssknoten.setData(ms);
@@ -193,6 +201,7 @@ private Mandant mandant = null;
 						{
 							if (ms.getAnzahlVorgaengeGesamt() > 0) 
 							{
+							ms.setMandant(m);	
 							ms.setStatistik();	
 							aktuellerMonatssknoten = new EcholonNode(ms, aktuellerJahresknoten);	
 							aktuellerMonatssknoten.setData(ms);
@@ -308,8 +317,13 @@ private Mandant mandant = null;
 		
 		if (mandant != null) 
 		{
+		int filterCount = 0;
+		
+		mandant.setAnzahlVorgaengeGesamt(distinctCases.size());	
 		ArrayList<Vorgang> inServiceZeit = distinctCases.values().stream().filter(v -> v.getErstellZeit().isAfter(mandant.getServicezeitStart()) && v.getErstellZeit().isBefore(mandant.getServicezeitEnde())).collect(Collectors.toCollection(ArrayList<Vorgang>::new));	
-			
+		if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge (" + distinctCases.size() + ") wurden auf " + inServiceZeit.size() + " Vorgänge gefiltert, die in der Servicezeit des Mandanten " + mandant.getBezeichnung() +  " von " + Zeitraum.dfStundeMinute.format(mandant.getServicezeitStart()) + " bis " + Zeitraum.dfStundeMinute.format(mandant.getServicezeitEnde()) + " Uhr liegen.");}
+		mandant.setAnzahlVorgaengeInServiceZeit(inServiceZeit.size());
+		
 			// Muss nach Organisationen UND Servicekategorien gefiltert werden ?
 			if (mandant.getOrganisationenFilter() && mandant.getServiceKategorienFilter()) 
 			{
@@ -317,13 +331,17 @@ private Mandant mandant = null;
 			
 				for (Vorgang v : inServiceZeit) 
 				{
+					filterCount = 0;
 					for (String organisation : mandant.getOrganisationen().values()) 
 					{
 						if (v.getOrganisation().equalsIgnoreCase(organisation)) 
 						{
-						filteredCases.put(v.getId(), v);	
+						filteredCases.put(v.getId(), v);
+						filterCount++;
 						}
 					}
+					mandant.setAnzahlVorgaengeInOrganisation(filteredCases.size());
+					
 					for (String serviceKategorie : mandant.getServiceKategorien().values()) 
 					{
 						if (v.getKategorie().equalsIgnoreCase(serviceKategorie)) 
@@ -331,8 +349,10 @@ private Mandant mandant = null;
 						filteredCases.put(v.getId(), v);	
 						}
 					}
+					mandant.setAnzahlVorgaengeInOrganisation(filteredCases.size() - filterCount);
 				}
 			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nach Organisation und Servicekategorien auf " + filteredCases.size() + " Vorgänge gefiltert.");}
+			
 			result = filteredCases;	
 			}
 	
@@ -352,6 +372,8 @@ private Mandant mandant = null;
 					}
 				}
 			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nach Organisation auf " + filteredCases.size() + " Vorgänge gefiltert.");}
+			mandant.setAnzahlVorgaengeInOrganisation(filteredCases.size());
+			mandant.setAnzahlVorgaengeInServiceKategorien(filteredCases.size());
 			result = filteredCases;	
 			}
 			// Muss Servicekategorien gefiltert werden ?
@@ -370,12 +392,16 @@ private Mandant mandant = null;
 					}
 				}
 			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nach Servicekategorien auf " + filteredCases.size() + " Vorgänge gefiltert.");}
+			mandant.setAnzahlVorgaengeInServiceKategorien(filteredCases.size());
+			mandant.setAnzahlVorgaengeInOrganisation(filteredCases.size());
 			result = filteredCases;	
 			}
 			// Kein Filter, also HannIT
 			if (! mandant.getServiceKategorienFilter() && ! mandant.getOrganisationenFilter()) 
 			{
 			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nicht gefiltert.");}
+			mandant.setAnzahlVorgaengeInOrganisation(distinctCases.size());
+			mandant.setAnzahlVorgaengeInServiceKategorien(distinctCases.size());
 			result = distinctCases;	
 			}			
 		}
