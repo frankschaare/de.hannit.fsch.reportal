@@ -193,7 +193,8 @@ private Stream<Vorgang> si = null;
     
     public TreeNode getRoot() 
     {
-    return root;
+    return cache.getRoot();	
+    //return root;
     }
 
 	@SuppressWarnings("unused")

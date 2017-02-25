@@ -22,16 +22,21 @@
 	<p:tooltip id="btnChartSLAQuartalsStatusToolTip" for="btnChartSLAQuartalsStatus" value="Eine Quartalsstatistik des SLA Status aller Echolon Vorgänge seit 2010" position="right"/>
 	<p:tooltip id="btnChartJahresstatistikenTop10VorjahrToolTip" for="btnChartJahresstatistikenTop10Vorjahr" value="Eine Jahresstatistik aller Echolon Vorgänge des Vorjahres mit den 10 Tagen, an denen die meisten Vorgänge erfasst wurden. Zum Vergleich werden die Jahresdurchschnittswerte dargestellt." position="right"/>
 	<p:tooltip id="btnChartJahresstatistikenTop10AktuellToolTip" for="btnChartJahresstatistikenTop10Aktuell" value="Eine Jahresstatistik aller Echolon Vorgänge des aktuellen Jahres mit den 10 Tagen, an denen die meisten Vorgänge erfasst wurden. Zum Vergleich werden die Jahresdurchschnittswerte dargestellt." position="right"/>	
-	<p:tooltip id="menuitemCallcenterDatenToolTip" for="menuitemCallcenterDaten" value="Callcenter Daten stehen derzeit nicht zur Verfügung" position="right"/>	
-	<p:tooltip id="menuitemCallcenterChartsToolTip" for="menuitemCallcenterCharts" value="Callcenter Charts stehen derzeit nicht zur Verfügung" position="right"/>	
 	<p:tooltip id="btnStartseiteToolTip" for="btnStartseite" value="Klicken Sie hier, um zur Startseite zurück zu gelangen" position="right"/>
 	<p:tooltip id="btnInfoToolTip" for="btnInfo" value="Eine Übersicht der eingesetzten Technologien" position="right"/>
 	
 	    <p:menubar id="menubarAdmin" style="padding: 1px; padding-top: 2px;">
 	        <p:submenu label="Echolon Daten" icon="fa fa-database">
-	            <p:menuitem id="btnZusammenfassung" value="Zusammenfassung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" icon="fa fa-table" />
+	            <p:menuitem id="btnZusammenfassung" value="Hannit" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassung" actionListener="#{cache.filter}" icon="fa fa-table" >
+					<f:attribute name="Mandant" value="HannIT" />
+	        	</p:menuitem>
+	            <p:menuitem id="btnZusammenfassungRegion" value="Region" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassungRegion" actionListener="#{cache.filter}" icon="fa fa-table" >
+					<f:attribute name="Mandant" value="Region" />
+	        	</p:menuitem>	        	
 	            <p:menuitem id="btnHRGAuswertung" value="HRG Auswertung" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonZusammenfassungHRG" icon="fa fa-table"/>
-	            <p:menuitem id="btnEcholonDaten" value="Echolon Daten" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" icon="fa fa-database" />
+	            <p:menuitem id="btnEcholonDaten" value="Daten HannIT" disabled="#{!request.isUserInRole('admin')}" action="/daten/echolon/echolonDaten" ajax="false" icon="fa fa-database">
+	            	<f:attribute name="Mandant" value="HannIT" />
+	        	</p:menuitem>
 	        </p:submenu>
 	 
 	        <p:submenu label="Echolon Charts" icon="fa fa-signal">

@@ -18,13 +18,23 @@ import java.util.stream.Stream;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
 
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
+
+import de.hannit.fsch.reportal.model.Berichtszeitraum;
+import de.hannit.fsch.reportal.model.Mandant;
 import de.hannit.fsch.reportal.model.Zeitraum;
+import de.hannit.fsch.reportal.model.echolon.EcholonNode;
 import de.hannit.fsch.reportal.model.echolon.JahresStatistik;
+import de.hannit.fsch.reportal.model.echolon.MonatsStatistik;
+import de.hannit.fsch.reportal.model.echolon.QuartalsStatistik;
 import de.hannit.fsch.reportal.model.echolon.Vorgang;
 import de.hannit.fsch.util.ServletContextController;
 
@@ -33,9 +43,11 @@ import de.hannit.fsch.util.ServletContextController;
  *
  */
 @ManagedBean
-@ApplicationScoped
+@SessionScoped
 public class Cache implements Serializable
 {
+@ManagedProperty (value = "#{edb}")
+private EcholonDBManager edb;	
 private static final long serialVersionUID = -5351191156760420453L;
 private final static Logger log = Logger.getLogger(Cache.class.getSimpleName());
 private String logPrefix = this.getClass().getCanonicalName() + ": ";
@@ -49,6 +61,8 @@ private int anzahlDatensaetzeGesamt = 0;
 private Vorgang max = null;
 
 private TreeMap<Integer, JahresStatistik> jahresStatistiken = null;
+private TreeMap<String, TreeNode> trees = null;
+
 private ArrayList<Vorgang> vorgaengeBerichtszeitraum;
 private Stream<Vorgang> si = null;
 private String restrictedAccess = null;
@@ -56,14 +70,15 @@ private String restrictedAccess = null;
 private boolean timerOK = false;
 private boolean backendOK = false;
 
-
-	/**
+private Mandant mandant = null;
+/**
 	 * 
 	 */
 	public Cache() 
 	{
 	fc = FacesContext.getCurrentInstance();
 	servletContext = (ServletContext) fc.getExternalContext().getContext();
+	edb = edb != null ? edb : fc.getApplication().evaluateExpressionGet(fc, "#{edb}", EcholonDBManager.class);	
 
 		try 
 		{
@@ -76,6 +91,7 @@ private boolean backendOK = false;
 		anzahlDatensaetzeGesamt = distinctCases.size();
 		max = distinctCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
 		setJahresStatistiken();
+		setTreeModels();
 		lastExecution = timer.getLastExecution();
 		log.log(Level.INFO, logPrefix + ": Letzte Cache Aktualisierung ist vom " + getLastExecution());	
 		} 
@@ -86,7 +102,112 @@ private boolean backendOK = false;
 		e.printStackTrace();
 		}
 	}
+	
+    public TreeNode getRoot() 
+    {
+    	if (getMandant() != null) 
+    	{
+		return trees.get(mandant.getBezeichnung());
+		}
+    	else
+    	{
+   		return null;
+    	}
+    }
+	
+	/*
+	 * Cached die Baummodelle für alle vorhandenen Mandanten
+	 */
+	private void setTreeModels() 
+	{
+	fc = fc != null ? fc : FacesContext.getCurrentInstance(); 	
+	logPrefix = this.getClass().getCanonicalName() + ".setTreeModels(): ";
+	trees = new TreeMap<>();
+	HashMap<String, Vorgang> filteredCases = null;
+	Vorgang maxMandant = null;
+	Vorgang minMandant = null;
+	String berichtsJahr = null;
+	int aktuellesBerichtsJahr = 0;
+	JahresStatistik js = null;
+	EcholonNode aktuellerJahresknoten = null;
+	EcholonNode aktuellerQuartalssknoten = null;
+	EcholonNode aktuellerMonatssknoten = null;
+	TreeNode root = null;
 		
+	
+		for (Mandant m : edb.getMandanten().values()) 
+		{
+		setMandant(m);
+		filteredCases = getDistinctCases();
+		maxMandant = filteredCases.values().stream().max(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+		minMandant = filteredCases.values().stream().min(Comparator.comparing(Vorgang::getErstellDatumZeit)).get();
+		aktuellesBerichtsJahr = maxMandant.getBerichtsJahr();	
+		root = new DefaultTreeNode("Root", null);
+		
+			// Erstelle Jahresknoten bis zum ältesten Vorgang:
+			while (aktuellesBerichtsJahr >= minMandant.getBerichtsJahr()) 
+			{
+			berichtsJahr = String.valueOf(aktuellesBerichtsJahr);
+			aktuellerJahresknoten = new EcholonNode(berichtsJahr, root);
+			aktuellerJahresknoten.setBerichtszeitraum(Berichtszeitraum.BERICHTSZEITRAUM_JAHR);
+			aktuellerJahresknoten.setBerichtsJahr(berichtsJahr);
+			
+			js = new JahresStatistik(filteredCases.values().stream().collect(Collectors.toCollection(ArrayList<Vorgang>::new)), berichtsJahr);
+			aktuellerJahresknoten.setData(js);
+				
+				// Jahresknoten/Quartalsknoten
+				// Gibt es schon QuartalsStatistiken ?
+				if (js.getQuartalsStatistiken() != null && !js.getQuartalsStatistiken().isEmpty()) 
+				{
+				if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.INFO, logPrefix + "Jahresstatisik " + js.getBerichtsJahr() + " enthält "+ js.getQuartalsStatistiken().size() + " Quartalsstatistiken");	}
+					
+					for (QuartalsStatistik qs : js.getQuartalsStatistiken().values()) 
+					{
+						if (qs.getAnzahlVorgaengeBerichtszeitraum() > 0) 
+						{
+						qs.setStatistik();
+						aktuellerQuartalssknoten = new EcholonNode(qs,aktuellerJahresknoten);
+						aktuellerQuartalssknoten.setData(qs);
+							
+							// Jahresknoten/Quartalsknoten/Monatsknoten
+							for (MonatsStatistik ms : qs.getMonatsStatistiken()) 
+							{
+								if (ms.getAnzahlVorgaengeGesamt() > 0) 
+								{
+								ms.setStatistik();	
+								aktuellerMonatssknoten = new EcholonNode(ms, aktuellerQuartalssknoten);	
+								aktuellerMonatssknoten.setData(ms);
+								}
+							}
+						}
+					}
+				} 
+				else 
+				{
+				if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.WARNING, logPrefix + "Jahresstatisik " + js.getBerichtsJahr() + " enthält keine Quartalsstatistiken");}
+				
+					if (js.getMonatsStatistiken().size() > 0) 
+					{
+					if (fc.isProjectStage(ProjectStage.Development)) {log.log(Level.WARNING, logPrefix + "Jahresstatisik " + js.getBerichtsJahr() + " enthält " + js.getMonatsStatistiken().size() + " Monatsstatistiken. Diese werden dem Jahresknoten hinzugefügt.");}
+						for (MonatsStatistik ms : js.getMonatsStatistiken().values()) 
+						{
+							if (ms.getAnzahlVorgaengeGesamt() > 0) 
+							{
+							ms.setStatistik();	
+							aktuellerMonatssknoten = new EcholonNode(ms, aktuellerJahresknoten);	
+							aktuellerMonatssknoten.setData(ms);
+							}
+						}					
+						
+					}
+				}
+			aktuellesBerichtsJahr--;	
+			}
+		trees.put(m.getBezeichnung(), root);	
+		}
+	
+	}
+
 	/*
 	 * Sortiert alle Vorgänge ab 2010 nach Jahren
 	 */
@@ -107,6 +228,12 @@ private boolean backendOK = false;
 		aktuellesBerichtsJahr--;	
 		}
 	}  	
+	
+	public void filter(ActionEvent event) 
+	{
+    String mandant = (String) event.getComponent().getAttributes().get("Mandant");
+    setMandant(edb.getMandanten().get(mandant));
+	}	
 	
 	private ArrayList<Vorgang> getVorgaengeBerichtsJahr(int incoming)
 	{
@@ -130,6 +257,7 @@ private boolean backendOK = false;
 	{
 	fc = FacesContext.getCurrentInstance();
 	servletContext = (ServletContext) fc.getExternalContext().getContext();
+	HashMap<String, Vorgang> result = null;	
 	
 		if (fc.isProjectStage(ProjectStage.Development)) 
 		{
@@ -177,7 +305,85 @@ private boolean backendOK = false;
 		timerOK = true;
 		backendOK = true;
 		}
-	return distinctCases;
+		
+		if (mandant != null) 
+		{
+		ArrayList<Vorgang> inServiceZeit = distinctCases.values().stream().filter(v -> v.getErstellZeit().isAfter(mandant.getServicezeitStart()) && v.getErstellZeit().isBefore(mandant.getServicezeitEnde())).collect(Collectors.toCollection(ArrayList<Vorgang>::new));	
+			
+			// Muss nach Organisationen UND Servicekategorien gefiltert werden ?
+			if (mandant.getOrganisationenFilter() && mandant.getServiceKategorienFilter()) 
+			{
+			HashMap<String, Vorgang> filteredCases = new HashMap<String, Vorgang>();	
+			
+				for (Vorgang v : inServiceZeit) 
+				{
+					for (String organisation : mandant.getOrganisationen().values()) 
+					{
+						if (v.getOrganisation().equalsIgnoreCase(organisation)) 
+						{
+						filteredCases.put(v.getId(), v);	
+						}
+					}
+					for (String serviceKategorie : mandant.getServiceKategorien().values()) 
+					{
+						if (v.getKategorie().equalsIgnoreCase(serviceKategorie)) 
+						{
+						filteredCases.put(v.getId(), v);	
+						}
+					}
+				}
+			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nach Organisation und Servicekategorien auf " + filteredCases.size() + " Vorgänge gefiltert.");}
+			result = filteredCases;	
+			}
+	
+			// Muss nach Organisationen gefiltert werden ?
+			if (mandant.getOrganisationenFilter() && ! mandant.getServiceKategorienFilter()) 
+			{
+			HashMap<String, Vorgang> filteredCases = new HashMap<String, Vorgang>();	
+			
+				for (Vorgang v : inServiceZeit) 
+				{
+					for (String organisation : mandant.getOrganisationen().values()) 
+					{
+						if (v.getOrganisation().equalsIgnoreCase(organisation)) 
+						{
+						filteredCases.put(v.getId(), v);	
+						}
+					}
+				}
+			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nach Organisation auf " + filteredCases.size() + " Vorgänge gefiltert.");}
+			result = filteredCases;	
+			}
+			// Muss Servicekategorien gefiltert werden ?
+			if (mandant.getServiceKategorienFilter() && ! mandant.getOrganisationenFilter()) 
+			{
+			HashMap<String, Vorgang> filteredCases = new HashMap<String, Vorgang>();	
+			
+				for (Vorgang v : inServiceZeit) 
+				{
+					for (String serviceKategorie : mandant.getServiceKategorien().values()) 
+					{
+						if (v.getKategorie().equalsIgnoreCase(serviceKategorie)) 
+						{
+						filteredCases.put(v.getId(), v);	
+						}
+					}
+				}
+			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nach Servicekategorien auf " + filteredCases.size() + " Vorgänge gefiltert.");}
+			result = filteredCases;	
+			}
+			// Kein Filter, also HannIT
+			if (! mandant.getServiceKategorienFilter() && ! mandant.getOrganisationenFilter()) 
+			{
+			if (fc.isProjectStage(ProjectStage.Development)){log.log(Level.INFO, logPrefix + ": Gesamtvorgänge für den Mandanten " + mandant.getBezeichnung() + " wurden nicht gefiltert.");}
+			result = distinctCases;	
+			}			
+		}
+		else
+		{
+		result =  distinctCases;
+		}
+	return result;	
 	}
 
 	/*
@@ -234,7 +440,14 @@ private boolean backendOK = false;
 	public void setRestrictedAccess(String restrictedAccess) {this.restrictedAccess = restrictedAccess;}
 	public boolean isTimerOK() {return timerOK;}
 	public boolean isBackendOK() {return backendOK;}
-	
-	
-	
+	public EcholonDBManager getEdb() {return edb;}
+	public void setEdb(EcholonDBManager edb) {this.edb = edb;}
+	public Mandant getMandant() {return mandant;}
+	public void setMandant(Mandant mandant) {this.mandant = mandant;}
+
+	public void setMandant(String incoming) 
+	{
+	this.mandant = edb.getMandanten().get(incoming);		
+	}
+		
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Konfigurationsdatei für Mandanten. 0 = alle Einträge</comment>
+
+<entry key="MandantHannIT">HannIT</entry>
+<entry key="HannITStartServicezeit">0</entry>
+<entry key="HannITEndeServicezeit">23</entry>
+<entry key="HannITAnzahlServiceKategorien">0</entry>
+<entry key="HannITAnzahlOrganisationen">0</entry>
+
+<entry key="MandantHRG">HRG</entry>
+<entry key="HRGStartServicezeit">7</entry>
+<entry key="HRGEndeServicezeit">17</entry>
+<entry key="HRGAnzahlServiceKategorien">0</entry>
+<entry key="HRGAnzahlOrganisationen">2</entry>
+<entry key="HRGOrganisation1">HRG Projektmanagement mbH</entry>
+<entry key="HRGOrganisation2">HRG-Altes Rathaus Gastronomie</entry>
+
+
+<entry key="MandantRegion">Region</entry>
+<entry key="RegionStartServicezeit">7</entry>
+<entry key="RegionEndeServicezeit">17</entry>
+<entry key="RegionAnzahlOrganisationen">1</entry>
+<entry key="RegionOrganisation1">Region Hannover</entry>
+<entry key="RegionAnzahlServiceKategorien">23</entry>
+<entry key="RegionServiceKategorie1">Backup</entry>
+<entry key="RegionServiceKategorie2">Backupdienste</entry>
+<entry key="RegionServiceKategorie3">Benutzerverwaltung</entry>
+<entry key="RegionServiceKategorie4">Datenbank</entry>
+<entry key="RegionServiceKategorie5">E-Maildienste</entry>
+<entry key="RegionServiceKategorie6">Firewall</entry>
+<entry key="RegionServiceKategorie7">Hacking</entry>
+<entry key="RegionServiceKategorie8">Hardware</entry>
+<entry key="RegionServiceKategorie9">Infrastrukturdienste</entry>
+<entry key="RegionServiceKategorie10">IT Security Incidents</entry>
+<entry key="RegionServiceKategorie11">LAN</entry>
+<entry key="RegionServiceKategorie12">Remotezugriffsdienste</entry>
+<entry key="RegionServiceKategorie13">Server</entry>
+<entry key="RegionServiceKategorie14">Service-Komponente Basis-Infrastruktur</entry>
+<entry key="RegionServiceKategorie15">Software</entry>
+<entry key="RegionServiceKategorie16">Standardhardware</entry>
+<entry key="RegionServiceKategorie17">Standardsoftware</entry>
+<entry key="RegionServiceKategorie18">Terminalserver</entry>
+<entry key="RegionServiceKategorie19">Überwachungsdienste</entry>
+<entry key="RegionServiceKategorie20">Virenbefall</entry>
+<entry key="RegionServiceKategorie21">Virtuelle Server</entry>
+<entry key="RegionServiceKategorie22">WAN</entry>
+<entry key="RegionServiceKategorie23">Web-Applikationen</entry>
+</properties>

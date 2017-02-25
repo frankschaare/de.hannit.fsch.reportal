@@ -203,9 +203,13 @@ min-height: 450px !important;
 	margin-top: 0px;
 	}
 
-.ui-tree {
-
-}
+.ui-tabs .ui-tabs-nav li a {
+    padding: 2px 4px !important; 
+ }
+ 
+.ui-tabs .ui-tabs-panel {
+    padding: 1px 2px !important;
+ } 
 
 .summe {
 	border-radius: 5px;

@@ -6,7 +6,6 @@ package de.hannit.fsch.reportal.db;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
@@ -40,7 +39,7 @@ import de.hannit.fsch.reportal.model.echolon.Vorgang;
  *
  */
 @ManagedBean(name = "ez")
-@SessionScoped
+@RequestScoped
 public class EcholonZusammenfassung implements Serializable
 {
 private static final long serialVersionUID = 6594816868399803344L;
@@ -51,8 +50,7 @@ private Cache cache;
 private final static Logger log = Logger.getLogger(EcholonDBManager.class.getSimpleName());		
 private String thema = "Zusammenfassung";
 private Zeitraum abfrageZeitraum = null;
-private String datumsFormat = "dd.MM.yyyy";
-private DateTimeFormatter df = DateTimeFormatter.ofPattern(datumsFormat);
+
 
 private HashMap<String, Vorgang> distinctCases = new HashMap<String, Vorgang>();	
 private TreeMap<Integer, QuartalsStatistik> quartale = new TreeMap<Integer, QuartalsStatistik>();
@@ -65,6 +63,12 @@ private Vorgang max = null;
 	 * 
 	 */
 	public EcholonZusammenfassung() 
+	{
+	load();
+	setCSV();
+	}
+
+	private void load()
 	{
 		try 
 		{
@@ -128,29 +132,32 @@ private Vorgang max = null;
 			qs.setStatistik();	
 			quartale.put(q.getIndex(), qs);	
 			}
-			log.log(Level.INFO, this.getClass().getName() + ": Es wurden " + quartale.size() + " Quartalsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " erstellt.");
-			
-			// Dateidownload vorbereiten:
-			lines = new ArrayList<String>();
-			String einheiten = "";
-			String lineGesamt = "Anzahl Vorgänge Gesamt:";
-			String lineAnzahlIncidents = "Anzahl Incidents:";
-			String lineAnzahlIncidentsServicezeitNichtEingehalten = "Servicezeit nicht eingehalten:";
-			String lineAnzahlIncidentsServicezeitNichtEingehaltenProzent = "Servicezeit nicht eingehalten (%):";
-			String lineDauerIncidentMinuten = "Dauer Incident (Minuten):";
-			String lineDauerIncidentStunden = "Dauer Incident (Stunden):";
-			String lineDauerIncidentTage = "Dauer Incident (Tage):";
-			String lineAnzahlServiceabrufe = "Anzahl Serviceabrufe:";
-			String lineAnzahlServiceabrufeServicezeitNichtEingehalten = "Servicezeit nicht eingehalten:";
-			String lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent = "Servicezeit nicht eingehalten (%):";
-			String lineDauerServiceabrufeMinuten = "Dauer Serviceabrufe (Minuten):";
-			String lineDauerServiceabrufeStunden = "Dauer Serviceabrufe (Stunden):";
-			String lineDauerServiceabrufeTage = "Dauer Serviceabrufe (Tage):";
-			
-			for (QuartalsStatistik qs : quartale.values()) 
+			log.log(Level.INFO, this.getClass().getName() + ": Es wurden " + quartale.size() + " Quartalsstatistiken für den Abfragezeitraum vom " + Zeitraum.df.format(start) + " bis " + Zeitraum.df.format(end) + " erstellt.");		
+	}
+	
+	private void setCSV()
+	{
+		// Dateidownload vorbereiten:
+		lines = new ArrayList<String>();
+		String einheiten = "";
+		String lineGesamt = "Anzahl Vorgänge Gesamt:";
+		String lineAnzahlIncidents = "Anzahl Incidents:";
+		String lineAnzahlIncidentsServicezeitNichtEingehalten = "Servicezeit nicht eingehalten:";
+		String lineAnzahlIncidentsServicezeitNichtEingehaltenProzent = "Servicezeit nicht eingehalten (%):";
+		String lineDauerIncidentMinuten = "Dauer Incident (Minuten):";
+		String lineDauerIncidentStunden = "Dauer Incident (Stunden):";
+		String lineDauerIncidentTage = "Dauer Incident (Tage):";
+		String lineAnzahlServiceabrufe = "Anzahl Serviceabrufe:";
+		String lineAnzahlServiceabrufeServicezeitNichtEingehalten = "Servicezeit nicht eingehalten:";
+		String lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent = "Servicezeit nicht eingehalten (%):";
+		String lineDauerServiceabrufeMinuten = "Dauer Serviceabrufe (Minuten):";
+		String lineDauerServiceabrufeStunden = "Dauer Serviceabrufe (Stunden):";
+		String lineDauerServiceabrufeTage = "Dauer Serviceabrufe (Tage):";
+		
+		for (QuartalsStatistik qs : quartale.values()) 
+		{
+			for (MonatsStatistik m : qs.getMonatsStatistiken()) 
 			{
-				for (MonatsStatistik m : qs.getMonatsStatistiken()) 
-				{
 				einheiten = einheiten + ";" + m.getBezeichnungLang();	
 				lineGesamt = lineGesamt + ";" + m.getAnzahlVorgaengeGesamt();
 				lineAnzahlIncidents = lineAnzahlIncidents + ";" + m.getAnzahlIncidents();
@@ -166,11 +173,11 @@ private Vorgang max = null;
 				lineDauerServiceabrufeMinuten = lineDauerServiceabrufeMinuten + ";" + m.getDurchschnittlicheDauerMinutenServiceAbrufe();
 				lineDauerServiceabrufeStunden = lineDauerServiceabrufeStunden + ";" + m.getFormattedAvgDauerStundenServiceAbrufe();
 				lineDauerServiceabrufeTage = lineDauerServiceabrufeTage + ";" + m.getFormattedAvgDauerTageServiceAbrufe();
-
-				}
+				
 			}
-			for (QuartalsStatistik qs : quartale.values()) 
-			{
+		}
+		for (QuartalsStatistik qs : quartale.values()) 
+		{
 			einheiten = einheiten + ";" + qs.getBezeichnungLang();	
 			lineGesamt = lineGesamt + ";" + qs.getAnzahlVorgaengeBerichtszeitraum();
 			lineAnzahlIncidents = lineAnzahlIncidents + ";" + qs.getAnzahlIncidents();
@@ -186,28 +193,29 @@ private Vorgang max = null;
 			lineDauerServiceabrufeMinuten = lineDauerServiceabrufeMinuten + ";" + qs.getDurchschnittlicheDauerMinutenServiceAbrufe();
 			lineDauerServiceabrufeStunden = lineDauerServiceabrufeStunden + ";" + qs.getFormattedAvgDauerStundenServiceAbrufe();
 			lineDauerServiceabrufeTage = lineDauerServiceabrufeTage + ";" + qs.getFormattedAvgDauerTageServiceAbrufe();
-			}
-			lines.add(einheiten);
-			lines.add(lineGesamt);
-			lines.add(lineAnzahlIncidents);
-			lines.add(lineAnzahlIncidentsServicezeitNichtEingehalten);
-			lines.add(lineAnzahlIncidentsServicezeitNichtEingehaltenProzent);
-			lines.add(lineDauerIncidentMinuten);
-			lines.add(lineDauerIncidentStunden);
-			lines.add(lineDauerIncidentTage);
-			lines.add(lineAnzahlServiceabrufe);
-			lines.add(lineAnzahlServiceabrufeServicezeitNichtEingehalten);
-			lines.add(lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent);
-			lines.add(lineDauerServiceabrufeMinuten);
-			lines.add(lineDauerServiceabrufeStunden);
-			lines.add(lineDauerServiceabrufeTage);
-
-	ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	String dateiName = "EcholonZusammenfassung.csv";
-	String dateiPfad = servletContext.getRealPath("/downloads");
-	EcholonZusammenfassungCSV csv = new EcholonZusammenfassungCSV(dateiPfad);
-	csv.setLines(lines);
-	csv.createCSVDatei(dateiPfad, dateiName);
+		}
+		lines.add(einheiten);
+		lines.add(lineGesamt);
+		lines.add(lineAnzahlIncidents);
+		lines.add(lineAnzahlIncidentsServicezeitNichtEingehalten);
+		lines.add(lineAnzahlIncidentsServicezeitNichtEingehaltenProzent);
+		lines.add(lineDauerIncidentMinuten);
+		lines.add(lineDauerIncidentStunden);
+		lines.add(lineDauerIncidentTage);
+		lines.add(lineAnzahlServiceabrufe);
+		lines.add(lineAnzahlServiceabrufeServicezeitNichtEingehalten);
+		lines.add(lineAnzahlServiceabrufeServicezeitNichtEingehaltenProzent);
+		lines.add(lineDauerServiceabrufeMinuten);
+		lines.add(lineDauerServiceabrufeStunden);
+		lines.add(lineDauerServiceabrufeTage);
+		
+		ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String dateiName = "EcholonZusammenfassung.csv";
+		String dateiPfad = servletContext.getRealPath("/downloads");
+		EcholonZusammenfassungCSV csv = new EcholonZusammenfassungCSV(dateiPfad);
+		csv.setLines(lines);
+		csv.createCSVDatei(dateiPfad, dateiName);
+		
 	}
 	
 	public Cache getCache() 
@@ -248,7 +256,7 @@ private Vorgang max = null;
 
 	public String getSubtitle() 
 	{
-	return "AuswertungsZeitraum: " + df.format(abfrageZeitraum.getStartDatum()) + " bis " + df.format(abfrageZeitraum.getEndDatum());
+	return "AuswertungsZeitraum: " + Zeitraum.df.format(abfrageZeitraum.getStartDatum()) + " bis " + Zeitraum.df.format(abfrageZeitraum.getEndDatum()) + " (" + vorgaengeBerichtszeitraum.size() + " Vorgänge)";
 	}
 
 }
